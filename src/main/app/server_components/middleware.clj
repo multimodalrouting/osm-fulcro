@@ -8,6 +8,7 @@
                                                           wrap-transit-response]]
     [ring.middleware.defaults :refer [wrap-defaults]]
     [ring.middleware.gzip :refer [wrap-gzip]]
+    [ring.middleware.file :refer [wrap-file]]
     [ring.util.response :refer [response file-response resource-response]]
     [ring.util.response :as resp]
     [hiccup.page :refer [html5]]
@@ -42,10 +43,11 @@
       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
       [:link {:href "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
               :rel  "stylesheet"}]
+      [:link {:rel "stylesheet" :href "leaflet/dist/leaflet.css"}]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body
-      [:div#app]
+      [:div#app {:style "width: 100%; height: 100%"}]
       [:script {:src "js/main/main.js"}]]]))
 
 ;; ================================================================================
@@ -90,6 +92,7 @@
         legal-origins   (get config :legal-origins #{"localhost"})]
     (-> not-found-handler
       (wrap-api "/api")
+      (wrap-file "./node_modules")
       wrap-transit-params
       wrap-transit-response
       (wrap-html-routes)

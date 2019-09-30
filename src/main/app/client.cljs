@@ -8,16 +8,23 @@
     [com.fulcrologic.fulcro.ui-state-machines :as uism]
     [com.fulcrologic.fulcro.components :as comp]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
-    [app.model.session :as session]
     [taoensso.timbre :as log]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
-    [com.fulcrologic.fulcro.inspect.inspect-client :as inspect]))
+    [com.fulcrologic.fulcro.inspect.inspect-client :as inspect]
+    [com.fulcrologic.fulcro.rendering.keyframe-render :refer [render!]]
+    [app.ui.root]))
+
+(defn load! []
+  (df/load! SPA :geojson.vvo/geojson #_app.ui.root/GeoJSON nil
+            {:target [:data :vvo]
+             :post-action #(app/schedule-render! SPA {:force-root? true})}))
 
 (defn ^:export refresh []
   (log/info "Hot code Remount")
   (cssi/upsert-css "componentcss" {:component root/Root})
-  (app/mount! SPA root/Root "app"))
+  (app/mount! SPA root/Root "app")
+  #_(load!))
 
 (defn ^:export init []
   (log/info "Application starting.")
@@ -25,34 +32,5 @@
   ;(inspect/app-started! SPA)
   (app/set-root! SPA root/Root {:initialize-state? true})
   (dr/initialize! SPA)
-  (log/info "Starting session machine.")
-  (uism/begin! SPA session/session-machine ::session/session
-    {:actor/login-form      root/Login
-     :actor/current-session root/Session})
-  (app/mount! SPA root/Root "app" {:initialize-state? false}))
-
-(comment
-  (inspect/app-started! SPA)
-  (app/mounted? SPA)
-  (app/set-root! SPA root/Root {:initialize-state? true})
-  (uism/begin! SPA session/session-machine ::session/session
-    {:actor/login-form      root/Login
-     :actor/current-session root/Session})
-
-  (reset! (::app/state-atom SPA) {})
-
-  (merge/merge-component! my-app Settings {:account/time-zone "America/Los_Angeles"
-                                           :account/real-name "Joe Schmoe"})
-  (dr/initialize! SPA)
-  (app/current-state SPA)
-  (dr/change-route SPA ["settings"])
-  (app/mount! SPA root/Root "app")
-  (comp/get-query root/Root {})
-  (comp/get-query root/Root (app/current-state SPA))
-
-  (-> SPA ::app/runtime-atom deref ::app/indexes)
-  (comp/class->any SPA root/Root)
-  (let [s (app/current-state SPA)]
-    (fdn/db->tree [{[:component/id :login] [:ui/open? :ui/error :account/email
-                                            {[:root/current-session '_] (comp/get-query root/Session)}
-                                            [::uism/asm-id ::session/session]]}] {} s)))
+  (app/mount! SPA root/Root "app" {:initialize-state? false})
+  (load!))

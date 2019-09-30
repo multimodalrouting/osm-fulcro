@@ -6,10 +6,13 @@
     [com.wsscode.pathom.core :as p]
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
-    [app.model.account :as acct]
-    [app.model.session :as session]
     [app.server-components.config :refer [config]]
-    [app.model.mock-database :as db]))
+    [jsonista.core :as json]))
+
+(pc/defresolver geojson-vvo [_ _]
+  {::pc/output [:geojson.vvo/geojson]}
+  {:geojson.vvo/geojson (json/read-value (slurp "resources/test/vvo.geojson")
+                                         (json/object-mapper {:decode-key-fn true}))})
 
 (pc/defresolver index-explorer [env _]
   {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -19,7 +22,7 @@
      (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
      (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(def all-resolvers [acct/resolvers session/resolvers index-explorer])
+(defn all-resolvers [] [index-explorer geojson-vvo])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
@@ -46,12 +49,12 @@
                        ::p/env     {::p/reader               [p/map-reader pc/parallel-reader
                                                               pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes #{">"}}
-                       ::p/plugins [(pc/connect-plugin {::pc/register all-resolvers})
+                       ::p/plugins [(pc/connect-plugin {::pc/register (all-resolvers)})
                                     (p/env-wrap-plugin (fn [env]
                                                          ;; Here is where you can dynamically add things to the resolver/mutation
                                                          ;; environment, like the server config, database connections, etc.
                                                          (assoc env
-                                                           :db @db-connection ; real datomic would use (d/db db-connection)
+                                                           ;:db @db-connection ; real datomic would use (d/db db-connection)
                                                            :connection db-connection
                                                            :config config)))
                                     (preprocess-parser-plugin log-requests)
@@ -68,5 +71,4 @@
                                     tx))))))
 
 (defstate parser
-  :start (build-parser db/conn))
-
+  :start (build-parser nil))

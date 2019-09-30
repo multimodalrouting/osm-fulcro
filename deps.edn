@@ -16,11 +16,10 @@
            mount                               {:mvn/version "0.1.12"}
            org.clojure/core.async              {:mvn/version "0.4.500"}
 
-           ;; To simulate Datomic on the back-end
-           datascript                          {:mvn/version "0.18.4"}
-
            ring/ring-core                      {:mvn/version "1.7.1"}
-           ring/ring-defaults                  {:mvn/version "0.3.2"}}
+           ring/ring-defaults                  {:mvn/version "0.3.2"}
+           
+           metosin/jsonista                    {:mvn/version "0.2.4"}}
 
  :aliases {:clj-tests {:extra-paths ["src/test"]
                        :main-opts   ["-m" "kaocha.runner"]
