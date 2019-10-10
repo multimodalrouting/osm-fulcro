@@ -17,7 +17,10 @@
     ["react-leaflet" :as ReactLeaflet :refer [withLeaflet Map
                                               LayersControl LayersControl.BaseLayer LayersControl.Overlay
                                               TileLayer Marker Popup]]
-    ["react-leaflet-vectorgrid" :as VectorGrid]))
+    ["react-leaflet-vectorgrid" :as VectorGrid]
+    ["d3" :as d3]
+    ["react-leaflet-d3" :refer [HexbinLayer]]
+    ["react-leaflet-d3-svg-overlay" :refer [D3SvgOverlay]]))
 
 (def leafletMap (interop/react-factory Map))
 (def layersControl (interop/react-factory LayersControl))
@@ -25,6 +28,33 @@
 (def layersControlOverlay (interop/react-factory LayersControl.Overlay))
 (def tileLayer (interop/react-factory TileLayer))
 (def vectorGrid (interop/react-factory (withLeaflet VectorGrid)))
+(def hexbinLayer (interop/react-factory (withLeaflet HexbinLayer)))
+(def d3SvgLayer (interop/react-factory (withLeaflet D3SvgOverlay)))
+
+(def hexbinOptions {:colorScaleExtent [1 nil]
+                    :radiusScaleExtent [1 nil]
+                    :colorRange ["#ffffff" "#00ff00"]
+                    :radiusRange [5 12]})
+
+(defn color-by-accessibility [d]
+  ({"yes" "green"
+    "no" "red"
+    "limited" "yellow"}
+   (get-in (js->clj d :keywordize-keys true)
+           [:properties :wheelchair])))
+
+(defn d3DrawCallback [sel proj data]
+  (let [upd (-> sel
+                (.selectAll "path")
+                (.data data))]
+       (-> (.enter upd)
+           (.append "path")
+           (.attr "d" (.-pathFromGeojson proj))
+           (.attr "fill" color-by-accessibility)
+           (.attr "fill-opacity" "0.3"))
+       (-> upd
+           (.attr "stroke" "black")
+           (.attr "stroke-width" (/ 1 (.-scale proj))))))
 
 (defsc GeoJSON
   "a GeoJSON dataset"
@@ -57,16 +87,22 @@
                     :attribution "<a href=\"https://wiki.openstreetmap.org/wiki/Openptmap\">Openptmap"}))
       (layersControlBaseLayer {:name "NONE (only overlays)"}
         (tileLayer {:url ""}))
-      (layersControlOverlay {:name "Graphhopper MVT example"
-                             :checked true}
+      (layersControlOverlay {:name "Graphhopper MVT example"}
         (vectorGrid {:type "protobuf" :url "http://localhost:8989/mvt/{z}/{x}/{y}.mvt" :subdomains ""
                      :vectorTileLayerStyles {"roads" (fn [properties zoom] {})}
                      :zIndex 1}))
-      (layersControlOverlay {:name "Pathom GeoJSON example"
-                             :checked true}
+      (layersControlOverlay {:name "GeoJSON example"}
         (if (:features geojson)
-            (vectorGrid {:type "slicer" :data geojson
-                         :zIndex 1}))))))
+            (vectorGrid {:type "slicer" :zIndex 1 :data geojson})))
+      (layersControlOverlay {:name "GeoJSON D3 Hexbin example"}
+        (if (:features geojson)
+            (hexbinLayer (merge {:data geojson #_#_:zIndex 1} hexbinOptions))))
+      (layersControlOverlay {:name "GeoJSON D3 SvgLayer example" :checked true}
+        (if (:features geojson)
+            (d3SvgLayer {:data (filter #(and (#{"Point"} (get-in % [:geometry :type])))
+                                       (:features geojson))
+                         :drawCallback d3DrawCallback})))
+)))
 
 (def ui-osm (comp/factory OSM))
 
