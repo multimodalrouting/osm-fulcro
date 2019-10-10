@@ -18,8 +18,11 @@
 
            ring/ring-core                      {:mvn/version "1.7.1"}
            ring/ring-defaults                  {:mvn/version "0.3.2"}
+           ring-webjars                        {:mvn/version "0.2.0"}
            
-           metosin/jsonista                    {:mvn/version "0.2.4"}}
+           metosin/jsonista                    {:mvn/version "0.2.4"}
+           
+           org.webjars/Semantic-UI             {:mvn/version "2.4.1"}}
 
  :aliases {:clj-tests {:extra-paths ["src/test"]
                        :main-opts   ["-m" "kaocha.runner"]
