@@ -48,6 +48,7 @@
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body
       [:div#app {:style "width: 100%; height: 100%"}]
+      [:script {:src "d3/dist/d3.min.js"}]
       [:script {:src "js/main/main.js"}]]]))
 
 ;; ================================================================================
@@ -68,6 +69,7 @@
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body
       [:div#app]
+      [:script {:src "d3/dist/d3.min.js"}]
       [:script {:src "workspaces/js/main.js"}]]]))
 
 (defn wrap-html-routes [ring-handler]
