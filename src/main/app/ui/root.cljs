@@ -70,9 +70,10 @@
                                                                    (js->clj (nth arcs i) :keywordize-keys true)))))
                               (js->clj data :keywordize-keys true))
         upd (-> sel
-                (.selectAll "path")
+                (.selectAll "a")
                 (.data (clj->js arc-data)))]
        (-> (.enter upd)
+           (.append "a")
            (.append "path")
            (.attr "transform" (fn [d] (let [[lng lat] (get-in (js->clj d :keywordize-keys true)
                                                               [:geometry :coordinates])
@@ -82,7 +83,8 @@
                                                               (.-y point) ")"))))
            (.attr "d" #(:path (js->clj % :keywordize-keys true)))
            (.attr "fill" #(:color (js->clj % :keywordize-keys true)))
-           (.attr "fill-opacity" "0.5"))))
+           (.attr "fill-opacity" "0.5")
+           (.on "click" (fn [d i ds] (js/console.log (js->clj d)))))))
 
 (defsc GeoJSON
   "a GeoJSON dataset"
