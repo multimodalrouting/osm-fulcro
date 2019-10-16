@@ -89,16 +89,11 @@
 (defsc GeoJSON
   "a GeoJSON dataset"
   [this {:as props}]
-  {:query [:type :features :timestamp :generator :copyright]
-   :ident (fn [] [:data :vvo])
-   :initial-state {:type {}}})
+  {:query [:type :features :timestamp :generator :copyright]})
 
 (defsc OSM
-  [this {:osm/keys [geojson] :as props}]
-  {:query [{:osm/geojson (comp/get-query GeoJSON)}]
-   :ident (fn [] [:component/id :osm])
-   :initial-state (fn [{:as props}] {:osm/geojson (comp/get-initial-state GeoJSON)})}
-  (js/console.log geojson)
+  [this {:geojson.vvo/keys [geojson] :as props}]
+  {:query [{:geojson.vvo/geojson (comp/get-query GeoJSON)}]}
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
     (layersControl {}
@@ -149,8 +144,6 @@
 
 (def ui-osm (comp/factory OSM))
 
-(defsc Root [this {:root/keys [top-osm]}]
-  {:query [{:root/top-osm (comp/get-query OSM)}]
-   :ident (fn [] [:component/id :ROOT])
-   :initial-state {:root/top-osm {:osm {}}}}
-  (ui-osm top-osm))
+(defsc Root [this props]
+  {:query (fn [] (comp/get-query OSM))}
+  (ui-osm props))

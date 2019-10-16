@@ -16,15 +16,23 @@
     [app.ui.root]))
 
 (defn load! []
-  (df/load! SPA :geojson.vvo/geojson #_app.ui.root/GeoJSON nil
-            {:target [:data :vvo]
-             :post-action #(app/schedule-render! SPA {:force-root? true})}))
+  #_(df/load! SPA :geojson.vvo/geojson nil)
+
+  ;; This is the transact! caused by the load! above 
+  #_(let [il `df/internal-load!
+        lp (df/load-params* app.application/SPA :geojson.vvo/geojson nil nil)]
+       (comp/transact! app.application/SPA `[(~il ~lp)]))
+
+  ;; This loads from the remote `overpass`
+  (let [il `df/internal-load!
+        lp (assoc (df/load-params* app.application/SPA :geojson.vvo/geojson nil nil)
+                  :remote :overpass)]
+       (comp/transact! app.application/SPA `[(~il ~lp)])))
 
 (defn ^:export refresh []
   (log/info "Hot code Remount")
   (cssi/upsert-css "componentcss" {:component root/Root})
-  (app/mount! SPA root/Root "app")
-  #_(load!))
+  (app/mount! SPA root/Root "app"))
 
 (defn ^:export init []
   (log/info "Application starting.")
