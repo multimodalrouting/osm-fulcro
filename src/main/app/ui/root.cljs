@@ -52,12 +52,12 @@
   (.latLngToLayerPoint proj (clj->js {:lat lat :lng lng})))
 
 (defn bounds->circumcircleRadius [proj bounds]
-   (->> bounds
-        (map (partial lngLat->Point proj))
-        (#(.subtract (first %) (second %)))
-        (#(js/Math.sqrt (+ (* (.-x %) (.-x %))
-                           (* (.-y %) (.-y %)))))
-        (* 0.5)))
+   (some->> bounds
+            (map (partial lngLat->Point proj))
+            (#(.subtract (first %) (second %)))
+            (#(js/Math.sqrt (+ (* (.-x %) (.-x %))
+                               (* (.-y %) (.-y %)))))
+            (* 0.5)))
 
 (defn d3DrawCallback [sel proj data]
   (let [radius (->> (js->clj data :keywordize-keys true)

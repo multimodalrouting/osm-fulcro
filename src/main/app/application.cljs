@@ -16,9 +16,13 @@
                 :remotes {:remote (net/fulcro-http-remote {:url "/api"
                                                            :request-middleware secured-request-middleware})
                           :overpass (net/fulcro-http-remote
-                                      {:url "http://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3B%0Aarea%5Bname%3D%22Dresden%22%5D-%3E.city%3B%0Anwr%28area.city%29%5Boperator%3D%22DVB%22%5D-%3E.connections%3B%0A%0Arelation.connections%5Broute%3Dbus%5D%3B%20%28._%3B%3E%3B%29-%3E.bus%3B%0Away.connections%5Brailway%3Dtram%5D%3B%20%28._%3B%3E%3B%29-%3E.tram%3B%0A%0A%28.tram%3B%20.bus%3B%29%3B%0A%0Aout%3B%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A"
-                                       :method :get
-                                       :request-middleware (fn [req] (assoc req :method :get))
+                                      {:url "http://overpass-api.de/api/interpreter"
+                                       :request-middleware (fn [req] (assoc req :headers {"Content-Type" "text/plain"}
+                                                                                :body (str "[out:json];"
+                                                                                           "area[name=\"Dresden\"]->.city;"
+                                                                                           "nwr(area.city)[operator=\"DVB\"]->.connections;"
+                                                                                           "node.connections[public_transport=stop_position];"
+                                                                                           "out;")))
                                        :response-middleware (fn [resp] (let [data (some-> (:body resp)
                                                                                           js/JSON.parse
                                                                                           osmtogeojson
