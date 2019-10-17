@@ -16,9 +16,10 @@
     [app.ui.root]))
 
 (defn load! []
-  (df/load! SPA :geojson.vvo/geojson nil {:remote :overpass}))
+  (df/load! SPA :geojson.vvo/geojson nil {:remote :remote #_:overpass}))
 
 (defn ^:export refresh []
+  (js/console.clear)
   (log/info "Hot code Remount")
   (cssi/upsert-css "componentcss" {:component root/Root})
   (app/mount! SPA root/Root "app"))

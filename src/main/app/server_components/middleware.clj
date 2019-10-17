@@ -43,8 +43,10 @@
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
       [:link {:rel "stylesheet" :href "webjars/Semantic-UI/semantic.min.css"}]
+      [:link {:rel "stylesheet" :href "@fortawesome/fontawesome-free/css/all.css"}]
       ;[:link {:rel "stylesheet" :href "leaflet/dist/leaflet.css"}]
       [:link {:rel "stylesheet" :href "https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css"}]
+      [:style {:type "text/css"} ".sidebar-pane {padding: 0 !important;}"]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body

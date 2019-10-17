@@ -1,7 +1,7 @@
 (ns app.ui.root
   (:require
     [clojure.string :as str]
-    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
+    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 i button]]
     [com.fulcrologic.fulcro.dom.html-entities :as ent]
     [com.fulcrologic.fulcro.dom.events :as evt]
     [com.fulcrologic.fulcro.application :as app]
@@ -21,7 +21,9 @@
     ["d3" :as d3]
     ["d3-shape" :as d3-shape]
     ["react-leaflet-d3" :refer [HexbinLayer]]
-    ["react-leaflet-d3-svg-overlay" :as D3SvgOverlay]))
+    ["react-leaflet-d3-svg-overlay" :as D3SvgOverlay]
+    ["react-leaflet-sidetabs" :refer [Sidebar Tab]]
+    ["react-leaflet-control" :default Control]))
 
 (defn arc [kwargs]
   ((d3-shape/arc) (clj->js kwargs)))
@@ -34,6 +36,9 @@
 (def vectorGrid (interop/react-factory (withLeaflet VectorGrid)))
 (def hexbinLayer (interop/react-factory (withLeaflet HexbinLayer)))
 (def d3SvgOverlay (interop/react-factory (withLeaflet (.-ReactLeaflet_D3SvgOverlay D3SvgOverlay))))
+(def sidebar (interop/react-factory Sidebar))
+(def tab (interop/react-factory Tab))
+(def control (interop/react-factory Control))
 
 (def hexbinOptions {:colorScaleExtent [1 nil]
                     :radiusScaleExtent [1 nil]
@@ -91,11 +96,37 @@
   [this {:as props}]
   {:query [:type :features :timestamp :generator :copyright]})
 
+(defmutation mutate-sidebar [params]
+  (action [{:keys [state]}]
+    (swap! state update-in [:leaflet/sidebar] merge (select-keys params [:tab :visible]))))
+
+(defsc FulcroSidebar [this {:as props}]
+  {:query [:leaflet/sidebar]}
+  (let [selected (get-in props [:leaflet/sidebar :tab] "help")
+        onOpen #(comp/transact! this [(mutate-sidebar {:tab %})])
+        onClose #(comp/transact! this [(mutate-sidebar {:visible false})])]
+       (sidebar {:id "sidebar" :closeIcon "fa fa-window-close"
+                 :selected selected :collapsed (nil? selected) 
+                 :onOpen onOpen :onClose onClose}
+         (tab {:id "help" :header "Anleitung" :icon (i {:classes ["fa" "fa-question"]})}
+              (p {} "…"))
+         (tab {:id "databases" :header "Datenquellen" :icon (i {:classes ["fa" "fa-database"]})}
+              (p {} "foo"))
+         (tab {:id "layer" :header "Layer" :icon (i {:classes ["fa" "fa-layer-group"]})}
+              (p {} "bar")))))
+
+(def fulcroSidebar (comp/factory FulcroSidebar))
+
 (defsc OSM
   [this {:geojson.vvo/keys [geojson] :as props}]
   {:query [{:geojson.vvo/geojson (comp/get-query GeoJSON)}]}
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
+    ;(if-not (get-in props [:leaflet/sidebar :visible])
+      (control {:position "bottomleft"}
+        (button {:onClick #(comp/transact! this [(mutate-sidebar {:visible true})])
+                 :style {:height "26px" :width "26px"}}
+          (i {:classes ["fa" "fa-cog"]})));)
     (layersControl {}
       (layersControlBaseLayer {:name "Esri Aearial" :checked true}
         (tileLayer {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
@@ -145,5 +176,9 @@
 (def ui-osm (comp/factory OSM))
 
 (defsc Root [this props]
-  {:query (fn [] (comp/get-query OSM))}
-  (ui-osm props))
+  {:query (fn [] (into (comp/get-query OSM)
+                       (comp/get-query FulcroSidebar)))}
+  (div {:style {:width "100%" :height "100%"}}
+    (if (get-in props [:leaflet/sidebar :visible])
+        (fulcroSidebar props))
+    (ui-osm (select-keys props [:geojson.vvo/geojson]))))
