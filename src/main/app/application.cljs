@@ -13,7 +13,7 @@
 (defonce SPA (app/fulcro-app
                {;; This ensures your client can talk to a CSRF-protected server.
                 ;; See middleware.clj to see how the token is embedded into the HTML
-                :remotes {:remote (net/fulcro-http-remote {:url "/api"
+                :remotes {:pathom (net/fulcro-http-remote {:url "/api"
                                                            :request-middleware secured-request-middleware})
                           :overpass (net/fulcro-http-remote
                                       {:url "http://overpass-api.de/api/interpreter"

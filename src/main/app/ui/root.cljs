@@ -1,7 +1,13 @@
 (ns app.ui.root
   (:require
     [clojure.string :as str]
-    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 i button]]
+    [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 i button br]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table :refer [ui-table]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-row :refer [ui-table-row]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
     [com.fulcrologic.fulcro.dom.html-entities :as ent]
     [com.fulcrologic.fulcro.dom.events :as evt]
     [com.fulcrologic.fulcro.application :as app]
@@ -96,30 +102,116 @@
   [this {:as props}]
   {:query [:type :features :timestamp :generator :copyright]})
 
+(defmutation mutate-datasets [{:keys [path data]}]
+  (action [{:keys [state]}]
+    (swap! state update-in (concat [:leaflet/datasets] path)
+                           (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
+                           data)))
+
+(defmutation mutate-layers [{:keys [path data]}]
+  (action [{:keys [state]}]
+    (swap! state update-in (concat [:leaflet/layers] path)
+                           (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
+                           data)))
+
 (defmutation mutate-sidebar [params]
   (action [{:keys [state]}]
     (swap! state update-in [:leaflet/sidebar] merge (select-keys params [:tab :visible]))))
 
 (defsc FulcroSidebar [this {:as props}]
-  {:query [:leaflet/sidebar]}
+  {:query [:leaflet/sidebar
+           :leaflet/datasets
+           :leaflet/layers]}
   (let [selected (get-in props [:leaflet/sidebar :tab] "help")
         onOpen #(comp/transact! this [(mutate-sidebar {:tab %})])
         onClose #(comp/transact! this [(mutate-sidebar {:visible false})])]
        (sidebar {:id "sidebar" :closeIcon "fa fa-window-close"
                  :selected selected :collapsed (nil? selected) 
                  :onOpen onOpen :onClose onClose}
-         (tab {:id "help" :header "Anleitung" :icon (i {:classes ["fa" "fa-question"]})}
+         (tab {:id "help" :header "About" :icon (i {:classes ["fa" "fa-question"]})}
               (p {} "…"))
-         (tab {:id "databases" :header "Datenquellen" :icon (i {:classes ["fa" "fa-database"]})}
-              (p {} "foo"))
-         (tab {:id "layer" :header "Layer" :icon (i {:classes ["fa" "fa-layer-group"]})}
-              (p {} "bar")))))
+         (tab {:id "datasets" :header "Datasets" :icon (i {:classes ["fa" "fa-database"]})}
+              (let [datasets (:leaflet/datasets props)]
+                   (ui-table {}
+                     (ui-table-header {}
+                       (ui-table-row {}
+                         (ui-table-header-cell {} "name")
+                         (ui-table-header-cell {} "remote")
+                         (ui-table-header-cell {} "query")
+                         (ui-table-header-cell {} "entries")
+                         (ui-table-header-cell {} "type")
+                         (ui-table-header-cell {} "comment")))
+                     (ui-table-body {}
+                       (for [dataset datasets
+                             :let [source (:source (val dataset))]]
+                            (ui-table-row {:key (key dataset)}
+                              (ui-table-cell {:key (str (key dataset) :n)} (str (key dataset)))
+                              (ui-table-cell {:key (str (key dataset) :r)} (str (:remote source)))
+                              (ui-table-cell {:key (str (key dataset) :q)} (if (vector? (:query source))
+                                                                              (map-indexed (fn [i line] [(str line) (br {:key i})])
+                                                                                           (:query source))
+                                                                              (str (:query source))))
+                              (ui-table-cell {:key (str (key dataset) :e)} (->> (get-in (val dataset) [:data :geojson :features])
+                                                                                (group-by #(get-in % [:geometry :type]))
+                                                                                (map (fn [[k vs]] {:count (count vs) :type k}))
+                                                                                (sort-by :count >)
+                                                                                (map-indexed (fn [i line] [(str (:count line) " " (:type line))
+                                                                                                           (br {:key i})]))))
+                              (ui-table-cell {:key (str (key dataset) :t)} (str (:type source)))
+                              (ui-table-cell {:key (str (key dataset) :c)} (str (:comment source)))))))))
+         (tab {:id "layers" :header "Layers" :icon (i {:classes ["fa" "fa-layer-group"]})}
+              (let [layers (:leaflet/layers props)
+                    overlays (->> (map (fn [layer] (->> (val layer)
+                                                        :overlays
+                                                        (map #(assoc % :layer (key layer)))))
+                                       layers)
+                                  (apply concat))]
+                   (ui-table {}
+                     (ui-table-header {}
+                       (ui-table-row {}
+                         (ui-table-header-cell {} "layer")
+                         (ui-table-header-cell {} "class")
+                         (ui-table-header-cell {} "dataset")
+                         (ui-table-header-cell {} "filter")))
+                     (ui-table-body {}
+                       (for [overlay overlays
+                             :let [k (hash overlay)]]
+                            (ui-table-row {:key k}
+                              (ui-table-cell {:key (str k :l)} (str (:layer overlay)))
+                              (ui-table-cell {:key (str k :c)} (str (:class overlay)))
+                              (ui-table-cell {:key (str k :d)} (str (:dataset overlay)))
+                              (ui-table-cell {:key (str k :f)} (str (:filter overlay))))))))))))
 
 (def fulcroSidebar (comp/factory FulcroSidebar))
 
+(defn overlay-filter-rule->filter [filter-rule]
+  (fn [feature]
+      (->> (map (fn [[path set_of_accepted_vals]]
+                    (set_of_accepted_vals (get-in feature path)))
+                filter-rule)
+      (reduce #(and %1 %2)))))
+
+(defsc D3SvgPieChart [this {:keys [react-key features]}]
+  (d3SvgOverlay {:key react-key
+                 :data (let [centroid (js/d3.geoCentroid (clj->js {:type "FeatureCollection" :features features}))
+                             bounds (js/d3.geoBounds (clj->js {:type "FeatureCollection" :features features}))]
+                            (map (fn [[color ds]]
+                                     (let [d (first ds)
+                                           coords (get-in (js->clj d :keywordize-keys true)
+                                                          [:geometry :coordinates])]
+                                          {:geometry {:coordinates centroid}
+                                           :color color
+                                           :n (count ds)
+                                           :bounds bounds}))
+                                 (group-by color-by-accessibility features)))
+                 :drawCallback d3DrawCallback}))
+
+(def overlay-class->component {:d3SvgPieChart (comp/factory D3SvgPieChart)})
+
 (defsc OSM
-  [this {:geojson.vvo/keys [geojson] :as props}]
-  {:query [{:geojson.vvo/geojson (comp/get-query GeoJSON)}]}
+  [this props]
+  {:query [:leaflet/datasets
+           :leaflet/layers]}
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
     ;(if-not (get-in props [:leaflet/sidebar :visible])
@@ -143,35 +235,25 @@
       (layersControlBaseLayer {:name "NONE (only overlays)"
                                :checked true}
         (tileLayer {:url ""}))
-      (layersControlOverlay {:name "Graphhopper MVT example"}
+      #_(layersControlOverlay {:name "Graphhopper MVT example"}
         (vectorGrid {:type "protobuf" :url "http://localhost:8989/mvt/{z}/{x}/{y}.mvt" :subdomains ""
                      :vectorTileLayerStyles {"roads" (fn [properties zoom] {})}
                      :zIndex 1}))
-      (layersControlOverlay {:name "GeoJSON example"}
+      #_(layersControlOverlay {:name "GeoJSON example"}
         (if (:features geojson)
             (vectorGrid {:type "slicer" :zIndex 1 :data geojson})))
-      (layersControlOverlay {:name "GeoJSON D3 Hexbin example"}
+      #_(layersControlOverlay {:name "GeoJSON D3 Hexbin example"}
         (if (:features geojson)
-            (hexbinLayer (merge {:data geojson #_#_:zIndex 1} hexbinOptions))))
-      (layersControlOverlay {:name "GeoJSON D3 SvgOverlay example" :checked true}
-        (if (:features geojson)
-            (d3SvgOverlay {:data (->> (:features geojson)
-                                      (filter #(and (#{"Point"} (get-in % [:geometry :type]))
-                                                    (#{"stop_position"} (get-in % [:properties :public_transport]))))
-                                      ;; group features
-                                      ((fn [features]
-                                           (let [centroid (js/d3.geoCentroid (clj->js {:type "FeatureCollection" :features features}))
-                                                 bounds (js/d3.geoBounds (clj->js {:type "FeatureCollection" :features features}))]
-                                                (map (fn [[color ds]]
-                                                         (let [d (first ds)
-                                                               coords (get-in (js->clj d :keywordize-keys true)
-                                                                              [:geometry :coordinates])]
-                                                              {:geometry {:coordinates centroid}
-                                                               :color color
-                                                               :n (count ds)
-                                                               :bounds bounds}))
-                                                     (group-by color-by-accessibility features))))))
-                           :drawCallback d3DrawCallback}))) )))
+            (hexbinLayer (merge {:data geojson} hexbinOptions))))
+      (for [[layer-name layer] (:leaflet/layers props)]
+           (layersControlOverlay {:key layer-name :name layer-name :checked true}
+             (for [overlay (:overlays layer)
+                   :let [dataset-features (get-in props [:leaflet/datasets (:dataset overlay) :data :geojson :features])
+                         filtered-features (filter (overlay-filter-rule->filter (:filter overlay)) dataset-features)
+                         component (overlay-class->component (:class overlay))]]
+                  (if (and component filtered-features)
+                      (component {:react-key (hash overlay)
+                                  :features filtered-features}))))) )))
 
 (def ui-osm (comp/factory OSM))
 
@@ -181,4 +263,4 @@
   (div {:style {:width "100%" :height "100%"}}
     (if (get-in props [:leaflet/sidebar :visible])
         (fulcroSidebar props))
-    (ui-osm (select-keys props [:geojson.vvo/geojson]))))
+    (ui-osm (select-keys props [:leaflet/datasets :leaflet/layers]))))

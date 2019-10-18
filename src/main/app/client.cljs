@@ -16,7 +16,22 @@
     [app.ui.root]))
 
 (defn load! []
-  (df/load! SPA :geojson.vvo/geojson nil {:remote :remote #_:overpass}))
+  (comp/transact! SPA [(app.ui.root/mutate-datasets {:data {:example-vvo {:source {:comment "VVO stops+lines"
+                                                                                   :remote :pathom :type :geojson
+                                                                                   :query :geojson.vvo/geojson}}
+                                                            :example-overpass {:source {:remote :overpass :type :geojson
+                                                                                        :query ["area[name=\"Dresden\"]->.city;"
+                                                                                                "nwr(area.city)[operator=\"DVB\"]->.connections;"
+                                                                                                "node.connections[public_transport=stop_position];"]}}}})])
+  (df/load! SPA :geojson.vvo/geojson nil {:remote :pathom
+                                          :target [:leaflet/datasets :example-vvo :data :geojson]})
+  (df/load! SPA :geojson.vvo/geojson nil {:remote :overpass
+                                          :target [:leaflet/datasets :example-overpass :data :geojson]}))
+
+(comp/transact! SPA [(app.ui.root/mutate-layers {:data {:example-pie-chart {:overlays [{:class :d3SvgPieChart
+                                                                                        :dataset :example-vvo
+                                                                                        :filter {[:geometry :type] #{"Point"}
+                                                                                                 [:properties :public_transport] #{"stop_position"}}}]}}})])
 
 (defn ^:export refresh []
   (js/console.clear)

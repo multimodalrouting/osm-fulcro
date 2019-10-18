@@ -18,7 +18,8 @@
         "react-leaflet-d3-svg-overlay": "^1.1.0",
         "react-leaflet-sidetabs": "^1.0.1",
         "react-leaflet-vectorgrid": "^2.2.1",
-        "reakit": "^0.11.2"
+        "reakit": "^0.11.2",
+        "semantic-ui-react": "^0.88.1"
     },
     "scripts": {
         "client/main": "npx shadow-cljs watch :main",

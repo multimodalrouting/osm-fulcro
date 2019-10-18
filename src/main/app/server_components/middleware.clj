@@ -46,7 +46,13 @@
       [:link {:rel "stylesheet" :href "@fortawesome/fontawesome-free/css/all.css"}]
       ;[:link {:rel "stylesheet" :href "leaflet/dist/leaflet.css"}]
       [:link {:rel "stylesheet" :href "https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css"}]
-      [:style {:type "text/css"} ".sidebar-pane {padding: 0 !important;}"]
+      [:style {:type "text/css"} (str
+        ".sidebar-pane {padding: 0 !important;}"
+        "@media (min-width: 768px) {"
+        " .sidebar {right: 10px !important; width: unset !important;}}"
+        "@media (max-width: 991px) and (min-width: 768px) {"
+        " .sidebar {right: 10px !important; width: unset !important;}"
+        " .sidebar-left .sidebar-content {right: 0 !important;}}")]
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body

@@ -1,0 +1,10 @@
+[out:json];
+area[name="Dresden"]->.city;
+nwr(area.city)[operator="DVB"]->.connections;
+
+relation.connections[route=bus]; (._;>;)->.bus;
+way.connections[railway=tram]; (._;>;)->.tram;
+
+(.tram; .bus;);
+
+out;
