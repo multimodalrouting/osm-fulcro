@@ -1,10 +1,14 @@
 (ns app.ui.leaflet
   (:require
+    [app.application :refer [SPA]]
     [app.ui.leaflet.sidebar :refer [mutate-sidebar FulcroSidebar fulcroSidebar controlOpenSidebar]]
     [app.ui.leaflet.layers :refer [overlay-class->component]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
     [app.ui.leaflet.layers.extern.mvt :refer [mvtLayer]]
     [com.fulcrologic.fulcro.mutations :refer [defmutation]]
+    [com.fulcrologic.fulcro.components :refer [transact!]]
+    [com.fulcrologic.fulcro.data-fetch :refer [load!]]
+    [com.fulcrologic.fulcro.application :refer [current-state]]
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
     ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay]]
@@ -14,12 +18,21 @@
 (def layersControl (react-factory LayersControl))
 (def layersControlOverlay (react-factory LayersControl.Overlay))
 
+(defmutation mutate-datasets-load
+  "For now we don't require arguments, but always reload all datasets" 
+  [_]
+  (action [{:keys [app]}]
+    (doseq [[ds-name ds] (:leaflet/datasets (current-state SPA))]
+           (let [source (:source ds)]
+                (load! app :geojson.vvo/geojson nil {:remote (:remote source)
+                                                     :target [:leaflet/datasets ds-name :data :geojson]})))))
 
 (defmutation mutate-datasets [{:keys [path data]}]
-  (action [{:keys [state]}]
+  (action [{:keys [app state]}]
     (swap! state update-in (concat [:leaflet/datasets] path)
                            (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
-                           data)))
+                           data)
+    (transact! app [(mutate-datasets-load)])))
 
 (defmutation mutate-layers [{:keys [path data]}]
   (action [{:keys [state]}]

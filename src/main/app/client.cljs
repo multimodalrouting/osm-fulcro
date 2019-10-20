@@ -5,7 +5,6 @@
     [app.ui.leaflet :refer [mutate-datasets mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.application :as app]
-    [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
     [taoensso.timbre :as log]))
 
@@ -16,26 +15,26 @@
                                            :example-overpass {:source {:remote :overpass :type :geojson
                                                                        :query ["area[name=\"Dresden\"]->.city;"
                                                                                "nwr(area.city)[operator=\"DVB\"]->.connections;"
-                                                                               "node.connections[public_transport=stop_position];"]}}}})])
-  (load! SPA :geojson.vvo/geojson nil {:remote :pathom
-                                       :target [:leaflet/datasets :example-vvo :data :geojson]})
-  (load! SPA :geojson.vvo/geojson nil {:remote :overpass
-                                       :target [:leaflet/datasets :example-overpass :data :geojson]}))
+                                                                               "node.connections[public_transport=stop_position];"]}}
+                                           :example-mvt {:source {:remote :mvt :type :geojson
+                                                                  :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
+                                                                          :layer "roads"} }}}})])
 
-(transact! SPA [(mutate-layers {:data {:example-vectorGrid {:prechecked true
-                                                            :overlays [{:class :vectorGrid
-                                                                        :dataset :example-vvo
-                                                                        :filter {[:geometry :type] #{"Point"}
-                                                                                 [:properties :public_transport] #{"stop_position"}}}]}
-                                       :example-hexbin {:overlays [{:class :hexbin
-                                                                    :dataset :example-vvo
-                                                                    :filter {[:geometry :type] #{"Point"}
-                                                                             [:properties :public_transport] #{"stop_position"}}}]}
-                                       :example-pieChart {:prechecked true
-                                                          :overlays [{:class :d3SvgPieChart
+  (transact! SPA [(mutate-layers {:data {:example-vectorGrid {:prechecked true
+                                                              :overlays [{:class :vectorGrid
+                                                                          :dataset :example-vvo
+                                                                          :filter {[:geometry :type] #{"Point"}
+                                                                                   [:properties :public_transport] #{"stop_position"}}}]}
+                                         :example-hexbin {:overlays [{:class :hexbin
                                                                       :dataset :example-vvo
                                                                       :filter {[:geometry :type] #{"Point"}
-                                                                               [:properties :public_transport] #{"stop_position"}}}]}}})])
+                                                                               [:properties :public_transport] #{"stop_position"}}}]}
+                                         :example-pieChart {:prechecked true
+                                                            :overlays [{:class :d3SvgPieChart
+                                                                        :dataset :example-vvo
+                                                                        :filter {[:geometry :type] #{"Point"}
+                                                                                 [:properties :public_transport] #{"stop_position"}}}]}}})]))
+
 
 (defn ^:export refresh []
   (js/console.clear)
