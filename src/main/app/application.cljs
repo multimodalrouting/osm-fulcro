@@ -8,10 +8,11 @@
             ["@mapbox/vt2geojson" :as vt2geojson]))
 
 (def secured-request-middleware
+  ;; This ensures your client can talk to a CSRF-protected server.
+  ;; See middleware.clj to see how the token is embedded into the HTML
   ;; The CSRF token is embedded via server_components/html.clj
-  (->
-    (net/wrap-csrf-token (or js/fulcro_network_csrf_token "TOKEN-NOT-IN-HTML!"))
-    (net/wrap-fulcro-request)))
+  (-> (net/wrap-csrf-token (or js/fulcro_network_csrf_token "TOKEN-NOT-IN-HTML!"))
+      (net/wrap-fulcro-request)))
 
 (defn mvt-remote []
   {:active-requests (atom {})
@@ -25,9 +26,7 @@
                                                         :status-code (if error 500 200)})))))})
 
 (defonce SPA (app/fulcro-app
-               {;; This ensures your client can talk to a CSRF-protected server.
-                ;; See middleware.clj to see how the token is embedded into the HTML
-                :remotes {:pathom (net/fulcro-http-remote {:url "/api"
+               {:remotes {:pathom (net/fulcro-http-remote {:url "/api"
                                                            :request-middleware secured-request-middleware})
                           :overpass (net/fulcro-http-remote
                                       {:url "http://overpass-api.de/api/interpreter"

@@ -1,16 +1,8 @@
 (ns app.ui.leaflet.layers.d3svg-piechart
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc]]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point bounds->circumcircleRadius]]
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point bounds->circumcircleRadius color-by-accessibility]]
     ["d3-shape" :as d3-shape]))
-
-(defn color-by-accessibility [d]
-  ({"yes" "green"
-    "no" "red"
-    "limited" "yellow"}
-   (get-in (js->clj d :keywordize-keys true)
-           [:properties :wheelchair])
-   "blue"))
 
 (defn d3DrawCallback [sel proj data]
   (let [radius (->> (js->clj data :keywordize-keys true)
@@ -28,12 +20,8 @@
        (-> (.enter upd)
            (.append "a")
            (.append "path")
-           (.attr "transform" (fn [d] (let [[lng lat] (get-in (js->clj d :keywordize-keys true)
-                                                              [:geometry :coordinates])
-                                            latLng (clj->js {:lat lat :lng lng})
-                                            point (.latLngToLayerPoint proj latLng)]
-                                            (str "translate(" (.-x point) ","
-                                                              (.-y point) ")"))))
+           (.attr "transform" (fn [d] (let [point (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates]))]
+                                           (str "translate(" (.-x point) "," (.-y point) ")"))))
            (.attr "d" #(:path (js->clj % :keywordize-keys true)))
            (.attr "fill" #(:color (js->clj % :keywordize-keys true)))
            (.attr "fill-opacity" "0.5")

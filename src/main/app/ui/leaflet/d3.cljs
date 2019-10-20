@@ -17,3 +17,12 @@
             (#(js/Math.sqrt (+ (* (.-x %) (.-x %))
                                (* (.-y %) (.-y %)))))
             (* 0.5)))
+
+
+(defn color-by-accessibility [d]
+  ({"yes" "green"
+    "no" "red"
+    "limited" "yellow"}
+   (get-in (js->clj d :keywordize-keys true)
+           [:properties :wheelchair])
+   "blue"))
