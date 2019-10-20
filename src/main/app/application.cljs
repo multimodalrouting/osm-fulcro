@@ -16,11 +16,11 @@
 (defn mvt-remote []
   {:active-requests (atom {})
    :transmit! (fn transmit! [remote {::tx/keys [result-handler update-handler ast] :as send-node}]
-                  (let [edn (eql/ast->query ast)]
-                       (vt2geojson (clj->js {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
-                                             :layer "roads"})
+                  (let [query (get-in ast [:children 0 :params :query])
+                        edn (eql/ast->query ast)]
+                       (vt2geojson (clj->js query)
                                    (fn [error result]
-                                       (result-handler {:body {:geojson.vvo/geojson (if error error (js->clj result :keywordize-keys true))}
+                                       (result-handler {:body {:_ (if error error (js->clj result :keywordize-keys true))}
                                                         :transaction edn
                                                         :status-code (if error 500 200)})))))})
 
@@ -31,15 +31,12 @@
                                                            :request-middleware secured-request-middleware})
                           :overpass (net/fulcro-http-remote
                                       {:url "http://overpass-api.de/api/interpreter"
-                                       :request-middleware (fn [req] (assoc req :headers {"Content-Type" "text/plain"}
-                                                                                :body (str "[out:json];"
-                                                                                           "area[name=\"Dresden\"]->.city;"
-                                                                                           "nwr(area.city)[operator=\"DVB\"]->.connections;"
-                                                                                           "node.connections[public_transport=stop_position];"
-                                                                                           "out;")))
+                                       :request-middleware (fn [req] (let [query (->> req :body first (apply hash-map) :_ :query)]
+                                                                          (assoc req :headers {"Content-Type" "text/plain"}
+                                                                                     :body (str "[out:json];" (apply str query) "out;"))))
                                        :response-middleware (fn [resp] (let [data (some-> (:body resp)
                                                                                           js/JSON.parse
                                                                                           osmtogeojson
                                                                                           (js->clj :keywordize-keys true))]
-                                                                            (assoc resp :body {:geojson.vvo/geojson data}))) })
+                                                                            (assoc resp :body {:_ data}))) })
                           :mvt (mvt-remote)}}))

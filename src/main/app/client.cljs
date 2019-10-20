@@ -16,15 +16,13 @@
                                                                        :query ["area[name=\"Dresden\"]->.city;"
                                                                                "nwr(area.city)[operator=\"DVB\"]->.connections;"
                                                                                "node.connections[public_transport=stop_position];"]}}
-                                           :example-mvt {:source {:remote :mvt :type :geojson
-                                                                  :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
-                                                                          :layer "roads"} }}}})])
+                                           :example-mvt-loschwitz {:source {:remote :mvt :type :geojson
+                                                                            :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
+                                                                                    :layer "roads"} }}}})])
 
-  (transact! SPA [(mutate-layers {:data {:example-vectorGrid {:prechecked true
-                                                              :overlays [{:class :vectorGrid
-                                                                          :dataset :example-vvo
-                                                                          :filter {[:geometry :type] #{"Point"}
-                                                                                   [:properties :public_transport] #{"stop_position"}}}]}
+  (transact! SPA [(mutate-layers {:data {:example-vectorGrid-loschwitz {:prechecked true
+                                                                        :overlays [{:class :vectorGrid
+                                                                                    :dataset :example-mvt-loschwitz}]}
                                          :example-hexbin {:overlays [{:class :hexbin
                                                                       :dataset :example-vvo
                                                                       :filter {[:geometry :type] #{"Point"}

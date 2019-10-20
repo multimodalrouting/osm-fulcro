@@ -23,9 +23,13 @@
   [_]
   (action [{:keys [app]}]
     (doseq [[ds-name ds] (:leaflet/datasets (current-state SPA))]
-           (let [source (:source ds)]
-                (load! app :geojson.vvo/geojson nil {:remote (:remote source)
-                                                     :target [:leaflet/datasets ds-name :data :geojson]})))))
+           (let [source (:source ds)
+                 [ident params] (if (keyword? (:query source))
+                                    [(:query source) nil]
+                                    [:_ {:query (:query source)}])]
+                (load! app ident nil {:remote (:remote source)
+                                      :params params
+                                      :target [:leaflet/datasets ds-name :data :geojson]})))))
 
 (defmutation mutate-datasets [{:keys [path data]}]
   (action [{:keys [app state]}]
@@ -42,11 +46,13 @@
 
 
 (defn overlay-filter-rule->filter [filter-rule]
-  (fn [feature]
-      (->> (map (fn [[path set_of_accepted_vals]]
-                    (set_of_accepted_vals (get-in feature path)))
-                filter-rule)
-      (reduce #(and %1 %2)))))
+  (if (empty? filter-rule)
+      (constantly true)
+      (fn [feature]
+          (->> (map (fn [[path set_of_accepted_vals]]
+                        (set_of_accepted_vals (get-in feature path)))
+                    filter-rule)
+          (reduce #(and %1 %2))))))
 
 (defsc Leaflet
   [this props]
