@@ -14,7 +14,7 @@ const target = process.env.TARGET || 'web';
 const webpackConf = {
   mode: env,
   entry: [
-    './resources/public/js/main/main.js',
+    './cordova/www/js/main/main.js',
   ],
   output: {
     path: resolvePath('cordova/www')
