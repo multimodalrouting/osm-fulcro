@@ -134,8 +134,5 @@
     <preference name="Allow3DTouchLinkPreview" value="false" />
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
     <preference name="AllowInlineMediaPlayback" value="true" />
-    <plugin name="cordova-plugin-local-notification" spec="https://github.com/Steffaan/cordova-plugin-local-notifications.git">
-        <variable name="ANDROID_SUPPORT_V4_VERSION" value="26.+" />
-    </plugin>
     <engine name="ios" spec="^4.5.5" />
 </widget>
