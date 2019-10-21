@@ -13,9 +13,9 @@
            (.append "circle")
            (.attr "cx" (fn [d] (.-x (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates])))))
            (.attr "cy" (fn [d] (.-y (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates])))))
-           (.attr "r" "3")
+           (.attr "r" 4)
            (.attr "fill" #(color-by-accessibility (js->clj % :keywordize-keys true)))
-           (.attr "fill-opacity" "0.5")
+           (.attr "fill-opacity" 0.5)
            (.on "click" (fn [d i ds] (js/console.log (js->clj d)))))))
 
 (defsc D3SvgPoints [this {:keys [react-key geojson]}]

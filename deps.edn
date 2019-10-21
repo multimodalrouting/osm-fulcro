@@ -21,6 +21,7 @@
            ring-webjars                        {:mvn/version "0.2.0"}
            
            metosin/jsonista                    {:mvn/version "0.2.4"}
+           aysylu/loom                         {:mvn/version "1.0.2"}
            
            org.webjars/Semantic-UI             {:mvn/version "2.4.1"}}
 

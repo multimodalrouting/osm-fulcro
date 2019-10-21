@@ -2,7 +2,7 @@
   (:require
     [app.application :refer [SPA]]
     [app.ui.root :as root]
-    [app.ui.leaflet :refer [mutate-datasets mutate-layers]]
+    [app.ui.leaflet.state :refer [mutate-datasets mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
@@ -43,8 +43,10 @@
                                                               :overlays [{:class :d3SvgPieChart
                                                                           :dataset :vvo
                                                                           :filter {[:geometry :type] #{"Point"}
-                                                                                   [:properties :public_transport] #{"stop_position"}}}]}}})]))
-
+                                                                                   [:properties :public_transport] #{"stop_position"}}}]}
+                                         :routes {:prechecked true
+                                                  :overlays [{:class :d3SvgLines
+                                                              :dataset :routes}]}}})]))
 
 (defn ^:export refresh []
   (js/console.clear)

@@ -15,9 +15,10 @@
                                         (map #(lngLat->Point proj %))
                                         (map #(str (.-x %) "," (.-y %)))
                                         (clojure.string/join " "))))
-           (.attr "stroke" "white" #_#(color-by-accessibility (js->clj % :keywordize-keys true)))
-           (.attr "stroke-width" "2")
-           (.attr "fill-opacity" "0.5")
+           (.attr "stroke" (fn [d] (get-in (js->clj d :keywordize-keys true) [:properties :style :stroke] "white")
+                           #_#(color-by-accessibility (js->clj % :keywordize-keys true))))
+           (.attr "stroke-width" (fn [d] (get-in (js->clj d :keywordize-keys true) [:properties :style :stroke-width] 1)))
+           (.attr "fill-opacity" 0.5)
            (.attr "fill" "none")
            (.on "click" (fn [d i ds] (js/console.log (js->clj d)))))))
 
