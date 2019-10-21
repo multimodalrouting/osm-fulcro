@@ -1,0 +1,21 @@
+.sidebar-pane {
+    padding: 0 !important;
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        right: 10px !important;
+        width: unset !important;
+    }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+    .sidebar {
+        right: 10px !important;
+        width: unset !important;
+    }
+
+    .sidebar-left .sidebar-content {
+        right: 0 !important;
+    }
+}

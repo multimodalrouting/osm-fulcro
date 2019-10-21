@@ -1,0 +1,40 @@
+{
+    "name": "io.github.multimodalrouting.routingapp",
+    "displayName": "Multimodla Routing",
+    "version": "1.0.0",
+    "description": "A flexible, configurable routing app for wheel-chair-users und bike carrier services",
+    "scripts": {
+        "build-assets": " cordova-res --icon-source assets-src/MultimodalRoutingLogo-cordova-ios-icon.png --splash-source assets-src/splash/window_and_clock_splash.png",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "license": "GPL-3.0",
+    "dependencies": {
+        "cordova-android": "^8.1.0",
+        "cordova-ios": "^4.5.5",
+        "cordova-plugin-badge": "^0.8.8",
+        "cordova-plugin-device": "^2.0.3",
+        "cordova-plugin-keyboard": "^1.2.0",
+        "cordova-plugin-local-notification": "git+https://github.com/Steffaan/cordova-plugin-local-notifications.git",
+        "cordova-plugin-splashscreen": "^5.0.3",
+        "cordova-plugin-statusbar": "^2.4.3",
+        "cordova-plugin-whitelist": "^1.3.4",
+        "cordova-plugin-wkwebview-engine": "^1.2.1",
+        "cordova-plugin-wkwebview-file-xhr": "^2.1.1"
+    },
+    "cordova": {
+        "plugins": {
+            "cordova-plugin-statusbar": {},
+            "cordova-plugin-keyboard": {},
+            "cordova-plugin-splashscreen": {},
+            "cordova-plugin-wkwebview-file-xhr": {},
+            "cordova-plugin-whitelist": {},
+            "cordova-plugin-local-notification": {
+                "ANDROID_SUPPORT_V4_VERSION": "26.+"
+            }
+        },
+        "platforms": [
+            "ios",
+            "android"
+        ]
+    }
+}

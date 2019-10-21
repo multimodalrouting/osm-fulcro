@@ -30,6 +30,7 @@
         (fn [tx] (parser {:ring/request request} tx)))
       (handler request))))
 
+
 ;; ================================================================================
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
@@ -60,6 +61,9 @@
       [:script {:src "d3/dist/d3.min.js"}]
       [:script {:src "js/main/main.js"}]]]))
 
+(defn -main [& args]
+  (prn (index "asdasdas"))
+  )
 ;; ================================================================================
 ;; Workspaces can be accessed via shadow's http server on http://localhost:8023/workspaces.html
 ;; but that will not allow full-stack fulcro cards to talk to your server. This
