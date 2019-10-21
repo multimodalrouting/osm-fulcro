@@ -25,8 +25,13 @@ RUN set -ex; \
     rm -rf "linux-install-$CLOJURE_VERSION.sh"
 
 
+RUN git clone -b cordova https://github.com/bastiion/osm-fulcro /osm-fulcro
+
 WORKDIR /osm-fulcro
 
-VOLUME /osm-fulcro/app/cordova/platforms/android/app/build/outputs/
+RUN npm install &&\
+        npm run cordova/android-all
 
-CMD git clone -b cordova https://github.com/bastiion/osm-fulcro app && cd app ;  npm install && npm run cordova/android-all
+VOLUME /osm-fulcro/cordova/platforms/android/app/build/outputs/
+
+CMD git pull && npm install && npm run cordova/android-all
