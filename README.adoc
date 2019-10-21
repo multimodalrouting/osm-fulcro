@@ -132,6 +132,44 @@ application and workspaces.  You must install the plugin in Chrome from the
 Chrome store (free) to access it.  It will add a Fulcro Inspect tab to the
 developer tools pane.
 
+=== Cordova
+
+The cordova android target can be used to build android, electorn or ios apps
+from the prebuild sources.
+
+Currently only the android target is integrated into this
+build.
+
+The following run command, will build a dev APK for android:
+
+
+```bash
+$> yarn run  cordova/android-all
+```
+
+This will invoke the following targets:
+
+
+1. cordova/build-main-dev -> transpile clojurescript code with shadow-cljs
+2. cordova/build-assets -> resize icon and splashscreen to a wide range of devices
+3. cordova/prepare-dev -> copy necessary css and static resources via WebPack to cordova directory
+4. cordova/prepare-android -> add android platform to cordova (to be save)
+5. cordova/build-android -> start the cordova build process
+
+To test the app, connect a device or start an emulator using the AVD-manager
+and hit
+
+```bash
+$> yarn run  cordova/install-android
+```
+
+You should now have a running app on your phone or emulator
+
+For web-debugging you can use a chromium or chrome-browser and
+surf to chrome://inspect#devices.
+
+Once the app appears you can click on `inspect` to get a developer console.
+
 == Tests
 
 Tests are in `src/test`. Any test namespace ending in `-test` will be auto-detected.

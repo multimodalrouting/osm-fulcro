@@ -30,10 +30,21 @@
         "client/clj": "shadow-cljs clj-repl",
         "client/server": "npx shadow-cljs server",
         "client/nodejs": "npx shadow-cljs node-repl",
+        "cordova/build-main-dev": "cross-env NODE_ENV=development npx shadow-cljs compile :cordova-app",
+        "cordova/prepare-dev": "cross-env NODE_ENV=development node ./cordova/webpack.js",
+        "cordova/prepare-android": "cd cordova ; cordova platform rm android && cordova platform add android;",
+        "cordova/build-android": "cd cordova ; cordova build android",
+        "cordova/install-android": "adb install -r cordova/platforms/android/app/build/outputs/apk/debug/app-debug.apk",
+        "cordova/build-assets": "cd cordova ; cordova-res --icon-source assets-src/MultimodalRoutingLogo-cordova-ios-icon.png --splash-source assets-src/splash/window_and_clock_splash.png",
+        "cordova/android-all": "npm-run-all cordova/build-main-dev cordova/build-assets cordova/prepare-dev cordova/prepare-android cordova/build-android",
         "server": "clojure -A:dev -J-Dtrace -J-Dghostwheel.enabled=true",
         "start": "npx run-p client/server server"
     },
     "devDependencies": {
+        "copy-webpack-plugin": "^5.0.4",
+        "cordova": "^9.0.0",
+        "cordova-res": "~0.8.0",
+        "cross-env": "^6.0.3",
         "intl-messageformat": "^2.2.0",
         "karma": "^4.4.0",
         "karma-chrome-launcher": "^2.2.0",
@@ -42,7 +53,9 @@
         "react": "^16.10.2",
         "react-dom": "^16.10.2",
         "shadow-cljs": "^2.8.64",
-        "showdown": "^1.8.7"
+        "showdown": "^1.8.7",
+        "webpack": "^4.41.2",
+        "webpack-cli": "^3.3.9"
     },
     "author": "",
     "license": "MIT"

@@ -12,6 +12,23 @@
 
                        :devtools   {:after-load app.client/refresh
                                     :preloads   [com.fulcrologic.fulcro.inspect.preload app.development-preload]}}
+          :cordova-app {
+                        :target     :browser
+                        :output-dir "cordova/www/js/main"
+                        :asset-path "/js/main"
+                        :modules    {:main {:init-fn app.client/init
+                                            :entries [app.client]}}
+                        :dev        {:compiler-options
+                                     {:external-config {:ghostwheel {}}}}
+
+                        :devtools   {
+
+                                     :http-port    8280
+                                     :http-root "cordova/www"
+                                     :after-load app.cordova.client/refresh
+                                     :preloads   [com.fulcrologic.fulcro.inspect.preload app.development-preload]
+                                     :use-document-host false}
+                        }
 
           :test       {:target           :browser-test
                        :test-dir         "resources/public/js/test"
