@@ -9,6 +9,10 @@
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
     [taoensso.timbre :as log]))
 
+(defn load-map! []
+  (.loadMap js/navigator.graphhopper "sachsen-latest" (fn [success] (prn success)))
+  )
+
 (defn load-all! []
 
   ;; TODO don't load :leaflet/datasets but use ::gf/source from pathom-remote instead
@@ -63,4 +67,6 @@
   (app/set-root! SPA root/Root {:initialize-state? true})
   ;(dr/initialize! SPA)
   (app/mount! SPA root/Root "app" {:initialize-state? false})
-  (load-all!))
+  (load-all!)
+  (load-map!)
+  )

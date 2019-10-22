@@ -19,6 +19,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <plugin name="cordova-graphhopper-plugin" spec="^0.1.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.3" />
     <plugin name="cordova-plugin-keyboard" spec="^1.2.0" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.3" />
