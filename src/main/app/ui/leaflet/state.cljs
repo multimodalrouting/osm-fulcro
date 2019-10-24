@@ -30,14 +30,14 @@
 (defmutation current-point-select [props]
   (action [{:keys [app state]}]
           (let [points (:selected/points @state)]
-            (if (> 2 (count points))
+            (if (> 1 (count points))
               nil
               (let [request {:remote :graphhopper-web
                              :params {
-                                      :start (:selected/latlng (second (reverse points)))
-                                      :end   (:selected/latlng (last points))
+                                      :start (:selected/latlng (last points))
+                                      :end    props
                                       }
-                             :target [:graphhopper/route]
+                             :target [:leaflet/datasets :routing :data]
                              }]
                 (load! app :graphhopper/route nil request))
               )

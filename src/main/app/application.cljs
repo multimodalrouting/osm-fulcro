@@ -91,27 +91,25 @@
                                                                                    startPoint (latlng->point (:start query))
                                                                                    endPoint (latlng->point (:end query))
                                                                                    ]
-                                                                               (js/console.log query)
                                                                                (assoc req :headers {"Content-Type" "text/plain"}
                                                                                           :method :get
-                                                                                          :url (str "http://localhost:8989/route" (queryh/get-query-params-str {
-                                                                                                                                                                :point          [startPoint
-                                                                                                                                                                                 endPoint]
-                                                                                                                                                                ; :point "51.02932979285427,13.729509787911619"
-                                                                                                                                                                ; :point "51.02328458336499,13.805051393513118"
-                                                                                                                                                                :vehicle        "car"
-                                                                                                                                                                :locale         "en"
-                                                                                                                                                                :calc_points    "true"
-                                                                                                                                                                :points_encoded "false"
-                                                                                                                                                                :instructions   "false"
-                                                                                                                                                                :key            "api_key"
+                                                                                          :url (str "http://localhost:8989/route"
+                                                                                                    (queryh/get-query-params-str
+                                                                                                      {
+                                                                                                       :point          [startPoint
+                                                                                                                        endPoint]
+                                                                                                       :vehicle        "car"
+                                                                                                       :locale         "en"
+                                                                                                       :calc_points    "true"
+                                                                                                       :points_encoded "false"
+                                                                                                       :instructions   "false"
+                                                                                                       :key            "api_key"
 
-                                                                                                                                                                })))))
+                                                                                                       })))))
                                               :response-middleware (fn [resp] (let [data (some-> (:body resp)
                                                                                                  js/JSON.parse
                                                                                                  (js->clj :keywordize-keys true))
                                                                                     resp1 (assoc resp :body {:graphhopper/route data})]
-                                                                                (prn resp1)
                                                                                 resp1
                                                                                 ))})
 

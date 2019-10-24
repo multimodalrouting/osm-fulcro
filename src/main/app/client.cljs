@@ -10,7 +10,18 @@
     [taoensso.timbre :as log]))
 
 (defn load-map! []
-  (.loadMap js/navigator.graphhopper "sachsen-latest" (fn [success] (prn success)))
+  (if (nil? js/navigator.graphhopper)
+    nil
+    (.loadMap js/navigator.graphhopper "sachsen-latest" (fn [success] (prn success))))
+  )
+
+(defn load-overpass! []
+  (transact! SPA [(mutate-datasets {:data {
+                                           :overpass-example {:source {:remote :overpass :type :geojson
+                                                                       :query ["area[name=\"Dresden\"]->.city;"
+                                                                               "nwr(area.city)[operator=\"DVB\"]->.connections;"
+                                                                               "node.connections[public_transport=stop_position];"]}}
+                                           }}  )])
   )
 
 (defn load-all! []
@@ -67,6 +78,6 @@
   (app/set-root! SPA root/Root {:initialize-state? true})
   ;(dr/initialize! SPA)
   (app/mount! SPA root/Root "app" {:initialize-state? false})
-  (load-all!)
-  (load-map!)
+  #_(load-all!)
+  #_(load-map!)
   )

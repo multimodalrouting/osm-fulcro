@@ -1,10 +1,11 @@
 (ns app.helper.query
   (:require [clojure.string :as string]))
 
-(defn get-query-params-str [query-params-map & [query-param-str]]
+(defn get-query-params-str
   "Converts a hash-map to a query param string containing the keys and values
    in the hash-map
    Note: this function assumes the values have already been url-encoded"
+  [query-params-map & [query-param-str]]
   (let [query-param-str (str query-param-str)
         query-param-str-blank? (string/blank? query-param-str)
         key (first (keys query-params-map))
