@@ -27,3 +27,20 @@
                            (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
                            data)))
 
+(defmutation current-point-select [props]
+  (action [{:keys [app state]}]
+          (let [points (:selected/points @state)]
+            (if (> 2 (count points))
+              nil
+              (let [request {:remote :graphhopper-web
+                             :params {
+                                      :start (:selected/latlng (second (reverse points)))
+                                      :end   (:selected/latlng (last points))
+                                      }
+                             :target [:graphhopper/route]
+                             }]
+                (load! app :graphhopper/route nil request))
+              )
+            (swap! state into {:selected/points (vec (conj (:selected/points @state) {:selected/latlng props}))})
+
+            )))
