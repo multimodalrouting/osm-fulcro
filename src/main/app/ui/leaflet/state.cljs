@@ -27,19 +27,29 @@
                            (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
                            data)))
 
+(def graphhopper-remote #_:graphhopper :graphhopper-web)
+
+(defn load-route
+  [fromPoint toPoint app]
+  (let [request {:remote graphhopper-remote
+                 :params {
+                          :start fromPoint
+                          :end   toPoint
+                          }
+                 :target [:leaflet/datasets :routing :data]
+                 }]
+    (prn "Will request")
+    (prn request)
+    (load! app :graphhopper/route nil request))
+
+  )
+
 (defmutation current-point-select [props]
   (action [{:keys [app state]}]
           (let [points (:selected/points @state)]
             (if (> 1 (count points))
               nil
-              (let [request {:remote :graphhopper-web
-                             :params {
-                                      :start (:selected/latlng (last points))
-                                      :end    props
-                                      }
-                             :target [:leaflet/datasets :routing :data]
-                             }]
-                (load! app :graphhopper/route nil request))
+              (load-route (:selected/latlng (last points)) props app)
               )
             (swap! state into {:selected/points (vec (conj (:selected/points @state) {:selected/latlng props}))})
 

@@ -50,14 +50,16 @@
    :transmit!       (fn transmit! [remote {::tx/keys [result-handler update-handler ast] :as send-node}]
                       (let [query (get-in ast [:children 0 :params :query])
                             edn (eql/ast->query ast)]
-                        (.calcRoutes js/navigator.graphhopper
+                        (prn "Will query ")
+                        (prn query)
+                        (.route js/navigator.graphhopper
                                      (clj->js query)
                                      (fn [result]
-                                       (result-handler {:body        {:_ (js->clj result :keywordize-keys true)}
+                                       (result-handler {:body        {:graphhopper/route (js->clj result :keywordize-keys true)}
                                                         :transaction edn
                                                         :status-code 200}))
                                      (fn [error]
-                                       (result-handler {:body        {:_ error}
+                                       (result-handler {:body        {:graphhopper/route error}
                                                         :transaction edn
                                                         :status-code 500}))
                                      )))})
@@ -68,6 +70,10 @@
   [point]
   (str (:lat point) "," (:lng point))
   )
+
+;(defn graphhopper-service-url [poststr] (str "http://localhost:8989" poststr))
+(defn graphhopper-service-url [poststr] (str "http://10.0.2.2:8989" poststr))
+;(defn graphhopper-service-url [poststr] (str "http://172.22.99.134:8989" poststr))
 
 (defonce SPA (app/fulcro-app
                {:remotes {:pathom          (net/fulcro-http-remote {:url                "/api"
@@ -85,7 +91,7 @@
                           :mvt             (mvt-remote)
 
                           :graphhopper-web (net/fulcro-http-remote
-                                             {:url                 "http://localhost:8989/route"
+                                             {:url                 (graphhopper-service-url "/route")
 
                                               :request-middleware  (fn [req] (let [query (->> req :body first (apply hash-map) :graphhopper/route)
                                                                                    startPoint (latlng->point (:start query))
@@ -93,19 +99,20 @@
                                                                                    ]
                                                                                (assoc req :headers {"Content-Type" "text/plain"}
                                                                                           :method :get
-                                                                                          :url (str "http://localhost:8989/route"
-                                                                                                    (queryh/get-query-params-str
-                                                                                                      {
-                                                                                                       :point          [startPoint
-                                                                                                                        endPoint]
-                                                                                                       :vehicle        "car"
-                                                                                                       :locale         "en"
-                                                                                                       :calc_points    "true"
-                                                                                                       :points_encoded "false"
-                                                                                                       :instructions   "false"
-                                                                                                       :key            "api_key"
+                                                                                          :url (graphhopper-service-url
+                                                                                                 (str "/route"
+                                                                                                     (queryh/get-query-params-str
+                                                                                                       {
+                                                                                                        :point          [startPoint
+                                                                                                                         endPoint]
+                                                                                                        :vehicle        "car"
+                                                                                                        :locale         "en"
+                                                                                                        :calc_points    "true"
+                                                                                                        :points_encoded "false"
+                                                                                                        :instructions   "false"
+                                                                                                        :key            "api_key"
 
-                                                                                                       })))))
+                                                                                                        }))))))
                                               :response-middleware (fn [resp] (let [data (some-> (:body resp)
                                                                                                  js/JSON.parse
                                                                                                  (js->clj :keywordize-keys true))
