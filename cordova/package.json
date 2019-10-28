@@ -12,8 +12,10 @@
     "cordova-android": "^8.1.0",
     "cordova-graphhopper-plugin": "git://github.com/multimodalrouting/cordova-graphhopper-plugin.git#master",
     "cordova-ios": "^4.5.5",
+    "cordova-plugin-android-sensor-listeners": "git+https://github.com/QuentinRoy/cordova-plugin-android-sensor-listeners.git",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-geospark": "^1.0.0",
     "cordova-plugin-keyboard": "^1.2.0",
     "cordova-plugin-splashscreen": "^5.0.3",
     "cordova-plugin-statusbar": "^2.4.3",
@@ -28,7 +30,9 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-wkwebview-file-xhr": {},
       "cordova-plugin-whitelist": {},
-      "cordova-graphhopper-plugin": {}
+      "cordova-graphhopper-plugin": {},
+      "cordova-plugin-android-sensor-listeners": {},
+      "cordova-plugin-geospark": {}
     },
     "platforms": [
       "ios",

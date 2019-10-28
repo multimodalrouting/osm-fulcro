@@ -2,7 +2,7 @@
   (:require
     [app.application :refer [SPA]]
     [app.ui.root :as root]
-    [app.ui.leaflet.state :refer [mutate-datasets mutate-layers]]
+    [app.ui.leaflet.state :refer [mutate-datasets mutate-layers new-sensor-data]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.application :as app]
@@ -65,11 +65,43 @@
                                                   :overlays [{:class :d3SvgLines
                                                               :dataset :routes}]}}})]))
 
+(defn initSensors
+  [sensorTypes]
+  (do
+    (prn "init Sensors")
+    (prn (str (type js/sensors.addSensorListener)))
+    (if (some? js/sensors)
+      (do
+        (prn "yes")
+        #_(map js/sensors.enableSensor sensors)
+        (doseq [sensorT (seq sensorTypes)]
+          (do
+            (prn (str "Will enable sensor: " sensorT))
+            (js/sensors.addSensorListener
+              sensorT
+              "NORMAL"
+              (fn [event]
+                #_(prn values)
+                (transact! SPA [(new-sensor-data {:values (js->clj event.values) :sensor_type sensorT})])
+                )
+              (fn [error]
+                (prn "sensor error")
+                (prn error)
+                )))))
+      (prn "no")
+      ))
+  )
+
+
 (defn ^:export refresh []
   (js/console.clear)
   (log/info "Hot code Remount")
   (cssi/upsert-css "componentcss" {:component root/Root})
-  (app/mount! SPA root/Root "app"))
+  (app/mount! SPA root/Root "app")
+  #_(initSensors
+    ["ACCELERATION"]
+    )
+  )
 
 (defn ^:export init []
   (log/info "Application starting.")
@@ -78,6 +110,10 @@
   (app/set-root! SPA root/Root {:initialize-state? true})
   ;(dr/initialize! SPA)
   (app/mount! SPA root/Root "app" {:initialize-state? false})
+  (js/setTimeout
+    #(initSensors
+       ["ACCELEROMETER" "PROXIMITY"]
+       ), 1000)
   #_(load-all!)
   #_(load-map!)
   )
