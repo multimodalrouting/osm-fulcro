@@ -41,9 +41,9 @@
                                :devtools   {
                                             :http-port         8284
                                             :http-root        "cordova/platforms/android/app/src/main/assets/www/"
-                                            :preloads          [com.fulcrologic.fulcro.inspect.preload app.development-preload]
+                                            :preloads          [app.cordova-preload app.development-preload]
                                             :use-document-host false
-                                            :devtools-url  "http://172.22.99.134:9630"
+                                            :devtools-url  "http://10.0.2.2:9630"
                                             }}
                                }
 

@@ -56,7 +56,8 @@
         "shadow-cljs": "^2.8.64",
         "showdown": "^1.8.7",
         "webpack": "^4.41.2",
-        "webpack-cli": "^3.3.9"
+        "webpack-cli": "^3.3.9",
+        "socket.io": "1.7.4"
     },
     "author": "",
     "license": "MIT"
