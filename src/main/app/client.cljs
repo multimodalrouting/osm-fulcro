@@ -7,6 +7,7 @@
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
+    [app.background-geolocation :refer [bg-prepare!] ]
     [taoensso.timbre :as log]))
 
 (defn load-map! []
@@ -110,10 +111,10 @@
   (app/set-root! SPA root/Root {:initialize-state? true})
   ;(dr/initialize! SPA)
   (app/mount! SPA root/Root "app" {:initialize-state? false})
-  (js/setTimeout
+  #_(js/setTimeout
     #(initSensors
        ["ACCELEROMETER" "PROXIMITY"]
        ), 1000)
+  (bg-prepare!)
   #_(load-all!)
-  #_(load-map!)
-  )
+  #_(load-map!))

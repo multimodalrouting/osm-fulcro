@@ -57,6 +57,7 @@
            :leaflet/layers
            :selected/points
            :graphhopper/route
+           :sensors/LOCATION
            ]}
   #_(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 

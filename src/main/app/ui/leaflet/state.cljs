@@ -71,3 +71,17 @@
                       )]
                 (swap! state into {keywd (conj rbuf values)}))
                 ))))
+
+(defmutation new-location-data [{:keys [values sensor_type]}]
+  (action [{:keys [state]}]
+          (let [values (vec values)
+                keywd (keyword "sensors" sensor_type)
+                ]
+            (do
+              (let [rbuf
+                    (if (nil? (keywd @state))
+                      (vec [])
+                      (keywd @state)
+                      )]
+                (swap! state into {keywd (conj rbuf values)}))
+              ))))
