@@ -8,7 +8,8 @@
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
     ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay]]
-    [com.fulcrologic.fulcro.dom :as dom]))
+    [com.fulcrologic.fulcro.dom :as dom]
+    [app.model.geofeatures :as gf]))
 
 (def leafletMap (react-factory Map))
 (def layersControl (react-factory LayersControl))
@@ -25,9 +26,8 @@
 
 (defsc Leaflet
   [this props]
-  {:query [:leaflet/datasets
-           :leaflet/layers]}
-  (routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+  {:query [::gf/id :leaflet/layers]}
+  #_(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
@@ -39,7 +39,7 @@
       (for [[layer-name layer] (:leaflet/layers props)]
            (layersControlOverlay {:key layer-name :name layer-name :checked (boolean (:prechecked layer))}
              (for [overlay (:overlays layer)
-                   :let [dataset-features (get-in props [:leaflet/datasets (:dataset overlay) :data :geojson :features])
+                   :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])
                          filtered-features (filter (overlay-filter-rule->filter (:filter overlay)) dataset-features)
                          component (overlay-class->component (:class overlay))]]
                   (if (and component filtered-features)
@@ -54,6 +54,6 @@
   (dom/div {:style {:width "100%" :height "100%"}}
     (if (get-in props [:leaflet/sidebar :visible])
         (fulcroSidebar props))
-    (leaflet (select-keys props [:leaflet/datasets :leaflet/layers]))))
+    (leaflet (select-keys props [::gf/id :leaflet/layers]))))
 
 (def leafletWithSidebar (factory LeafletWithSidebar))

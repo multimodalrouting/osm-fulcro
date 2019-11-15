@@ -4,21 +4,23 @@
     [app.ui.root :as root]
     [app.ui.leaflet.state :refer [mutate-datasets mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
+    [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.application :as app]
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
     [taoensso.timbre :as log]))
 
 (defn load-all! []
+
+  ;; TODO don't load :leaflet/datasets but use ::gf/source from pathom-remote instead
   (transact! SPA [(mutate-datasets {:data {:vvo {:source {:comment "VVO stops+lines"
-                                                          :remote :pathom :type :geojson
-                                                          :query :geojson.vvo/geojson}}
+                                                          :remote :pathom :type :geojson}}
                                            :overpass-example {:source {:remote :overpass :type :geojson
-                                                                       :query ["area[name=\"Dresden\"]->.city;"
-                                                                               "nwr(area.city)[operator=\"DVB\"]->.connections;"
-                                                                               "node.connections[public_transport=stop_position];"]}}
+                                                                       :args ["area[name=\"Dresden\"]->.city;"
+                                                                              "nwr(area.city)[operator=\"DVB\"]->.connections;"
+                                                                              "node.connections[public_transport=stop_position];"]}}
                                            :mvt-loschwitz {:source {:remote :mvt :type :geojson
-                                                                    :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
-                                                                            :layer "roads"} }}}})])
+                                                                    :args {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
+                                                                           :layer "roads"} }}}})])
 
   (transact! SPA [(mutate-layers {:data {:hexbin-example {:overlays [{:class :hexbin
                                                                       :dataset :vvo

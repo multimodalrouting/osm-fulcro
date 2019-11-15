@@ -1,4 +1,4 @@
-{:legal-origins              #{"localhost" "dev.lvh.me"}
+{;:legal-origins              [#"localhost"]
 
  :org.httpkit.server/config {:port 3000}
 

@@ -9,6 +9,7 @@
     [ring.middleware.defaults :refer [wrap-defaults]]
     [ring.middleware.gzip :refer [wrap-gzip]]
     [ring.middleware.file :refer [wrap-file]]
+    [ring.middleware.cors :refer [wrap-cors]]
     [ring.middleware.webjars :refer [wrap-webjars]]
     [ring.util.response :refer [response file-response resource-response]]
     [ring.util.response :as resp]
@@ -35,12 +36,13 @@
 ;; Dynamically generated HTML. We do this so we can safely embed the CSRF token
 ;; in a js var for use by the client.
 ;; ================================================================================
-(defn index [csrf-token]
-  (log/debug "Serving index.html")
+(defn index [csrf-token &[{:keys [main title]
+                           :or {main "js/main/main.js"
+                                tile "Application"}}]]
   (html5
     [:html {:lang "en"}
      [:head {:lang "en"}
-      [:title "Application"]
+      [:title title]
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
       [:link {:rel "stylesheet" :href "webjars/Semantic-UI/semantic.min.css"}]
@@ -59,43 +61,22 @@
      [:body
       [:div#app {:style "width: 100%; height: 100%"}]
       [:script {:src "d3/dist/d3.min.js"}]
-      [:script {:src "js/main/main.js"}]]]))
+      [:script {:src main}]]]))
 
-(defn -main [& args]
-  (prn (index "asdasdas"))
-  )
-;; ================================================================================
-;; Workspaces can be accessed via shadow's http server on http://localhost:8023/workspaces.html
-;; but that will not allow full-stack fulcro cards to talk to your server. This
-;; page embeds the CSRF token, and is at `/wslive.html` on your server (i.e. port 3000).
-;; ================================================================================
-(defn wslive [csrf-token]
-  (log/debug "Serving wslive.html")
-  (html5
-    [:html {:lang "en"}
-     [:head {:lang "en"}
-      [:title "devcards"]
-      [:meta {:charset "utf-8"}]
-      [:meta {:name "viewport" :content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"}]
-      [:link {:rel "stylesheet" :href "webjars/Semantic-UI/semantic.min.css"}]
-      [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
-      [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
-     [:body
-      [:div#app]
-      [:script {:src "d3/dist/d3.min.js"}]
-      [:script {:src "workspaces/js/main.js"}]]]))
+(defn -main [token & args]
+  (prn (index token)))
 
 (defn wrap-html-routes [ring-handler]
   (fn [{:keys [uri anti-forgery-token] :as req}]
     (cond
       (#{"/" "/index.html"} uri)
       (-> (resp/response (index anti-forgery-token))
-        (resp/content-type "text/html"))
+          (resp/content-type "text/html"))
 
-      ;; See note above on the `wslive` function.
+      ;; Workspaces can be accessed via shadow's http server on http://localhost:8023/workspaces.html
       (#{"/wslive.html"} uri)
-      (-> (resp/response (wslive anti-forgery-token))
-        (resp/content-type "text/html"))
+      (-> (resp/response (index anti-forgery-token {:main "workspaces/js/main.js" :title "devcards"}))
+          (resp/content-type "text/html"))
 
       :else
       (ring-handler req))))
@@ -103,7 +84,7 @@
 (defstate middleware
   :start
   (let [defaults-config (:ring.middleware/defaults-config config)
-        legal-origins   (get config :legal-origins #{"localhost"})]
+        legal-origins (get config :legal-origins [#"localhost" #"http://localhost:8022"])]
     (-> not-found-handler
       (wrap-api "/api")
       (wrap-webjars "/webjars")
@@ -116,4 +97,6 @@
       ;; code initialized).
       ;; E.g. (wrap-defaults (assoc-in defaults-config [:session :store] (my-store)))
       (wrap-defaults defaults-config)
+      (wrap-cors :access-control-allow-origin legal-origins 
+                 :access-control-allow-methods [:get :post])
       wrap-gzip)))

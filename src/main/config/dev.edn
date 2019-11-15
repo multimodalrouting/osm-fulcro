@@ -1,1 +1,6 @@
-{:taoensso.timbre/logging-config {:level :debug}}
+{:taoensso.timbre/logging-config {:level :debug}
+
+ ;:legal-origins                  [#"localhost"]
+
+ :ring.middleware/defaults-config {:security {:anti-forgery false}}}  ;; for ci-tests
+

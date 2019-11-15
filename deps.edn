@@ -15,14 +15,16 @@
            http-kit                            {:mvn/version "2.3.0"}
            mount                               {:mvn/version "0.1.12"}
            org.clojure/core.async              {:mvn/version "0.4.500"}
+           funcool/promesa                     {:mvn/version "4.0.2"}
 
            ring/ring-core                      {:mvn/version "1.7.1"}
            ring/ring-defaults                  {:mvn/version "0.3.2"}
+           ring-cors                           {:mvn/version "0.1.13"}
            ring-webjars                        {:mvn/version "0.2.0"}
            
            metosin/jsonista                    {:mvn/version "0.2.4"}
-           aysylu/loom                         {:mvn/version "1.0.2"}
-           
+           johannesloetzsch/loom               {:mvn/version "1.0.3-SNAPSHOT"}
+
            org.webjars/Semantic-UI             {:mvn/version "2.4.1"}}
 
  :aliases {:clj-tests {:extra-paths ["src/test"]
@@ -37,5 +39,6 @@
                                      expound                     {:mvn/version "0.7.2"}
                                      fulcrologic/fulcro-spec     {:mvn/version "3.1.4"}
                                      binaryage/devtools          {:mvn/version "0.9.10"}
-                                     com.github.awkay/workspaces {:mvn/version "1.0.0-RC1"},
+                                     com.github.awkay/workspaces {:mvn/version "1.0.0-RC2"}
+                                     ;nubank/workspaces           {:mvn/version "1.0.13"}
                                      org.clojure/tools.namespace {:mvn/version "0.3.1"}}}}}

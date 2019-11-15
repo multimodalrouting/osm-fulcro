@@ -32,7 +32,7 @@
 
           :test       {:target           :browser-test
                        :test-dir         "resources/public/js/test"
-                       :ns-regexp        "-test$"
+                       :ns-regexp        "-(test|ws)$"
                        ;; required for mocking to work
                        :compiler-options {:static-fns      false
                                           :external-config {:ghostwheel {}}}
@@ -44,7 +44,7 @@
                        :js-options       {:js-provider :shadow}
                        :compiler-options {:static-fns false} ; required for mocking to work
                        :output-to        "target/ci.js"
-                       :ns-regexp        "-test$"}
+                       :ns-regexp        "-(test|ws)$"}
 
           :workspaces {:target     nubank.workspaces.shadow-cljs.target
                        :ns-regexp  "-(test|ws)$"

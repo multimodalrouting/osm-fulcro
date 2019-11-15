@@ -7,22 +7,46 @@
     [com.wsscode.common.async-clj :refer [let-chan]]
     [clojure.core.async :as async]
     [app.server-components.config :refer [config]]
-    [jsonista.core :as json]))
+    [jsonista.core :as json]
+    [app.model.geofeatures :as gf]))
 
-(pc/defresolver geojson-vvo [_ _]
-  {::pc/output [:geojson.vvo/geojson]}
-  {:geojson.vvo/geojson (json/read-value (slurp "resources/test/vvo.geojson")
-                                         (json/object-mapper {:decode-key-fn true}))})
+(def geofeatures {:vvo {::gf/source {:comment "VVO stops+lines"
+                                     :remote :pathom :type :geojson}}
+                  :overpass-example {::gf/source {:remote :overpass :type :geojson
+                                                  :query ["area[name=\"Dresden\"]->.city;"
+                                                          "nwr(area.city)[operator=\"DVB\"]->.connections;"
+                                                          "node.connections[public_transport=stop_position];"]}}
+                  :mvt-loschwitz {::gf/source {:remote :mvt :type :geojson
+                                               :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
+                                                       :layer "roads"}}}})
+
+(pc/defresolver gf-all [_ _]
+  {::pc/output [::gf/all ::gf/id]}
+  {::gf/all (into [] (map #(hash-map ::gf/id (key %))
+                          geofeatures))})
+
+(pc/defresolver gf-source [_ {::gf/keys [id]}]
+  {::pc/input #{::gf/id}
+   ::pc/output [::gf/source]}
+  (-> (get geofeatures id)
+      (select-keys [::gf/source])))
+
+(pc/defresolver gf-geojson-vvo [_ {::gf/keys [id]}]
+  {::pc/input #{::gf/id}
+   ::pc/output [::gf/geojson]}
+  (if (= id :vvo)
+      {::gf/geojson (json/read-value (slurp "resources/test/vvo.geojson")
+                                     (json/object-mapper {:decode-key-fn true}))}))
 
 (pc/defresolver index-explorer [env _]
-  {::pc/input  #{:com.wsscode.pathom.viz.index-explorer/id}
+  {::pc/input #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
   {:com.wsscode.pathom.viz.index-explorer/index
    (-> (get env ::pc/indexes)
-     (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
-     (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
+       (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
+       (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer geojson-vvo])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
@@ -46,8 +70,8 @@
 (defn build-parser [db-connection]
   (let [real-parser (p/parallel-parser
                       {::p/mutate  pc/mutate-async
-                       ::p/env     {::p/reader               [p/map-reader pc/parallel-reader
-                                                              pc/open-ident-reader p/env-placeholder-reader]
+                       ::p/env     {::p/reader [p/map-reader pc/parallel-reader
+                                                pc/open-ident-reader p/env-placeholder-reader]
                                     ::p/placeholder-prefixes #{">"}}
                        ::p/plugins [(pc/connect-plugin {::pc/register (all-resolvers)})
                                     (p/env-wrap-plugin (fn [env]

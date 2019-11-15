@@ -11,7 +11,8 @@
     [com.fulcrologic.semantic-ui.collections.table.ui-table-body :refer [ui-table-body]]
     [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
     [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
-    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]))
+    [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
+    [app.model.geofeatures :as gf]))
 
 (defmutation mutate-sidebar [params]
   (action [{:keys [state]}]
@@ -23,8 +24,9 @@
 
 (defsc FulcroSidebar [this {:as props}]
   {:query [:leaflet/sidebar
-           :leaflet/datasets
-           :leaflet/layers]}
+           ;:leaflet/datasets
+           :leaflet/layers
+           ::gf/id ::gf/source]}
   (let [selected (get-in props [:leaflet/sidebar :tab] "help")
         onOpen #(transact! this [(mutate-sidebar {:tab %})])
         onClose #(transact! this [(mutate-sidebar {:visible false})])]
@@ -34,27 +36,27 @@
          (tab {:id "help" :header "About" :icon (dom/i {:classes ["fa" "fa-question"]})}
               (dom/p {} "…"))
          (tab {:id "datasets" :header "Datasets" :icon (dom/i {:classes ["fa" "fa-database"]})}
-              (let [datasets (:leaflet/datasets props)]
+              (let [datasets (::gf/id props)]
                    (ui-table {}
                      (ui-table-header {}
                        (ui-table-row {}
                          (ui-table-header-cell {} "name")
                          (ui-table-header-cell {} "remote")
-                         (ui-table-header-cell {} "query")
+                         (ui-table-header-cell {} "args")
                          (ui-table-header-cell {} "entries")
                          (ui-table-header-cell {} "type")
                          (ui-table-header-cell {} "comment")))
                      (ui-table-body {}
                        (for [dataset datasets
-                             :let [source (:source (val dataset))]]
+                             :let [source (::gf/source (val dataset))]]
                             (ui-table-row {:key (key dataset)}
                               (ui-table-cell {:key (str (key dataset) :n)} (str (key dataset)))
                               (ui-table-cell {:key (str (key dataset) :r)} (str (:remote source)))
-                              (ui-table-cell {:key (str (key dataset) :q)} (if (vector? (:query source))
+                              (ui-table-cell {:key (str (key dataset) :q)} (if (vector? (:args source))
                                                                               (map-indexed (fn [i line] [(str line) (dom/br {:key i})])
-                                                                                           (:query source))
-                                                                              (str (:query source))))
-                              (ui-table-cell {:key (str (key dataset) :e)} (->> (get-in (val dataset) [:data :geojson :features])
+                                                                                           (:args source))
+                                                                              (str (:args source))))
+                              (ui-table-cell {:key (str (key dataset) :e)} (->> (get-in (val dataset) [::gf/geojson :features])
                                                                                 (group-by #(get-in % [:geometry :type]))
                                                                                 (map (fn [[k vs]] {:count (count vs) :type k}))
                                                                                 (sort-by :count >)
