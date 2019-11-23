@@ -3,7 +3,7 @@
     [com.fulcrologic.fulcro.mutations :refer [defmutation]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
-    [app.model.geofeatures :as gf :refer [GeoFeatures]]))
+    [app.model.geofeatures :as gf :refer [GeoFeatures]]
     [app.utils.ring-buffer :as rb]
     ))
 
