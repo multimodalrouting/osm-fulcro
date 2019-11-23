@@ -104,6 +104,24 @@
         <splash height="1242" src="resources/ios/splash/Default-Landscape-2688h~iphone.png" width="2688" />
         <splash height="1792" src="resources/ios/splash/Default-1792h~iphone.png" width="828" />
         <splash height="828" src="resources/ios/splash/Default-Landscape-1792h~iphone.png" width="1792" />
+        <!-- background-geolocation -->
+        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine
+            </string>
+        </config-file>
+        <config-file parent="NSLocationAlwaysUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine </string>
+        </config-file>
+        <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine </string>
+        </config-file>
+        <config-file parent="NSMotionUsageDescription" target="*-Info.plist">
+            <string>Device motion updates help determine when the device is stationary so the app can save power by turning off location-updates</string>
+        </config-file>
+        <!-- /background-geolocation -->
     </platform>
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
