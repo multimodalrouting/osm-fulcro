@@ -132,16 +132,119 @@ application and workspaces.  You must install the plugin in Chrome from the
 Chrome store (free) to access it.  It will add a Fulcro Inspect tab to the
 developer tools pane.
 
+
 === Cordova
 
-The cordova android target can be used to build android, electorn or ios apps
+The cordova android target can be used to build android, electron or ios apps
 from the prebuild sources.
 
-Currently only the android target is integrated into this
+Currently only the android and ios target is integrated into this
 build.
 
-The following run command, will build a dev APK for android:
+==== iOS steps ====
 
+Install the XCode IDE with your App Store
+
+Install homebrew following the guidelines at the website https://www.wdiaz.org/installing-applications-on-mac-like-linux-with-homebrew/
+
+```bash
+$>/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Install the Node Version Manager `nvm` using homebrew
+
+```bash
+$>brew install nvm
+```
+
+add nvm to your .bashrc or .zshrc
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
+[ -s "$NVM_HOMEBREW" ] && \. "$NVM_HOMEBREW"
+```
+
+install stable Node version
+
+```bash
+$>nvm install node
+$>nvm use node
+```
+
+More infos: https://www.wdiaz.org/how-to-install-nvm-with-homebrew/
+
+
+In case cordova complains, building ios-deploy tool chain, try
+to change the devtool-path using xcode-select and sudo.
+
+Select the right xcode-devtools using xcode-select:
+
+```bash
+$>sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+```
+
+Install Cordova:
+
+
+```bash
+$> npm install -g cordova
+```
+
+Installing clojure:
+
+```bash
+$> brew install clojure
+```
+
+For further information see https://gist.github.com/rakhmad/2407109
+
+Permission problems:
+If there are permission promblems concerning adoptopenjdk-13.jdk
+go to System Settings -> Security -> General -> Lock Symbol
+Click on the Lock symbol and enter your password if requested,
+then you are able to allow the adoptopenjdk-13 application to run.
+
+
+The following run command, will build an app for iOS:
+
+```bash
+$> yarn run  cordova/ios-all
+```
+
+This will invoke the following targets:
+
+
+1. cordova/build-main-dev -> transpile clojurescript code with shadow-cljs
+2. cordova/build-assets -> resize icon and splashscreen to a wide range of devices
+3. cordova/prepare-dev -> copy necessary css and static resources via WebPack to cordova directory
+4. cordova/prepare-ios -> add ios platform to cordova (to be save)
+5. cordova/build-ios -> start the cordova build process
+
+To test the app, connect a device or start an emulator using the AVD-manager
+and hit
+
+```bash
+$> yarn run  cordova/install-ios
+```
+
+You should now have a running app on your phone or emulator
+
+For further information about how to sign, publish or debug an iOS app
+consider the following manuals
+
+https://cordova.apache.org/docs/en/9.x/guide/platforms/ios/plugin.html
+
+Remote debug the Web-View fulcro app in Safari:
+
+https://appletoolbox.com/use-web-inspector-debug-mobile-safari/
+https://blog.idrsolutions.com/2015/02/remote-debugging-ios-safari-on-os-x-windows-and-linux/
+
+TODO: connect the fulcro inspect to the ios-client repl
+
+=== android steps ===
+
+The following run command, will build a dev APK for android:
 
 ```bash
 $> yarn run  cordova/android-all
