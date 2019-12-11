@@ -46,7 +46,18 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo])
+
+(def example-db (atom {:example-counter 42}))
+
+(pc/defresolver mutation-by-resolver [env props]
+  {::pc/input #{:example-input}
+   ::pc/output [:example-output]}
+  (let [oldstate (:example-counter @example-db)]
+       (swap! example-db update-in [:example-counter] #(+ % (:example-input props)))
+       {:example-output oldstate}))
+
+
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo mutation-by-resolver])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
@@ -96,3 +107,8 @@
 
 (defstate parser
   :start (build-parser nil))
+
+(comment
+  "please run this let-binding and you see that the output gets increased by 23 on every call"
+  (let [example-parser (build-parser nil)]
+       (->> (example-parser {} [{[:example-input 23] [:example-output]}]))))
