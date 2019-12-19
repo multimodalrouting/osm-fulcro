@@ -8,7 +8,9 @@
     [clojure.core.async :as async]
     [app.server-components.config :refer [config]]
     [jsonista.core :as json]
-    [app.model.geofeatures :as gf]))
+    [app.model.geofeatures :as gf]
+    [app.background-geolocation :as bgeo]
+    ))
 
 (def geofeatures {:vvo {::gf/source {:comment "VVO stops+lines"
                                      :remote :pathom :type :geojson}}
@@ -46,7 +48,7 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo bgeo/latest-track bgeo/save-gpx-track bgeo/send-message])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
