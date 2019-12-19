@@ -4,6 +4,7 @@
     [app.ui.leaflet.sidebar :refer [FulcroSidebar fulcroSidebar controlOpenSidebar]]
     [app.ui.leaflet.layers :refer [overlay-class->component]]
     [app.ui.leaflet.state :as state]
+    [app.ui.leaflet.tracking :refer [controlToggleTracking ControlToggleTracking]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
     [app.ui.leaflet.layers.extern.mvt :refer [mvtLayer]]
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
@@ -57,6 +58,7 @@
            :leaflet/layers
            :selected/points
            :graphhopper/route
+           {:background-location/state (comp/get-query ControlToggleTracking)}
            :sensors/LOCATION
            ]}
   #_(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
@@ -64,6 +66,7 @@
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
     (controlOpenSidebar {})
+    (controlToggleTracking (:background-location/state props))
     (layersControl {:key (hash props)}
       baseLayers
       mvtLayer
