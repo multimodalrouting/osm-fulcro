@@ -99,7 +99,7 @@
 
 
 (defmutation save-gpx-track [{:background-location/keys [track]}]
-  (pathom [{:keys [ast]}]
+  (gpx [{:keys [ast]}]
           (do (prn ast)
               (let [_track (seq track)]
                 (update ast :params select-keys [:background-location/track])))))

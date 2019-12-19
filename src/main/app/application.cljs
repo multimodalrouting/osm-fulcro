@@ -1,6 +1,7 @@
 (ns app.application
   (:require
     [app.helper.query :as queryh]
+    [app.client-config :refer [config]]
     [com.fulcrologic.fulcro.networking.http-remote :as net]
     [com.fulcrologic.fulcro.algorithms.tx-processing :as tx]
     [com.fulcrologic.fulcro.application :as app]
@@ -71,12 +72,10 @@
   (str (:lat point) "," (:lng point))
   )
 
-;(defn graphhopper-service-url [poststr] (str "http://localhost:8989" poststr))
-(defn graphhopper-service-url [poststr] (str "http://10.0.2.2:8989" poststr))
-;(defn graphhopper-service-url [poststr] (str "http://172.22.99.134:8989" poststr))
-
 (defonce SPA (app/fulcro-app
-               {:remotes {:pathom          (net/fulcro-http-remote {:url                "/api"
+               {:remotes {:pathom          (net/fulcro-http-remote {:url (get-in config [:app.server.pathom-demo/config :url])
+                                                                    :request-middleware secured-request-middleware})
+                          :gpx             (net/fulcro-http-remote {:url (get-in config [:app.server.pathom-gpx/config :url])
                                                                     :request-middleware secured-request-middleware})
                           :overpass        (net/fulcro-http-remote
                                              {:url                 "http://overpass-api.de/api/interpreter"
@@ -91,7 +90,8 @@
                           :mvt             (mvt-remote)
 
                           :graphhopper-web (net/fulcro-http-remote
-                                             {:url                 (graphhopper-service-url "/route")
+                                             {:url                 (get-in config [:app.server.graphhopper-web/config :url])
+
 
                                               :request-middleware  (fn [req] (let [query (->> req :body first (apply hash-map) :graphhopper/route)
                                                                                    startPoint (latlng->point (:start query))
@@ -99,20 +99,20 @@
                                                                                    ]
                                                                                (assoc req :headers {"Content-Type" "text/plain"}
                                                                                           :method :get
-                                                                                          :url (graphhopper-service-url
+                                                                                          :url ((get-in config [:app.server.graphhopper-web/config :url])
                                                                                                  (str "/route"
-                                                                                                     (queryh/get-query-params-str
-                                                                                                       {
-                                                                                                        :point          [startPoint
-                                                                                                                         endPoint]
-                                                                                                        :vehicle        "car"
-                                                                                                        :locale         "en"
-                                                                                                        :calc_points    "true"
-                                                                                                        :points_encoded "false"
-                                                                                                        :instructions   "false"
-                                                                                                        :key            "api_key"
+                                                                                                      (queryh/get-query-params-str
+                                                                                                        {
+                                                                                                         :point          [startPoint
+                                                                                                                          endPoint]
+                                                                                                         :vehicle        "car"
+                                                                                                         :locale         "en"
+                                                                                                         :calc_points    "true"
+                                                                                                         :points_encoded "false"
+                                                                                                         :instructions   "false"
+                                                                                                         :key            "api_key"
 
-                                                                                                        }))))))
+                                                                                                         }))))))
                                               :response-middleware (fn [resp] (let [data (some-> (:body resp)
                                                                                                  js/JSON.parse
                                                                                                  (js->clj :keywordize-keys true))
