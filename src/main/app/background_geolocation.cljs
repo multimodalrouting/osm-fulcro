@@ -1,6 +1,7 @@
 (ns app.background-geolocation
   (:require [com.fulcrologic.fulcro.components :as comp]
             [com.fulcrologic.fulcro.mutations :refer [defmutation]]
+            [com.fulcrologic.fulcro.data-fetch :refer [load!]]
             [app.application :refer [SPA]]
             [com.fulcrologic.fulcro.ui-state-machines :as uism]
             [app.ui.leaflet.state :refer [new-sensor-data new-location-data]]
@@ -99,10 +100,24 @@
 
 
 (defmutation save-gpx-track [{:background-location/keys [track]}]
-  (gpx [{:keys [ast]}]
+  (action [{:keys [ast]}]
           (do (prn ast)
-              (let [_track (seq track)]
-                (update ast :params select-keys [:background-location/track])))))
+              (prn "Will finally4 save gpx track (mutation)")
+        (let [_track (seq track)]
+                (update ast :params select-keys [:background-location/track])
+                #_(load! SPA [:background-location/track _track] nil {:remote gpx})
+                )))
+  (gpx [env] true)
+  )
+
+(defmutation send-message [env]
+  (action [props]
+          (do
+            (prn "send-message to backend" env)
+            )
+          )
+  (gpx [env] true)
+  )
 
 (defmutation update-background-location-tracking-state [{:keys [bgstate]}]
   (action [{:keys [state]}]
@@ -114,7 +129,7 @@
                   (prn "Will save gpx track (mutation)")
                   (comp/transact!
                     SPA
-                    [(save-gpx-track {:background-location/track  track})]
+                    [ (save-gpx-track {:background-location/track  track})]
                     )))))))
 
 (defn bg-state-update! []
@@ -123,7 +138,7 @@
     (fn [state]
       (comp/transact!
         SPA
-        [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true)})]))))
+        [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true)})] {:refresh [:background-location/state]}))))
 
 (defmutation start-tracking [_]
   (action [{:keys [state]}]
@@ -194,8 +209,7 @@
                #(.then (.getCurrentPosition bg)
                        (fn [position]
                          (intervalLocation interval)
-                         )
-                       )
+                         ))
                interval
                ))
 

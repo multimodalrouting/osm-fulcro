@@ -37,7 +37,7 @@
   {:query         [:lat :lng]
    :initial-state {:lat 51 :lng 13}
    }
-  (marker {:position [lat lng]
+   (marker {:position [lat lng]
            :icon     (.icon. l (clj->js
                                  {
                                   :iconUrl     "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"
@@ -51,7 +51,28 @@
 
 (def startStopMarker (factory StartStopMarker {:key-fn #((hash [(:lat %) (:lng %)]))}))
 
+
 (defsc Leaflet
+  [this props]
+  {:query [:gf/id
+           :selected/points
+           :graphhopper/route
+           {:background-location/state (comp/get-query ControlToggleTracking)}
+           :sensors/LOCATION
+           ]}
+  (routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+
+  (leafletMap {:style {:height "100%" :width "100%"}
+               :center [51.055 13.74] :zoom 12}
+              (controlOpenSidebar {})
+              (controlToggleTracking (:background-location/state props))
+              (layersControl {:key (hash props)}
+                             baseLayers
+                             mvtLayer
+
+
+                             )))
+(defsc LeafletAll
   [this props]
   {:query [:gf/id
            :leaflet/datasets
@@ -61,7 +82,7 @@
            {:background-location/state (comp/get-query ControlToggleTracking)}
            :sensors/LOCATION
            ]}
-  #_(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+  (routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
@@ -80,7 +101,7 @@
                   (if (and component filtered-features)
                       (component {:react-key (str layer-name (hash overlay) (hash filtered-features))
                                   :geojson {:type "FeatureCollection" :features filtered-features}})))))
-      (layersControlOverlay
+      #_(layersControlOverlay
         {:key "test-x-layer" :name "test" :checked true}
         #_(marker {:position [51.055 13.74]
                    :icons (.icon. l (clj->js
@@ -110,6 +131,7 @@
   (dom/div {:style {:width "100%" :height "100%"}}
     (if (get-in props [:leaflet/sidebar :visible])
         (fulcroSidebar props))
-    (leaflet (select-keys props [:leaflet/datasets :leaflet/layers :selected/points]))))
+    (leaflet props)))
 
 (def leafletWithSidebar (factory LeafletWithSidebar))
+

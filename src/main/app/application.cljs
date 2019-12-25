@@ -72,10 +72,15 @@
   (str (:lat point) "," (:lng point))
   )
 
-(defonce SPA (app/fulcro-app
+(comment
+  (get-in config [:app.server.pathom-gpx/config :url])
+  )
+
+
+(def SPA (app/fulcro-app
                {:remotes {:pathom          (net/fulcro-http-remote {:url (get-in config [:app.server.pathom-demo/config :url])
                                                                     :request-middleware secured-request-middleware})
-                          :gpx             (net/fulcro-http-remote {:url (get-in config [:app.server.pathom-gpx/config :url])
+                          :gpx            (net/fulcro-http-remote {:url (get-in config [:app.server.pathom-gpx/config :url])
                                                                     :request-middleware secured-request-middleware})
                           :overpass        (net/fulcro-http-remote
                                              {:url                 "http://overpass-api.de/api/interpreter"

@@ -33,6 +33,12 @@
                    ::coords    {}
                    ::timestamp (tc/to-sql-time (time/now))}})
 
+(def gpx-tracks (atom []))
+
+(comment
+  (prn @gpx-tracks)
+  )
+
 (pc/defresolver save-gpx-track [env {:background-location/keys [track]}]
   {
    ::pc/params [:background-location/track]
@@ -62,8 +68,7 @@
                   p/trace-plugin]}))
 
 (comment
-  (parser {} ['(save-gpx-track {:background-location/track {::coords []}})])
-
+  (parser {} [{[:background-location/track {::coords []}] [:background-location/success :background-location/count-tracks]}])
 
   (parser {} ['(send-message {:message/text "Hello Clojurist!"})])
   )

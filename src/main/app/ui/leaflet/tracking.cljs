@@ -10,11 +10,16 @@
 
 (def control (react-factory Control))
 
-(defsc ControlToggleTracking [this {:keys [enabled triggerActivities]}]
+(defsc ControlToggleTracking [this {:keys [enabled triggerActivities] :as props}]
   {:query [:enabled :triggerActivities]}
        (control {:position "topleft"}
                 (dom/button {:onClick (fn []
-                                        (prn (if enabled "true" triggerActivities))
+                                        (comp/transact! this [(bg-geo/send-message {:message "ping from frontend"})]))
+                             :style   {:height "26px" :width "26px"}}
+                            (dom/i {:classes ["fa" "fa-wheelchair"]}))
+                (dom/button {:onClick (fn []
+                                        (prn (if enabled "true" "not enabled!"))
+                                        (prn props)
                                         (if enabled
                                           (comp/transact! this [(bg-geo/stop-tracking nil)])
                                           (comp/transact! this [(bg-geo/start-tracking nil)])
