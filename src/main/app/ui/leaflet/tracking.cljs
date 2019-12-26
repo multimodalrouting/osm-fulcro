@@ -14,7 +14,7 @@
   {:query [:enabled :triggerActivities]}
        (control {:position "topleft"}
                 (dom/button {:onClick (fn []
-                                        (comp/transact! this [(bg-geo/send-message {:message "ping from frontend"})]))
+                                        (comp/transact! this [(bg-geo/send-message {:message/text "ping from frontend"})]))
                              :style   {:height "26px" :width "26px"}}
                             (dom/i {:classes ["fa" "fa-wheelchair"]}))
                 (dom/button {:onClick (fn []

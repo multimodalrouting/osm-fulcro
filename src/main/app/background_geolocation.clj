@@ -33,27 +33,45 @@
                    ::coords    {}
                    ::timestamp (tc/to-sql-time (time/now))}})
 
-(def gpx-tracks (atom []))
+(def gpx-tracks (atom {:background-location/tracks []}))
 
 (comment
   (prn @gpx-tracks)
   )
 
-(pc/defresolver save-gpx-track [env {:background-location/keys [track]}]
+(pc/defmutation save-gpx-track [env {:background-location/keys [track]}]
   {
-   ::pc/params [:background-location/track]
-   ::pc/output [:message/id :message/text]}
+   ::pc/params  [:background-location/track]
+   ::pc/output [::save-gpx-track ::count-tracks]}
   (do
-    (prn "server mutation called")
-    {:message/id   123
-     :message/text track}))
+    (swap! gpx-tracks update-in [:background-location/tracks] #(concat % track))
+    {::save-gpx-track true
+     ::count-tracks   (count (:background-location/tracks @gpx-tracks))
+     }))
+
+
+(def example-db (atom {:example-counter 42 :message ""}))
 
 (pc/defmutation send-message [env {:keys [message/text]}]
-  {::pc/sym    'send-message
+  {
    ::pc/params [:message/text]
    ::pc/output [:message/id :message/text]}
-  {:message/id   123
-   :message/text text})
+  (let [oldstate (:message @example-db)]
+    (swap! example-db update-in [:message] #(str % text))
+
+    {:message/id   123
+     :message/text oldstate}
+    )
+  )
+
+(pc/defresolver mutation-by-resolver [env props]
+  {::pc/input #{:example-input}
+   ::pc/output [:example-output]}
+  (let [oldstate (:example-counter @example-db)]
+    (swap! example-db update-in [:example-counter] #(+ % (:example-input props)))
+    {:example-output oldstate}))
+
+
 
 (def parser
   (p/parser
@@ -71,6 +89,11 @@
   (parser {} [{[:background-location/track {::coords []}] [:background-location/success :background-location/count-tracks]}])
 
   (parser {} ['(send-message {:message/text "Hello Clojurist!"})])
+
+  (parser {} [{[:example-input 23] [:example-output]}])
   )
 
 
+(comment
+  "please run this let-binding and you see that the output gets increased by 23 on every call"
+  (->> (parser {} [{[:example-input 23] [:example-output]}])))
