@@ -10,9 +10,9 @@
   "license": "GPL-3.0",
   "dependencies": {
     "cordova-android": "^8.1.0",
-    "cordova-background-geolocation-lt": "^3.3.1",
+    "cordova-background-geolocation-lt": "^3.4.2",
     "cordova-graphhopper-plugin": "git://github.com/multimodalrouting/cordova-graphhopper-plugin.git#master",
-    "cordova-ios": "^4.5.5",
+    "cordova-ios": "^5.1.1",
     "cordova-plugin-android-sensor-listeners": "git+https://github.com/QuentinRoy/cordova-plugin-android-sensor-listeners.git",
     "cordova-plugin-background-fetch": "^5.6.1",
     "cordova-plugin-badge": "^0.8.8",
@@ -32,16 +32,9 @@
       "cordova-plugin-wkwebview-file-xhr": {},
       "cordova-plugin-whitelist": {},
       "cordova-graphhopper-plugin": {},
-      "cordova-plugin-android-sensor-listeners": {},
-      "cordova-background-geolocation-lt": {
-        "GOOGLE_API_VERSION": "16.+",
-        "APPCOMPAT_VERSION": "28.+",
-        "OKHTTP_VERSION": "3.12.+",
-        "EVENTBUS_VERSION": "3.0.0"
-      }
+      "cordova-plugin-android-sensor-listeners": {}
     },
     "platforms": [
-      "ios",
       "android"
     ]
   },
