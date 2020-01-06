@@ -45,7 +45,6 @@
                                             :use-document-host false
                                             :devtools-url  "http://10.0.2.2:9630"
                                             }}
-                               }
 
           :test       {:target           :browser-test
                        :test-dir         "resources/public/js/test"
