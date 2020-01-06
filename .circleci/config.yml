@@ -44,6 +44,6 @@ jobs:
           key: v1-dependencies-{{ checksum "shadow-cljs.edn" }}-{{ checksum "yarn.lock" }}
 
       # run tests!
-      - run: npx shadow-cljs compile ci-tests
+      - run: npx shadow-cljs compile :ci-tests
       - run: npx karma start --single-run
       - run: shadow-cljs release :main
