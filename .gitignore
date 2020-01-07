@@ -62,3 +62,4 @@ docs/.jekyll-metadata
 resources/public/workspaces
 cordova/resources
 cordova/www
+cordova/platforms/
