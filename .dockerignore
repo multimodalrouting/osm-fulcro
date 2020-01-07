@@ -1,0 +1,4 @@
+.git
+Dockerfile
+Makefile
+cordova/platforms/android/app/build/outputs/
