@@ -90,11 +90,18 @@
                                     p/trace-plugin]})
         ;; NOTE: Add -Dtrace to the server JVM to enable Fulcro Inspect query performance traces to the network tab.
         ;; Understand that this makes the network responses much larger and should not be used in production.
-        trace?      (not (nil? (System/getProperty "trace")))]
+        trace?      false #_(not (nil? (System/getProperty "trace")))]
     (fn wrapped-parser [env tx]
-      (async/<!! (real-parser env (if trace?
-                                    (conj tx :com.wsscode.pathom/trace)
-                                    tx))))))
+      (if tx
+        (async/<!! (let [result (real-parser env (if trace?
+                                                   (conj tx :com.wsscode.pathom/trace)
+                                                   tx))]
+                     (prn "result: " result)
+                     result
+                     ))
+        (log/warn "Nil not supported as pathom request")
+        ))))
 
 (defstate parser
   :start (build-parser nil))
+

@@ -84,7 +84,7 @@
 (defstate middleware
   :start
   (let [defaults-config (:ring.middleware/defaults-config config)
-        legal-origins (get config :legal-origins [#"localhost" #"http://localhost:8022"])]
+        legal-origins (get config :legal-origins [#".*"])]
     (-> not-found-handler
       (wrap-api "/api")
       (wrap-webjars "/webjars")
