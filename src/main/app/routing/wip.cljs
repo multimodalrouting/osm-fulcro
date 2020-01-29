@@ -7,6 +7,7 @@
     [loom.attr :as attr]
     [loom.alg :as alg]
     [loom.derived :as derived]
+    [app.model.geofeatures :as gf]
     [app.application :refer [SPA]]
     [app.ui.leaflet.state :refer [mutate-datasets]]
     [com.fulcrologic.fulcro.components :refer [transact!]]))
@@ -102,6 +103,6 @@
                                          :data (path->geojson (map #(get pointsUnique %) path))})])))
 
 (comment
-  (let [path [:leaflet/datasets :vvo :data :geojson]
+  (let [path [::gf/id :vvo ::gf/geojson]
         geojson (get-in (db->tree path (current-state SPA) {}) path)]
-       (routing-example geojson {:use-caching? true})))
+        (routing-example geojson {:use-caching? true})))

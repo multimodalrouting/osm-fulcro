@@ -60,7 +60,7 @@
            {:background-location/state (comp/get-query ControlToggleTracking)}
            :sensors/LOCATION
            ]}
-  (routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+  (routing-example (get-in props [::gf/id :vvo ::gf/geojson]))
 
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
@@ -82,7 +82,7 @@
            {:background-location/state (comp/get-query ControlToggleTracking)}
            :sensors/LOCATION
            ]}
-  (routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+  (routing-example (get-in props [::gf/id :vvo ::gf/geojson]))
 
   (leafletMap {:style {:height "100%" :width "100%"}
                :center [51.055 13.74] :zoom 12}
@@ -123,10 +123,10 @@
           )
         ))))
 
-(def leaflet (factory Leaflet))
+(def leaflet (factory LeafletAll))
 
 (defsc LeafletWithSidebar [this props]
-  {:query (fn [] (into (get-query Leaflet)
+  {:query (fn [] (into (get-query LeafletAll)
                        (get-query FulcroSidebar)))}
   (dom/div {:style {:width "100%" :height "100%"}}
     (if (get-in props [:leaflet/sidebar :visible])
