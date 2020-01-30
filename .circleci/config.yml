@@ -28,11 +28,11 @@ jobs:
       - checkout
 
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "shadow-cljs.edn" }}-{{ checksum "yarn.lock" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      #- restore_cache:
+      #    keys:
+      #      - v1-dependencies-{{ checksum "shadow-cljs.edn" }}-{{ checksum "yarn.lock" }}
+      #      # fallback to using the latest cache if no exact match is found
+      #      - v1-dependencies-
 
       - run: yarn install
       - run: shadow-cljs check :main
