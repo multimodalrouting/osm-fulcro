@@ -10,7 +10,7 @@ jobs:
         - gpx2
     docker:
       # specify the version you desire here
-      - image: theasp/clojurescript-nodejs:shadow-cljs
+      - image: multimodalrouting/clojurescript-nodejs:shadow-cljs
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
