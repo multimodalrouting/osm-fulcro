@@ -273,6 +273,16 @@ surf to chrome://inspect#devices.
 
 Once the app appears you can click on `inspect` to get a developer console.
 
+=== cordova plugins ===
+
+Several plugins are beeing used in order to enable functionality like background location tracking and open with/share with features
+
+For reference the plugin add commands are listed here:
+
+```bash
+$> cordova plugin add cc.fovea.cordova.openwith --variable ANDROID_MIME_TYPE="application/gpx+xml"  --variable IOS_URL_SCHEME=mapitm --variable IOS_UNIFORM_TYPE_IDENTIFIER=public.xml
+```
+
 == Tests
 
 Tests are in `src/test`. Any test namespace ending in `-test` will be auto-detected.
