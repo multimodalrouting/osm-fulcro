@@ -9,6 +9,7 @@
   },
   "license": "GPL-3.0",
   "dependencies": {
+    "cc.fovea.cordova.openwith": "^2.0.0",
     "cordova-android": "^8.1.0",
     "cordova-background-geolocation-lt": "^3.4.2",
     "cordova-graphhopper-plugin": "git://github.com/multimodalrouting/cordova-graphhopper-plugin.git#master",
