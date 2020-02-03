@@ -5,7 +5,9 @@
             [app.application :refer [SPA]]
             [com.fulcrologic.fulcro.ui-state-machines :as uism]
             [app.ui.leaflet.state :refer [new-sensor-data new-location-data]]
+            [app.utils.gpx :refer [geo->gpx]]
             ))
+
 
 
 #_(def bg-properties [
@@ -98,15 +100,23 @@
 
 (def bg js/window.BackgroundGeolocation)
 
+(defmutation add-local-gpx-track [{:background-location/keys [track]}]
+  (action [{:keys [ast state]}]
+          (let [_track (seq track)]
+            (prn "Will add gpx track (mutation)")
+            (swap! state into {:background-location/tracks _track}))))
+
+(defmutation clear-local-gpx-tracks [_]
+  (action [{:keys [state]}]
+          (swap! state into {:background-location/tracks []})))
 
 (defmutation save-gpx-track [{:background-location/keys [track]}]
   (action [{:keys [ast]}]
-          (do (prn ast)
-              (prn "Will finally4 save gpx track (mutation)")
-        (let [_track (seq track)]
-                (update ast :params select-keys [:background-location/track])
-                #_(load! SPA [:background-location/track _track] nil {:remote gpx})
-                )))
+          (let [_track (seq track)]
+            (prn "Will finally4 save gpx track (mutation)")
+            (update ast :params select-keys [:background-location/track])
+            #_(load! SPA [:background-location/track _track] nil {:remote gpx})
+            ))
   (gpx [env] true)
   )
 
@@ -129,8 +139,9 @@
                   (prn "Will save gpx track (mutation)")
                   (comp/transact!
                     SPA
-                    [ (save-gpx-track {:background-location/track  track})]
-                    )))))))
+                    [
+                     (save-gpx-track {:background-location/track  track})
+                     (add-local-gpx-track {:background-location/track  track})])))))))
 
 (defn bg-state-update! []
   (.getState
@@ -151,6 +162,11 @@
           (prn "Will stop")
           (bg.stop
             bg-state-update!)))
+
+(defmutation clear-locations [_]
+  (action [_]
+          (bg.destroyLocations #(prn "successfully cleared internal SQLite DB")
+                               (fn [error] (prn "an error occured while cleaning SQLite DB" error)))))
 
 (defn bg-ready!
   []

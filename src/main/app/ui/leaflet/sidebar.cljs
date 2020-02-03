@@ -12,7 +12,12 @@
     [com.fulcrologic.semantic-ui.collections.table.ui-table-cell :refer [ui-table-cell]]
     [com.fulcrologic.semantic-ui.collections.table.ui-table-header :refer [ui-table-header]]
     [com.fulcrologic.semantic-ui.collections.table.ui-table-header-cell :refer [ui-table-header-cell]]
-    [app.model.geofeatures :as gf]))
+    [com.fulcrologic.semantic-ui.elements.button.ui-button :refer [ui-button]]
+    [com.fulcrologic.semantic-ui.elements.button.ui-button-group :refer [ui-button-group]]
+    [app.model.geofeatures :as gf]
+    [com.fulcrologic.fulcro.components :as comp]
+    [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
+    ))
 
 (defmutation mutate-sidebar [params]
   (action [{:keys [state]}]
@@ -26,12 +31,15 @@
   {:query [:leaflet/sidebar
            ;:leaflet/datasets
            :leaflet/layers
+           :background-location/tracks
            ::gf/id ::gf/source]}
   (let [selected (get-in props [:leaflet/sidebar :tab] "help")
         onOpen #(transact! this [(mutate-sidebar {:tab %})])
-        onClose #(transact! this [(mutate-sidebar {:visible false})])]
+        onClose #(transact! this [(mutate-sidebar {:visible false})])
+        tracks (:background-location/tracks props)
+        ]
        (sidebar {:id "sidebar" :closeIcon "fa fa-window-close"
-                 :selected selected :collapsed (nil? selected) 
+                 :selected selected :collapsed (nil? selected)
                  :onOpen onOpen :onClose onClose}
          (tab {:id "help" :header "About" :icon (dom/i {:classes ["fa" "fa-question"]})}
               (dom/p {} "…"))
@@ -85,7 +93,24 @@
                               (ui-table-cell {:key (str k :l)} (str (:layer overlay)))
                               (ui-table-cell {:key (str k :c)} (str (:class overlay)))
                               (ui-table-cell {:key (str k :d)} (str (:dataset overlay)))
-                              (ui-table-cell {:key (str k :f)} (str (:filter overlay))))))))))))
+                              (ui-table-cell {:key (str k :f)} (str (:filter overlay)))))))))
+         (tab {:id "tracks" :header "Tracks" :icon (dom/i {:classes ["fa" "fa-map"]})}
+              (ui-button-group {}
+                               (ui-button {:onClick (fn [] (comp/transact! this [(clear-locations nil) (clear-local-gpx-tracks nil) ]))} "clear DB")
+                               (ui-button {:onClick (fn [] (comp/transact! this []))} "open track")
+                               )
+              (ui-table {}
+                        (ui-table-header {}
+                                         (ui-table-row {}
+                                                       (ui-table-header-cell {} "timestamp")
+                                                       (ui-table-header-cell {} "uuid")))
+                        (ui-table-body {}
+                                       (for [track tracks
+                                             :let [uuid (:uuid track)]]
+                                         (ui-table-row {:key uuid}
+                                                       (ui-table-cell {:key (str uuid :t)} (str (:timestamp track)))
+                                                       (ui-table-cell {:key (str uuid :f)} (str (:uuid track))))))))
+                )))
 
 (def fulcroSidebar (factory FulcroSidebar))
 
