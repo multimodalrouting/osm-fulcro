@@ -2,5 +2,7 @@
 
  ;:legal-origins                  [".*"]
 
+ :app.background-geolocation/gpx-dir "/tmp/gpx"
+
  :ring.middleware/defaults-config {:security {:anti-forgery false}}}  ;; for ci-tests
 

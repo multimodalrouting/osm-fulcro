@@ -16,55 +16,8 @@
     (.loadMap js/navigator.graphhopper "sachsen-latest" (fn [success] (prn success))))
   )
 
-(defn load-overpass! []
-  (transact! SPA [(mutate-datasets {:data {
-                                           :overpass-example {:source {:remote :overpass :type :geojson
-                                                                       :query ["area[name=\"Dresden\"]->.city;"
-                                                                               "nwr(area.city)[operator=\"DVB\"]->.connections;"
-                                                                               "node.connections[public_transport=stop_position];"]}}
-                                           }}  )])
-  )
 
-(defn load-all! []
 
-  ;; TODO don't load :leaflet/datasets but use ::gf/source from pathom-remote instead
-  (transact! SPA [(mutate-datasets {:data {:vvo {:source {:comment "VVO stops+lines"
-                                                          :remote :pathom :type :geojson}}
-                                           :overpass-example {:source {:remote :overpass :type :geojson
-                                                                       :args ["area[name=\"Dresden\"]->.city;"
-                                                                              "nwr(area.city)[operator=\"DVB\"]->.connections;"
-                                                                              "node.connections[public_transport=stop_position];"]}}
-                                           :mvt-loschwitz {:source {:remote :mvt :type :geojson
-                                                                    :args {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
-                                                                           :layer "roads"} }}}})])
-
-  (transact! SPA [(mutate-layers {:data {:hexbin-example {:overlays [{:class :hexbin
-                                                                      :dataset :vvo
-                                                                      :filter {[:geometry :type] #{"Point"}
-                                                                               [:properties :public_transport] #{"stop_position"}}}]}
-                                         :vectorGrid-loschwitz {:prechecked true
-                                                                :overlays [{:class :vectorGrid
-                                                                            :dataset :mvt-loschwitz}]}
-                                         :vectorGrid-vvo-connections {:overlays [{:class :vectorGrid
-                                                                                  :dataset :vvo
-                                                                                  :filter {[:geometry :type] #{"LineString"}}}]}
-                                         :lines-vvo-connections {:prechecked true
-                                                                 :overlays [{:class :d3SvgLines
-                                                                             :dataset :vvo
-                                                                             :filter {[:geometry :type] #{"LineString"}}}]}
-                                         :points-vvo-stops {:prechecked true
-                                                            :overlays [{:class :d3SvgPoints
-                                                                        :dataset :vvo
-                                                                        :filter {[:geometry :type] #{"Point"}
-                                                                                 [:properties :public_transport] #{"stop_position"}}}]}
-                                         :pieChart-vvo-stops {:prechecked true
-                                                              :overlays [{:class :d3SvgPieChart
-                                                                          :dataset :vvo
-                                                                          :filter {[:geometry :type] #{"Point"}
-                                                                                   [:properties :public_transport] #{"stop_position"}}}]}
-                                         :routes {:prechecked true
-                                                  :overlays [{:class :d3SvgLines
-                                                              :dataset :routes}]}}})]))
 
 (defn initSensors
   [sensorTypes]

@@ -129,44 +129,63 @@
   (gpx [env] true)
   )
 
-(defmutation update-background-location-tracking-state [{:keys [bgstate]}]
-  (action [{:keys [state]}]
-          (do
-            (swap! state into {:background-location/state bgstate})
-            (bg.getLocations
-              (fn [locations]
-                (let [track (js->clj locations :keywordize-keys true)]
-                  (prn "Will save gpx track (mutation)")
-                  (comp/transact!
-                    SPA
-                    [
-                     (save-gpx-track {:background-location/track  track})
-                     (add-local-gpx-track {:background-location/track  track})])))))))
+(defmutation clear-locations [_]
+  (action [_]
+          (bg.destroyLocations #(prn "successfully cleared internal SQLite DB")
+                               (fn [error] (prn "an error occured while cleaning SQLite DB" error)))))
 
-(defn bg-state-update! []
-  (.getState
-    bg
-    (fn [state]
-      (comp/transact!
-        SPA
-        [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true)})] {:refresh [:background-location/state]}))))
+(defmutation update-background-location-tracking-state [{:keys [bgstate isPaused]}]
+  (action [{:keys [state]}]
+          (swap! state into {:background-location/state (assoc bgstate :isPaused isPaused)})))
+
+(defmutation store-bg-location [_]
+  (action [{:keys [state]}]
+          (bg.getLocations
+            (fn [locations]
+              (let [track (js->clj locations :keywordize-keys true)]
+                (prn "Will save gpx track (mutation)")
+                (comp/transact!
+                  SPA
+                  [
+                   (save-gpx-track {:background-location/track track})
+                   (add-local-gpx-track {:background-location/track track})
+                   (clear-locations nil)
+                   ]))))))
+
+(defmutation pause-tracking [_]
+  (action [{:keys [state]}]
+          (prn "Will pause")
+          (bg.stop
+            #(bg.getState
+               (fn [state]
+                 (comp/transact!
+                   SPA
+                   [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true) :isPaused true})] {:refresh [:background-location/state]}))))))
 
 (defmutation start-tracking [_]
   (action [{:keys [state]}]
           (prn "Will enable")
           (bg.start
-            bg-state-update!)))
+            #(bg.getState
+               (fn [state]
+                 (comp/transact!
+                   SPA
+                   [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true) :isPaused false})] {:refresh [:background-location/state]}))))))
 
 (defmutation stop-tracking [_]
   (action [{:keys [state]}]
           (prn "Will stop")
           (bg.stop
-            bg-state-update!)))
+            #(bg.getState
+              (fn [state]
+                (comp/transact!
+                  SPA
+                  [
+                   (update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true) :isPaused false})
+                   (store-bg-location nil )
+                   ] {:refresh [:background-location/state]}))))))
 
-(defmutation clear-locations [_]
-  (action [_]
-          (bg.destroyLocations #(prn "successfully cleared internal SQLite DB")
-                               (fn [error] (prn "an error occured while cleaning SQLite DB" error)))))
+
 
 (defn bg-ready!
   []
@@ -194,30 +213,25 @@
   (.onLocation
     bg
     (fn [location]
-      (comp/transact! SPA [(new-location-data {:values (js->clj location :keywordize-keys true) :sensor_type "LOCATION"})]))
-    )
+      (comp/transact! SPA [(new-location-data {:values (js->clj location :keywordize-keys true) :sensor_type "LOCATION"})])))
   (.onEnabledChange
     bg
     (fn [isEnabled]
-      bg-state-update!
-      )
-    )
+      #(bg.getState
+            (fn [state]
+              (comp/transact!
+                SPA
+                [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true)})] {:refresh [:background-location/state]})))))
   (.onActivityChange
     bg
     (fn [event]
-      (comp/transact! SPA [(new-location-data {:value (js->clj event :keywordize-keys true) :sensor_type "ACTIVITY"})])
-      )
-    )
+      (comp/transact! SPA [(new-location-data {:value (js->clj event :keywordize-keys true) :sensor_type "ACTIVITY"})])))
   (.onMotionChange
     bg
-    (fn [motion] (comp/transact! SPA [(new-location-data {:values (js->clj motion :keywordize-keys true) :sensor_type "MOTION"})]))
-    )
+    (fn [motion] (comp/transact! SPA [(new-location-data {:values (js->clj motion :keywordize-keys true) :sensor_type "MOTION"})])))
   (.onProviderChange
     bg
-    (fn [provider] (comp/transact! SPA [(new-location-data {:values (js->clj provider :keywordize-keys true) :sensor_type "PROVIDER"})]))
-    )
-
-  )
+    (fn [provider] (comp/transact! SPA [(new-location-data {:values (js->clj provider :keywordize-keys true) :sensor_type "PROVIDER"})]))))
 
 
 (defn intervalLocation [interval]

@@ -45,7 +45,7 @@
                                                                            (assoc resp :body {[::gf/id :overpass-example] {::gf/geojson data}})))}) ;; TODO
                          :mvt (mvt-remote)}})
 
-(defonce SPA (app/fulcro-app SPA_conf))
+#_(defonce SPA (app/fulcro-app SPA_conf))
 (defn graphhopper-cordova-remote []
   {:active-requests (atom {})
    :transmit!       (fn transmit! [remote {::tx/keys [result-handler update-handler ast] :as send-node}]

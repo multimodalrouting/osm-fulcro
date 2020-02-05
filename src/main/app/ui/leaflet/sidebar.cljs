@@ -17,7 +17,13 @@
     [app.model.geofeatures :as gf]
     [com.fulcrologic.fulcro.components :as comp]
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
+    [app.utils.gpx :refer [geo->gpx-xml]]
+    [app.utils.file-save :refer [store-file open-with]]
+
     ))
+
+
+
 
 (defmutation mutate-sidebar [params]
   (action [{:keys [state]}]
@@ -97,7 +103,18 @@
          (tab {:id "tracks" :header "Tracks" :icon (dom/i {:classes ["fa" "fa-map"]})}
               (ui-button-group {}
                                (ui-button {:onClick (fn [] (comp/transact! this [(clear-locations nil) (clear-local-gpx-tracks nil) ]))} "clear DB")
-                               (ui-button {:onClick (fn [] (comp/transact! this []))} "open track")
+                               (ui-button {:onClick (fn []
+                                                      (.open js/window (str "data:application/gpx+xml;utf-8," (.encodeURIComponent js/window (geo->gpx-xml {:tracks tracks}))))
+                                                      )} "open track")
+                               (ui-button {:onClick (fn []
+                                                      (let [mimeType "application/gpx+xml"]
+                                                        (store-file (str "test-" (.getTime (js/Date.)) ".gpx")
+                                                                    (geo->gpx-xml {:tracks tracks})
+                                                                    mimeType
+                                                                    (fn [file] (open-with file.nativeURL mimeType))
+                                                                    (fn [err] (prn "error!!! " err))))
+                                                      )} "save track")
+
                                )
               (ui-table {}
                         (ui-table-header {}
@@ -115,7 +132,7 @@
 (def fulcroSidebar (factory FulcroSidebar))
 
 (defsc ControlOpenSidebar [this props]
-  (control {:position "bottomleft"}
+  (control {:position "topleft"}
     (dom/button {:onClick #(transact! this [(mutate-sidebar {:visible true})])
              :style {:height "26px" :width "26px"}}
       (dom/i {:classes ["fa" "fa-cog"]}))))

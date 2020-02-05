@@ -7,7 +7,10 @@
             [clojure.spec.gen.alpha :as sgen]
             [clojure.spec.alpha :as s]
             [clj-time.core :as time]
-            [clj-time.coerce :as tc]))
+            [clj-time.coerce :as tc]
+            [clojure.java.io :refer [writer]]
+            [app.utils.gpx :refer [geo->gpx-xml]]
+            ))
 
 (s/def ::latitude double?)
 (s/def ::longitude double?)
@@ -39,12 +42,22 @@
   (prn @gpx-tracks)
   )
 
+(defn save-track [track fileName]
+  (with-open [wrtr (writer fileName)
+              xml (geo->gpx-xml {:tracks track})
+              ]
+    (prn track)
+    (.write wrtr xml)
+    (.close wrtr)))
+
 (pc/defmutation save-gpx-track [env {:background-location/keys [track]}]
   {
    ::pc/params  [:background-location/track]
    ::pc/output [::save-gpx-track ::count-tracks]}
   (do
+    (prn track)
     (swap! gpx-tracks update-in [:background-location/tracks] #(concat % track))
+    (save-track track (str "/tmp/gpx/geo-" (quot (System/currentTimeMillis) 1000) ".gpx"))
     {::save-gpx-track true
      ::count-tracks   (count (:background-location/tracks @gpx-tracks))
      }))
