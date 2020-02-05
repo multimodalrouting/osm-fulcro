@@ -33,6 +33,9 @@
                        :extra-deps  {lambdaisland/kaocha {:mvn/version "0.0-529"}}}
 
            ;; See https://github.com/clojure-emacs/cider-nrepl/blob/master/deps.edn for Emacs support
+           :uberjar {:extra-deps {uberdeps {:mvn/version "0.1.8"}}
+                     :main-opts  ["-m" "uberdeps.uberjar" "--target" "target/osm-fulcro-0.0.1.jar"]
+                     }
            :dev       {:extra-paths ["src/test" "src/dev" "src/workspaces"]
                        :jvm-opts    ["-XX:-OmitStackTraceInFastThrow"]
                        :extra-deps  {org.clojure/clojurescript   {:mvn/version "1.10.520"}

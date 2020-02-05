@@ -1,10 +1,12 @@
 {:taoensso.timbre/logging-config {:level :info}
- 
- :org.httpkit.server/config      {:port 8080}
+
+ :org.httpkit.server/config      {:port 8089}
 
  ;:legal-origins                  [#"localhost"]
 
  ;; You probably want these set to true in real production:
  :ring.middleware/defaults-config
                                  {:proxy    false
-                                  :security {:ssl-redirect false}}}
+                                  :security {:ssl-redirect false
+                                             :anti-forgery false
+                                             }}}

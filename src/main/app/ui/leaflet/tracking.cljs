@@ -18,8 +18,6 @@
                              :style   {:height "26px" :width "26px"}}
                             (dom/i {:classes ["fa" "fa-wheelchair"]}))
                 (dom/button {:onClick (fn []
-                                        (prn (if enabled "true" "not enabled!"))
-                                        (prn props)
                                         (if enabled
                                           (comp/transact! this [(bg-geo/stop-tracking nil)])
                                           (comp/transact! this [(bg-geo/start-tracking nil)])
