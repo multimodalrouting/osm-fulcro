@@ -1,6 +1,6 @@
-(ns com.fulcrologic.framework7.components
+(ns app.ui.framework7.components
   (:require
-    [com.fulcrologic.framework7.factory-helpers :as h]
+    [app.ui.framework7.factory-helpers :as h]
     ["framework7-react/components/accordion-content" :default AccordionContent]
     ["framework7-react/components/accordion-item" :default AccordionItem]
     ["framework7-react/components/accordion-toggle" :default AccordionToggle]
