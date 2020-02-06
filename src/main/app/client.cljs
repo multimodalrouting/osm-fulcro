@@ -9,20 +9,20 @@
     [com.fulcrologic.fulcro-css.css-injection :as cssi]
     [taoensso.timbre :as log]))
 
-(defn load-all! []
+(defn load-all! [app]
 
   ;; TODO don't load :leaflet/datasets but use ::gf/source from pathom-remote instead
-  (transact! SPA [(mutate-datasets {:data {:vvo {:source {:comment "VVO stops+lines"
+  (transact! app [(mutate-datasets {:data {:vvo {:source {:comment "VVO stops+lines"
                                                           :remote :pathom :type :geojson}}
                                            :overpass-example {:source {:remote :overpass :type :geojson
                                                                        :args ["area[name=\"Dresden\"]->.city;"
                                                                               "nwr(area.city)[operator=\"DVB\"]->.connections;"
                                                                               "node.connections[public_transport=stop_position];"]}}
-                                           :mvt-loschwitz {:source {:remote :mvt :type :geojson
+                                           #_#_:mvt-loschwitz {:source {:remote :mvt :type :geojson
                                                                     :args {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
                                                                            :layer "roads"} }}}})])
 
-  (transact! SPA [(mutate-layers {:data {:hexbin-example {:overlays [{:class :hexbin
+  (transact! app [(mutate-layers {:data {:hexbin-example {:overlays [{:class :hexbin
                                                                       :dataset :vvo
                                                                       :filter {[:geometry :type] #{"Point"}
                                                                                [:properties :public_transport] #{"stop_position"}}}]}
@@ -63,4 +63,4 @@
   (app/set-root! SPA root/Root {:initialize-state? true})
   ;(dr/initialize! SPA)
   (app/mount! SPA root/Root "app" {:initialize-state? false})
-  (load-all!))
+  (load-all! SPA))
