@@ -1,4 +1,4 @@
-(ns com.fulcrologic.framework7.factory-helpers
+(ns app.ui.framework7.factory-helpers
   (:require
     [goog.object :as gobj]
     [com.fulcrologic.fulcro.dom :as dom]))
