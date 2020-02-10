@@ -22,7 +22,7 @@
                                    (get "Trachenberger Platz"))
         edges (->> (for [f1 trachenberger-features]
                         (->> (for [f2 trachenberger-features]
-                                  (edge-between-features f1 f2 1))
+                                  (edge-between-features f1 f2 5))
                              (remove nil?)))
                    (apply concat))]
        (swap! graphs assoc :main (apply graph/weighted-graph edges))))
