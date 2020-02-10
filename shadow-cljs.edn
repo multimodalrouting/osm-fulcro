@@ -16,8 +16,8 @@
                         :target     :browser
                         :output-dir "cordova/www/js/main"
                         :asset-path "/js/main"
-                        :modules    {:main {:init-fn app.client/init
-                                            :entries [app.client]}}
+                        :modules    {:main {:init-fn app.client-f7/init
+                                            :entries [app.client-f7]}}
                         :dev        {:compiler-options
                                      {:external-config {:ghostwheel {}}}}
 
@@ -25,7 +25,7 @@
 
                                             :http-port         8280
                                             :http-root         "cordova/www"
-                                            :after-load        app.cordova.client/refresh
+                                            :after-load        app.client-f7/refresh
                                             :preloads          [com.fulcrologic.fulcro.inspect.preload app.development-preload]
                                             :use-document-host false}}
           :cordova-inplace    {
@@ -33,8 +33,8 @@
                                :output-dir "cordova/platforms/android/app/src/main/assets/www/js/main"
 
                                :asset-path "/js/main"
-                               :modules    {:main {:init-fn app.client/init
-                                                   :entries [app.client]}}
+                               :modules    {:main {:init-fn app.client-f7/init
+                                                   :entries [app.client-f7]}}
                                :dev        {:compiler-options
                                             {:external-config {:ghostwheel {}}}}
 
@@ -43,7 +43,7 @@
                                             :http-root        "cordova/platforms/android/app/src/main/assets/www/"
                                             :preloads          [app.cordova-preload app.development-preload]
                                             :use-document-host false
-                                            :devtools-url  "http://10.0.2.2:9630"
+                                            :devtools-url  "http://172.22.99.134:9630"
                                             }}
 
           :test       {:target           :browser-test
