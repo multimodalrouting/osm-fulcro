@@ -1,6 +1,5 @@
 (ns app.ui.leaflet
   (:require
-    [app.ui.leaflet.sidebar :refer [FulcroSidebar fulcroSidebar controlOpenSidebar]]
     [app.ui.leaflet.layers :refer [overlay-class->component]]
     [app.ui.leaflet.tracking :refer [controlToggleTracking ControlToggleTracking]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
@@ -49,7 +48,7 @@
                                   }
                                  ))}))
 
-(def startStopMarker (factory StartStopMarker {:key-fn #((hash [(:lat %) (:lng %)]))}))
+#_(def startStopMarker (factory StartStopMarker {:key-fn #((hash [(:lat %) (:lng %)]))}))
 
 
 (defsc Leaflet

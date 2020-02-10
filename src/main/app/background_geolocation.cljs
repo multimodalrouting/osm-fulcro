@@ -4,9 +4,8 @@
             [com.fulcrologic.fulcro.data-fetch :refer [load!]]
             [app.application :refer [SPA]]
             [com.fulcrologic.fulcro.ui-state-machines :as uism]
-            [app.ui.leaflet.state :refer [new-sensor-data new-location-data]]
             [app.utils.gpx :refer [geo->gpx]]
-            ))
+            [app.utils.ring-buffer :as rb]))
 
 
 
@@ -188,6 +187,37 @@
     (fn [state]
       (comp/transact! SPA [(update-background-location-tracking-state {:bgstate (js->clj state :keywordize-keys true)})])
       )))
+
+
+(defmutation new-sensor-data [{:keys [values sensor_type]}]
+  (action [{:keys [state]}]
+          (let [values (vec values)
+                keywd (keyword "sensors" sensor_type)
+                ]
+            (do
+              (let [rbuf
+                    (if (nil? (keywd @state))
+                      (rb/ring-buffer 10)
+                      (keywd @state)
+                      )]
+                (swap! state into {keywd (conj rbuf values)}))
+              ))))
+
+(defmutation new-location-data [{:keys [values sensor_type]}]
+  (action [{:keys [state]}]
+          (let [values (vec values)
+                keywd (keyword "sensors" sensor_type)
+                ]
+            (do
+              (let [rbuf
+                    (if (nil? (keywd @state))
+                      (vec [])
+                      (keywd @state)
+                      )]
+                (swap! state into {keywd (conj rbuf values)}))
+              ))))
+
+
 
 (defn listenForEvents!
   []

@@ -2,7 +2,7 @@
   (:require
     [app.application :refer [SPA]]
     [app.ui.root :as root]
-    [app.ui.leaflet.state :refer [mutate-datasets mutate-layers new-sensor-data]]
+    [app.ui.leaflet.state :refer [mutate-datasets mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.application :as app]
@@ -24,7 +24,7 @@
                                                                                "node.connections[public_transport=stop_position];"]}}}})]))
 
 
-(defn initSensors
+#_(defn initSensors
   [sensorTypes]
   (do
     (prn "init Sensors")

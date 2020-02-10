@@ -7,12 +7,10 @@
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
-    [app.ui.leaflet :as leaflet]
     [app.routing.graphs :refer [graphs calculate-graphs]]
     [app.routing.route :refer [calculate-routes]]
     [loom.graph :as graph]
-    [app.model.geofeatures :as gf :refer [GeoFeatures]]
-    [app.utils.ring-buffer :as rb]
+    [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     ))
 
 (defmutation mutate-datasets-load
@@ -68,37 +66,6 @@
             )))
 
 
-(defmutation new-sensor-data [{:keys [values sensor_type]}]
-  (action [{:keys [state]}]
-          (let [values (vec values)
-                keywd (keyword "sensors" sensor_type)
-                ]
-            (do
-              (let [rbuf
-                    (if (nil? (keywd @state))
-                      (rb/ring-buffer 10)
-                      (keywd @state)
-                      )]
-                (swap! state into {keywd (conj rbuf values)}))
-                ))))
-
-(defmutation new-location-data [{:keys [values sensor_type]}]
-  (action [{:keys [state]}]
-          (let [values (vec values)
-                keywd (keyword "sensors" sensor_type)
-                ]
-            (do
-              (let [rbuf
-                    (if (nil? (keywd @state))
-                      (vec [])
-                      (keywd @state)
-                      )]
-                (swap! state into {keywd (conj rbuf values)}))
-              ))))
-
-
-
-
 (def layers->dataset->graph->route
   {::steps/id {:layers->dataset->graph->route
     {::steps/id :layers->dataset->graph->route
@@ -113,15 +80,15 @@
   [this {:as props}]
   {:initial-state (fn [_] layers->dataset->graph->route)
    :query [[::steps/id :layers->dataset->graph->route] (get-query Steps)
-           ::leaflet/id ::gf/id]}
+           :app.ui.leaflet/id ::gf/id]}
 
   (let [state (get props [::steps/id :layers->dataset->graph->route])
         step-list (::steps/step-list state)
-        leaflets (::leaflet/id props)
+        leaflets (:app.ui.leaflet/id props)
         geofeatures (::gf/id props)]
 
        (if (not (:state (title->step "Layers" step-list)))
-           (let [list-of-layers-per-leaflet (map #(count (::leaflet/layers (val %))) leaflets)
+           (let [list-of-layers-per-leaflet (map #(count (:app.ui.leaflet/layers (val %))) leaflets)
                  leaflet-count (count list-of-layers-per-leaflet)
                  layers-sum (reduce + list-of-layers-per-leaflet)
                  errors (remove nil? [(if-not (pos? leaflet-count) "No Leaflets found")
