@@ -1,15 +1,13 @@
 (ns app.ui.leaflet
   (:require
-    [app.routing.wip :refer [routing-example]]
     [app.ui.leaflet.sidebar :refer [FulcroSidebar fulcroSidebar controlOpenSidebar]]
     [app.ui.leaflet.layers :refer [overlay-class->component]]
-    [app.ui.leaflet.state :as state]
     [app.ui.leaflet.tracking :refer [controlToggleTracking ControlToggleTracking]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
     [app.ui.leaflet.layers.extern.mvt :refer [mvtLayer]]
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
-    ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay Marker Popup GeoJSON Polyline]]
+    ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay Marker Popup GeoJSON Polyline LayersControl.BaseLayer TileLayer]]
     ["leaflet" :as l]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.components :as comp]
@@ -18,6 +16,8 @@
 (def leafletMap (react-factory Map))
 (def layersControl (react-factory LayersControl))
 (def layersControlOverlay (react-factory LayersControl.Overlay))
+(def layersControlBaseLayer (react-factory LayersControl.BaseLayer))
+(def tileLayer (react-factory TileLayer))
 (def marker (react-factory Marker))
 (def popup (react-factory Popup))
 (def geoJson (react-factory GeoJSON))
@@ -32,7 +32,7 @@
                     filter-rule)
           (reduce #(and %1 %2))))))
 
-(defsc StartStopMarker
+#_(defsc StartStopMarker
   [this {:keys [lat lng]}]
   {:query         [:lat :lng]
    :initial-state {:lat 51 :lng 13}
@@ -53,85 +53,42 @@
 
 
 (defsc Leaflet
-  [this props]
-  {:query [:gf/id
-           :selected/points
-           :graphhopper/route
+  [this {:as props ::keys [id center zoom layers]
+                   :keys [style]
+                   :or {center [51.055 13.74]
+                        zoom 12
+                        style {:height "100%" :width "100%"}}}]
+  {:ident (fn [] [:leaflet/id id])
+   :query [::id ::layers ::center ::zoom
+           ::gf/id :style
            {:background-location/state (comp/get-query ControlToggleTracking)}
-           :sensors/LOCATION
            ]}
-  (routing-example (get-in props [::gf/id :vvo ::gf/geojson]))
+  ;(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 
-  (leafletMap {:style {:height "100%" :width "100%"}
-               :center [51.055 13.74] :zoom 12}
-              (controlOpenSidebar {})
-              (controlToggleTracking (:background-location/state props))
-              (layersControl {:key (hash props)}
-                             baseLayers
-                             mvtLayer
-
-
-                             )))
-(defsc LeafletAll
-  [this props]
-  {:query [:gf/id
-           :leaflet/datasets
-           :leaflet/layers
-           :selected/points
-           :graphhopper/route
-           {:background-location/state (comp/get-query ControlToggleTracking)}
-           :sensors/LOCATION
-           ]}
-  (routing-example (get-in props [::gf/id :vvo ::gf/geojson]))
-
-  (leafletMap {:style {:height "100%" :width "100%"}
-               :center [51.055 13.74] :zoom 12}
-    (controlOpenSidebar {})
+  (leafletMap {:style style
+               :center center :zoom zoom}
+    ;(controlOpenSidebar {})
     (controlToggleTracking (:background-location/state props))
-    (layersControl {:key (hash props)}
-      baseLayers
-      mvtLayer
+    (layersControl {}
+      ;mvtLayer
 
-      (for [[layer-name layer] (:leaflet/layers props)]
-           (layersControlOverlay {:key layer-name :name layer-name :checked (boolean (:prechecked layer))}
-             (for [overlay (:overlays layer)
-                   :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])
-                         filtered-features (filter (overlay-filter-rule->filter (:filter overlay)) dataset-features)
-                         component (overlay-class->component (:class overlay))]]
-                  (if (and component filtered-features)
-                      (component {:react-key (str layer-name (hash overlay) (hash filtered-features))
-                                  :geojson {:type "FeatureCollection" :features filtered-features}})))))
-      #_(layersControlOverlay
-        {:key "test-x-layer" :name "test" :checked true}
-        #_(marker {:position [51.055 13.74]
-                   :icons (.icon. l (clj->js
-                                      {
-                                       :iconUrl     "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"
-                                       :shadowUrl   "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png"
-                                       :iconSize    [25, 41]
-                                       :iconAnchor  [12, 41]
-                                       :popupAnchor [1, -34]
-                                       :shadowSize  [41, 41]
-                                       }
-                                      ))
-                   })
-        (if (nil? (:selected/points props))
-          []
-          (for [point (:selected/points props)]
-            (startStopMarker (:selected/latlng point))
-            )
-          )
-        ))))
+      (for [[layer-name layer] layers] [
 
-(def leaflet (factory LeafletAll))
+           (if-let [base (:base layer)]
+             (layersControlBaseLayer base
+               (tileLayer (:tile base))))
 
-(defsc LeafletWithSidebar [this props]
-  {:query (fn [] (into (get-query LeafletAll)
-                       (get-query FulcroSidebar)))}
-  (dom/div {:style {:width "100%" :height "100%"}}
-    (if (get-in props [:leaflet/sidebar :visible])
-        (fulcroSidebar props))
-    (leaflet props)))
+           (let [overlays (->> (for [overlay (:overlays layer)
+                                     :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])
+                                           filtered-features (filter (overlay-filter-rule->filter (:filter overlay)) dataset-features)
+                                           component (overlay-class->component (:class overlay))]]
+                                    (if (and component (not (empty? filtered-features)))
+                                        (component {:react-key (str layer-name (hash overlay) (hash filtered-features))
+                                                    :geojson {:type "FeatureCollection" :features filtered-features}})))
+                               (remove nil?))]
+                (if-not (empty? overlays)
+                        (layersControlOverlay {:key layer-name :name layer-name :checked (boolean (:prechecked layer))}
+                                              overlays)))]))))
 
-(def leafletWithSidebar (factory LeafletWithSidebar))
+(def leaflet (factory Leaflet))
 
