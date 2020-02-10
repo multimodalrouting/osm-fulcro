@@ -3,6 +3,7 @@
     [app.application :refer [SPA]]
     [com.fulcrologic.fulcro.application :refer [current-state]]
     [com.fulcrologic.fulcro.algorithms.denormalize :refer [db->tree]]
+    [app.model.geofeatures :as gf]
     [loom.graph :as graph] ;; right now no multigraph support -> migrate to ubergraph
     [loom.attr :as attr]
     [loom.alg :as alg]
@@ -93,8 +94,8 @@
         _ (prn '(count (graph/nodes sg)) (count (graph/nodes sg))
                '(count (graph/edges sg)) (count (graph/edges sg)))
 
-        from (or (if-let [v (resolve 'from)] @v) (->> (graph/nodes sg) get-random (get pointsUnique) (def from)))
-        to   (or (if-let [v (resolve 'to  )] @v) (->> (graph/nodes sg) get-random (get pointsUnique) (def to)))
+        from (->> (graph/nodes sg) get-random (get pointsUnique))
+        to   (->> (graph/nodes sg) get-random (get pointsUnique))
         [path length] (alg/dijkstra-path-dist g (pointsUnique$index from) (pointsUnique$index to))]
 
        (prn :from from :to to :path path :length length)
@@ -102,6 +103,6 @@
                                          :data (path->geojson (map #(get pointsUnique %) path))})])))
 
 (comment
-  (let [path [:leaflet/datasets :vvo :data :geojson]
+  (let [path [::gf/id :vvo ::gf/geojson]
         geojson (get-in (db->tree path (current-state SPA) {}) path)]
-       (routing-example geojson {:use-caching? true})))
+       (routing-example geojson {:use-caching? false #_true})))

@@ -14,5 +14,5 @@
                                (get-query Leaflet)]))}
 
   (dom/div {:style {:width "100%" :height "100%"}}
-   (state (merge props #_{:force-recalc true}))
+   (state (merge props))
    (leaflet (merge (get-in props [::leaflet/id :main]) (select-keys props [::gf/id]) {:style {:height "80%" :width "100%"}}))))

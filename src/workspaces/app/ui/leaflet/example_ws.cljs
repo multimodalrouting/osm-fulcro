@@ -21,7 +21,7 @@
                                (get-query Leaflet)]))}
 
   (dom/div {:style {:width "100%" :height "100%"}}
-   (state (merge props {:force-recalc true}))
+   (state props)
    (leaflet (merge (get-in props [::leaflet/id :top]) (select-keys props [::gf/id]) {:style {:height "40%" :width "100%"}}))
    (dom/button {:onClick (fn [_] (let [new-layer (rand-nth [:aerial :osm :memo :openpt])]
                                       (transact! this [(mutate-layers {::leaflet/id :top

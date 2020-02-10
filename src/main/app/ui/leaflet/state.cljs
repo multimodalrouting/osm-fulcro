@@ -6,7 +6,10 @@
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
-    [app.ui.leaflet :as leaflet]))
+    [app.ui.leaflet :as leaflet]
+    [app.routing.graphs :refer [graphs calculate-graphs]]
+    [app.routing.route :refer [calculate-routes]]
+    [loom.graph :as graph]))
 
 
 (defmutation mutate-datasets-load
@@ -43,10 +46,9 @@
 (defsc State
   "State machine keeping track of loading all required data.
    If you want enforce reloading, just use `steps/update-state-of-step` to set the state back to nil"
-  [this {:as props :keys [force-recalc]}]
+  [this {:as props}]
   {:initial-state (fn [_] layers->dataset->graph->route)
-   :query [:force-recalc
-           [::steps/id :layers->dataset->graph->route] (get-query Steps)
+   :query [[::steps/id :layers->dataset->graph->route] (get-query Steps)
            ::leaflet/id ::gf/id]}
 
   (let [state (get props [::steps/id :layers->dataset->graph->route])
@@ -54,7 +56,7 @@
         leaflets (::leaflet/id props)
         geofeatures (::gf/id props)]
 
-       (if (or force-recalc (not (:state (title->step "Layers" step-list))))
+       (if (not (:state (title->step "Layers" step-list)))
            (let [list-of-layers-per-leaflet (map #(count (::leaflet/layers (val %))) leaflets)
                  leaflet-count (count list-of-layers-per-leaflet)
                  layers-sum (reduce + list-of-layers-per-leaflet)
@@ -75,10 +77,11 @@
                                                                      layers-sum " Layers")}))))
 
        (when-not (:state (title->step "Geofeatures" step-list))
-                 (transact! this [(update-state-of-step {:steps :layers->dataset->graph->route
-                                                         :step (title->step-index "Geofeatures" step-list)
-                                                         :new-state :active
-                                                         #_#_:info "get index"})])  ;; TODO maybe we just want get the sources without geojson first?
+                 (update-state-of-step-if-changed this props
+                                                  {:steps :layers->dataset->graph->route
+                                                   :step (title->step-index "Geofeatures" step-list)
+                                                   :new-state :active
+                                                   #_#_:info "get index"})  ;; TODO maybe we just want get the sources without geojson first?
                  ;; load all ::gf/Geofeature (sources, but not geojson) normalized into ::gf/id
                  (load! this ::gf/all GeoFeaturesAll {:target [:tmp ::gf/all]
                                                       :post-mutation `post-mutation
@@ -88,13 +91,41 @@
                  ;; TODO use app.ui.leaflet.state/mutate-datasets-load to load features from non-default remotes
 
        (if (and (= :done (:state (title->step "Geofeatures" step-list)))
-                (or force-recalc (not (:info (title->step "Geofeatures" step-list)))))
+                (not (:info (title->step "Geofeatures" step-list))))
            (update-state-of-step-if-changed this props
                                             {:steps :layers->dataset->graph->route
                                              :step (title->step-index "Geofeatures" step-list)
                                              :new-state :done
                                              :info (str (count geofeatures) " Sources; "
                                                         (reduce + (map #(count (get-in % [::gf/geojson :features])) (vals geofeatures))) " Features")}))
+
+       (when (and (#{:done} (:state (title->step "Geofeatures" step-list)))
+                  (not (:state (title->step "Graph" step-list))))
+             (update-state-of-step-if-changed this props
+                                              {:steps :layers->dataset->graph->route
+                                               :step (title->step-index "Graph" step-list)
+                                               :new-state :active})
+             (calculate-graphs (::gf/id props))
+             (let [nodes (reduce + (map #(count (graph/nodes %)) (vals @graphs)))
+                   edges (reduce + (map #(count (graph/edges %)) (vals @graphs)))]
+                  (update-state-of-step-if-changed this props
+                                                   {:steps :layers->dataset->graph->route
+                                                    :step (title->step-index "Graph" step-list)
+                                                    :new-state (if (pos? edges) :done :failed)
+                                                    :info (str nodes " Nodes; " edges " Edges")})))
+
+       (when (and (#{:done} (:state (title->step "Graph" step-list)))
+                  (not (:state (title->step "Route" step-list))))
+             (update-state-of-step-if-changed this props
+                                              {:steps :layers->dataset->graph->route
+                                               :step (title->step-index "Route" step-list)
+                                               :new-state :active})
+             (let [result (calculate-routes)]
+                  (update-state-of-step-if-changed this props
+                                                  {:steps :layers->dataset->graph->route
+                                                   :step (title->step-index "Route" step-list)
+                                                   :new-state (if-not (empty? result) :done :failed)
+                                                   :info (str "ETA " (second result) "min")})))
 
       (steps/steps (merge state {:style {:width "100%"}}))))
 
