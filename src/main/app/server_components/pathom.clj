@@ -96,3 +96,6 @@
 
 (defstate parser
   :start (build-parser nil))
+
+(comment
+  (parser {} [{::gf/all [::gf/source]}]))

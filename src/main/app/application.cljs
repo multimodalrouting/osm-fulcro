@@ -42,4 +42,9 @@
                                                                            (assoc resp :body {[::gf/id :overpass-example] {::gf/geojson data}})))}) ;; TODO
                          :mvt (mvt-remote)}})
 
-(defonce SPA (app/fulcro-app SPA_conf))
+(defn conf-with-default-remote
+  "add the default remote (called :remote)"
+  [conf default-remote]
+  (update-in conf [:remotes] (fn [remotes] (assoc remotes :remote (get remotes default-remote)))))
+
+(defonce SPA (app/fulcro-app (conf-with-default-remote SPA_conf :pathom)))
