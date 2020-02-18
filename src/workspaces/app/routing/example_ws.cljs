@@ -13,7 +13,7 @@
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
                                  {::leaflet/id {:main {::leaflet/center [51.0847 13.728]
-                                                       ::leaflet/zoom 18
+                                                       ::leaflet/zoom 14
                                                        ::leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}

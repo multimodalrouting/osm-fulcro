@@ -30,27 +30,28 @@
                      nil {:base {:name "NONE (only overlays)"
                                  :tile {:url ""}}}
                      :hexbin-example {:overlays [{:class :hexbin
-                                                  :dataset :vvo
+                                                  :dataset :vvo-small
                                                   :filter {[:geometry :type] #{"Point"}
                                                            [:properties :public_transport] #{"stop_position"}}}]}
                      :vectorGrid-loschwitz {:prechecked true
                                             :overlays [{:class :vectorGrid
                                                         :dataset :mvt-loschwitz}]}
-                     :vectorGrid-vvo-connections {:overlays [{:class :vectorGrid
-                                                              :dataset :vvo
-                                                              :filter {[:geometry :type] #{"LineString"}}}]}
+                     :vectorGrid-trachenberger {:prechecked true
+                                                :overlays [{:class :vectorGrid
+                                                            :dataset :trachenberger
+                                                            :filter {[:geometry :type] #{"LineString"}}}]}
                      :lines-vvo-connections {:prechecked true
                                              :overlays [{:class :d3SvgLines
                                                          :dataset :vvo
                                                          :filter {[:geometry :type] #{"LineString"}}}]}
                      :points-vvo-stops {:prechecked true
                                         :overlays [{:class :d3SvgLabelPoints
-                                                    :dataset :vvo
+                                                    :dataset :vvo-small
                                                     :filter {[:geometry :type] #{"Point"}
                                                              [:properties :public_transport] #{"stop_position"}}}]}
                      :pieChart-vvo-stops {:prechecked true
                                           :overlays [{:class :d3SvgPieChart
-                                                      :dataset :vvo
+                                                      :dataset :vvo-small
                                                       :filter {[:geometry :type] #{"Point"}
                                                                [:properties :public_transport] #{"stop_position"}}}]}
                      :routinggraph {:prechecked true

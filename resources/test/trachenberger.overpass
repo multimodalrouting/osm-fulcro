@@ -1,0 +1,9 @@
+[out:json];
+way(area.city)({{bbox}}); (._;>;)->.area;
+
+way.area[highway]; (._;>;)->.highways;
+way.area[building]; (._;>;)->.buildings;
+
+(.highways; .buildings;);
+
+out;

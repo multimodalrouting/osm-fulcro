@@ -32,10 +32,10 @@
 (defn connect-stop-positions [all-features]
   (connect-grouped-nodes all-features
                          {:graph-id :connected-stations
-                          :dataset :vvo
+                          :dataset :vvo-small
                           :filter-rule {[:geometry :type] #{"Point"}
                                         [:properties :public_transport] #{"stop_position"}
-                                        [:properties :name] #{"Trachenberger Platz"}}
+                                        #_#_[:properties :name] #{"Trachenberger Platz"}}
                           :group-by-rule [:properties :name]
                           :weight-fn (constantly 10)
                           :id-fn :id}))
@@ -52,7 +52,7 @@
   "return a lookup table to calculate features from their ids"
   [geofeatures]
   (let [id-fn :id  ;; TODO
-        dataset :vvo
+        dataset :vvo-small
         features (get-in geofeatures [dataset ::gf/geojson :features])
         id2feature (zipmap (map id-fn features) features)]
        id2feature))

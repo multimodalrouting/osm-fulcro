@@ -10,8 +10,12 @@
     [jsonista.core :as json]
     [app.model.geofeatures :as gf]))
 
-(def geofeatures {:vvo {::gf/source {:comment "VVO stops+lines"
-                                     :remote :pathom :type :geojson}}
+(def geofeatures {;:vvo {::gf/source {:comment "VVO stops+lines"
+                  ;                   :remote :pathom :type :geojson}
+                  :vvo-small {::gf/source {:comment "VVO stops+lines (north-west)"
+                                           :remote :pathom :type :geojson}}
+                  :trachenberger {::gf/source {:comment "Trachenberger Platz: Streets+Buildings"
+                                               :remote :pathom :type :geojson}}
                   :overpass-example {::gf/source {:remote :overpass :type :geojson
                                                   :query ["area[name=\"Dresden\"]->.city;"
                                                           "nwr(area.city)[operator=\"DVB\"]->.connections;"
@@ -31,12 +35,15 @@
   (-> (get geofeatures id)
       (select-keys [::gf/source])))
 
-(pc/defresolver gf-geojson-vvo [_ {::gf/keys [id]}]
+(pc/defresolver gf-geojson-file [_ {::gf/keys [id]}]
   {::pc/input #{::gf/id}
    ::pc/output [::gf/geojson]}
-  (if (= id :vvo)
-      {::gf/geojson (json/read-value (slurp "resources/test/vvo.geojson")
-                                     (json/object-mapper {:decode-key-fn true}))}))
+  (let [known_files {:vvo "resources/test/vvo.geojson"
+                     :vvo-small "resources/test/vvo-small.geojson"
+                     :trachenberger "resources/test/trachenberger.geojson"}]
+       (if-let [filename (get known_files id)]
+               {::gf/geojson (json/read-value (slurp filename)
+                                              (json/object-mapper {:decode-key-fn true}))})))
 
 (pc/defresolver index-explorer [env _]
   {::pc/input #{:com.wsscode.pathom.viz.index-explorer/id}
@@ -46,7 +53,7 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-vvo])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
