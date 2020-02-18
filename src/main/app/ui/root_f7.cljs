@@ -1,9 +1,10 @@
 (ns app.ui.root-f7
   (:require
     [app.ui.leaflet :refer [Leaflet leaflet]]
+    [app.ui.leaflet.state :refer [State state mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
     [app.ui.framework7.components :refer
-     [f7-app f7-panel f7-view f7-views f7-page f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button]]
+     [f7-app f7-panel f7-view f7-views f7-page f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -12,24 +13,41 @@
     [app.utils.file-save :refer [store-file open-with]]
     [app.utils.gpx :refer [geo->gpx-xml]]
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
+    [app.ui.leaflet.layers :refer [example-layers]]
     ))
 
-(defsc Main [this props]
-  {:query         (fn [] (get-query Leaflet))
-   :ident         (fn [] [:component/id :main])
-   :route-segment ["main"]}
+(defsc MapView [this props]
+  {
+   :initial-state (fn [_] (merge (comp/get-initial-state State)
+                                 {:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}))
+   :query (fn [] (reduce into [(comp/get-query State)
+                               (comp/get-query Leaflet)]))
+
+   :ident         (fn [] [:component/id :map-view])
+   :route-segment ["main"]
+   }
   (f7-view
     nil
     (f7-page
       nil
-      (f7-navbar
-        nil
-        (f7-nav-left
-          nil
-          (f7-link {:icon "bars" :panelOpen "left"})
-          ))
-      (leaflet props)
+      (f7-fab
+        {:position  "left-top"
+         :slot      "fixed"
+         :className "panel-open"
+         :panel "left"
+         }
+        (f7-icon
+          {
+           :icon    "bars"
+           }
+          )
+        )
+      (f7-toolbar {:position "bottom"}
+                  (state props))
+      (leaflet (merge (get-in props [:app.ui.leaflet/id :main]) (select-keys props [:app.model.geofeatures/id]) {:style {:height "100%" :width "100%"}}))
       )))
+
+(def mapView (comp/factory MapView))
 
 (defsc Settings [this {:keys [:account/time-zone :account/real-name] :as props}]
   {:query         [:account/time-zone :account/real-name]
@@ -88,15 +106,20 @@
           )))))
 
 (dr/defrouter TopRouter [this props]
-              {:router-targets [Main MyTracks Settings]})
+              {:router-targets [MapView MyTracks Settings]})
 
 (def ui-top-router (comp/factory TopRouter))
 
-(defsc AppMain [this {:root/keys [router]}]
-  {:query         [{:root/router (comp/get-query TopRouter)}
-                   [::uism/asm-id ::TopRouter]]
-   :ident         (fn [] [:component/id :main-app])
-   :initial-state {:root/router {}}}
+(defsc AppMain [this {:root/keys [router main] :as props}]
+  {:query         (fn []
+                    (let [query (reduce into [(comp/get-query MapView)
+                                              [{:root/router (comp/get-query TopRouter)}
+                                               [::uism/asm-id ::TopRouter]]])]
+                      query
+                      ))
+   :initial-state (fn [_] (merge
+                            (comp/get-initial-state MapView)
+                            {:root/router {}}))}
   (let [current-tab (some-> (dr/current-route this this) first keyword)]
     (f7-app
       (clj->js {:params {
@@ -139,13 +162,15 @@
                   )
                 )))))
       (f7-views {:tabs true}
-                (ui-top-router router)))))
+                (mapView props)
+                #_(ui-top-router router)))))
 
 
 (def ui-app-main (comp/factory AppMain))
 
-(defsc Root [this {:root/keys [main-app]}]
+#_(defsc Root [this {:root/keys [main-app]}]
   {:query         [{:root/main-app (comp/get-query AppMain)}]
    :ident         (fn [] [:component/id :ROOT])
-   :initial-state {:root/main-app {}}}
+   :initial-state (fn [_] {:root/main-app (comp/get-initial-state AppMain)})
+   }
   (ui-app-main main-app))
