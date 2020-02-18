@@ -7,9 +7,9 @@
                      })
 
 (def config {
-             :app.server.pathom-demo/config     {:url "http://10.0.0.2/api"}
-             :app.server.pathom-gpx/config      {:url "http://10.0.0.2/api"}
-             :app.server.graphhopper-web/config {:url "http://10.0.0.2:8989/route"}
+             :app.server.pathom-demo/config     {:url "http://localhost/api"}
+             :app.server.pathom-gpx/config      {:url "http://localhost/api"}
+             ;:app.server.graphhopper-web/config {:url "http://10.0.0.2:8989/route"}
              })
 
 

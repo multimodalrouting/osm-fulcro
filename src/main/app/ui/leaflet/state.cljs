@@ -7,7 +7,8 @@
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
-    [app.routing.graphs :refer [graphs calculate-graphs]]
+    [app.ui.leaflet :as leaflet]
+    [app.routing.graphs :refer [graphs calculate-graphs paths->geojson features->id2feature feature-ids->lngLatPaths]]
     [app.routing.route :refer [calculate-routes]]
     [loom.graph :as graph]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
@@ -16,7 +17,7 @@
 (defmutation mutate-datasets-load
   [{:keys [updated-state]}]
   (action [{:keys [app]}]
-    (doseq [[ds-name ds] (:leaflet/datasets updated-state)
+    (doseq [[ds-name ds] (::gf/id updated-state)
             :let [source (:source ds)]]
            (load! app [::gf/id ds-name] GeoFeature {:remote (:remote source)
                                                     :params ;; :params must be a map, so we handover {:params {:args …}}
@@ -24,10 +25,11 @@
 
 (defmutation mutate-datasets [{:keys [path data]}]
   (action [{:keys [app state]}]
-    (swap! state update-in (concat [:leaflet/datasets] path)
+    (swap! state update-in (concat [::gf/id] path)
                            (fn [d_orig d_new] (if (map? d_new) (merge d_orig d_new) d_new))
                            data)
-    (transact! app [(mutate-datasets-load {:updated-state @state})])))
+    ;; not longer needed
+    #_(transact! app [(mutate-datasets-load {:updated-state @state})])))
 
 (defmutation mutate-layers [{:app.ui.leaflet/keys [id] :keys [path data]}]
   (action [{:keys [state]}]
@@ -137,8 +139,16 @@
                                                :step (title->step-index "Graph" step-list)
                                                :new-state :active})
              (calculate-graphs (::gf/id props))
-             (let [nodes (reduce + (map #(count (graph/nodes %)) (vals @graphs)))
-                   edges (reduce + (map #(count (graph/edges %)) (vals @graphs)))]
+             (let [nodes (reduce + (map #(count (graph/nodes (:graph %))) (vals @graphs)))
+                   edges (reduce + (map #(count (graph/edges (:graph %))) (vals @graphs)))]
+                  (let [id2feature (features->id2feature (::gf/id props))
+                        edge-pairs (graph/edges (:graph (first (vals @graphs))))
+                        paths (map #(feature-ids->lngLatPaths % id2feature)
+                                   edge-pairs)]
+                       (transact! this [(mutate-datasets {:path [:routinggraph]
+                                                          :data {::gf/geojson (paths->geojson paths
+                                                                                              {:style {:stroke "darkgreen"
+                                                                                                       :stroke-width 1}})}})]))
                   (update-state-of-step-if-changed this props
                                                    {:steps :layers->dataset->graph->route
                                                     :step (title->step-index "Graph" step-list)
@@ -151,12 +161,17 @@
                                               {:steps :layers->dataset->graph->route
                                                :step (title->step-index "Route" step-list)
                                                :new-state :active})
-             (let [result (calculate-routes)]
+             (let [[path dist] (calculate-routes)]
+                  (transact! this [(mutate-datasets {:path [:routes]
+                                                     :data {::gf/geojson (paths->geojson [(let [id2feature (features->id2feature (::gf/id props))]
+                                                                                               (feature-ids->lngLatPaths path id2feature))]
+                                                                                         {:style {:stroke "blue"
+                                                                                                  :stroke-width 4}})}})])
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Route" step-list)
-                                                   :new-state (if-not (empty? result) :done :failed)
-                                                   :info (str "ETA " (second result) "min")})))
+                                                   :new-state (if path :done :failed)
+                                                   :info (str "ETA " dist "min")})))
 
       (steps/steps (merge state {:style {:width "100%"}}))))
 
