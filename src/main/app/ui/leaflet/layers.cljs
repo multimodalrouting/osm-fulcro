@@ -51,6 +51,12 @@
                                                       :dataset :vvo
                                                       :filter {[:geometry :type] #{"Point"}
                                                                [:properties :public_transport] #{"stop_position"}}}]}
+                     :routinggraph {:prechecked true
+                                    :overlays [{:class :d3SvgLines
+                                                :dataset :routinggraph}]}
                      :routes {:prechecked true
                               :overlays [{:class :d3SvgLines
-                                          :dataset :routes}]}})
+                                          :dataset :routes}]}
+                     #_#_:routesPoints {:prechecked true
+                                    :overlays [{:class :d3SvgPoints
+                                                :dataset :routes}]}})
