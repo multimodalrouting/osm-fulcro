@@ -48,6 +48,9 @@
       [:link {:rel "stylesheet" :href "webjars/Semantic-UI/semantic.min.css"}]
       [:link {:rel "stylesheet" :href "@fortawesome/fontawesome-free/css/all.css"}]
       ;[:link {:rel "stylesheet" :href "leaflet/dist/leaflet.css"}]
+      [:link {:href "framework7/css/framework7.bundle.css"
+              :rel "stylesheet"
+              }]
       [:link {:rel "stylesheet" :href "https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css"}]
       [:style {:type "text/css"} (str
         ".sidebar-pane {padding: 0 !important;}"
@@ -59,7 +62,7 @@
       [:link {:rel "shortcut icon" :href "data:image/x-icon;," :type "image/x-icon"}]
       [:script (str "var fulcro_network_csrf_token = '" csrf-token "';")]]
      [:body
-      [:div#app {:style "width: 100%; height: 100%"}]
+      [:div#app {}]
       [:script {:src "d3/dist/d3.min.js"}]
       [:script {:src main}]]]))
 
@@ -84,7 +87,7 @@
 (defstate middleware
   :start
   (let [defaults-config (:ring.middleware/defaults-config config)
-        legal-origins (get config :legal-origins [#"localhost" #"http://localhost:8022"])]
+        legal-origins (get config :legal-origins [#".*"])]
     (-> not-found-handler
       (wrap-api "/api")
       (wrap-webjars "/webjars")

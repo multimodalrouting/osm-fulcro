@@ -1,7 +1,12 @@
 (ns app.model.geofeatures
-  (:require [com.fulcrologic.fulcro.components :refer [defsc]]))
+  (:require [com.fulcrologic.fulcro.components :refer [defsc get-query]]))
 
-(defsc GeoFeatures
+(defsc GeoFeature
   [this {::keys [id] :as props}]
   {:ident         (fn [] [::id id])
    :query         [::id ::source ::geojson]})
+
+(defsc GeoFeaturesAll
+  [this props]
+  {:ident         ::all
+   :query         [{::all (get-query GeoFeature)}]})

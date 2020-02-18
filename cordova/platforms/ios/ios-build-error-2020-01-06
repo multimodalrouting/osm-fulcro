@@ -1,0 +1,136 @@
+
+
+Showing Recent Issues
+
+Prepare build
+note: Using new build system
+note: Planning build
+note: Constructing build description
+
+
+
+Build target CordovaLib of project CordovaLib with configuration Debug
+
+
+Build target Multimodal Routing of project Multimodal Routing with configuration Debug
+
+CompileAssetCatalog /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal\ Routing/Images.xcassets (in target 'Multimodal Routing' from project 'Multimodal Routing')
+    cd /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool --output-format human-readable-text --notices --warnings --export-dependency-info /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/assetcatalog_dependencies --output-partial-info-plist /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/assetcatalog_generated_info.plist --app-icon AppIcon --launch-image LaunchImage --compress-pngs --enable-on-demand-resources YES --filter-for-device-model iPhone12,3 --filter-for-device-os-version 13.3 --sticker-pack-identifier-prefix io.github.multimodalrouting.routingapp.sticker-pack. --development-region English --target-device iphone --target-device ipad --minimum-deployment-target 10.0 --platform iphonesimulator --product-type com.apple.product-type.application --compile /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal\ Routing/Images.xcassets
+
+2020-01-06 14:58:43.611 ibtoold[83737:2722499] DEBUG: Added to environment: {
+    TMPDIR = "/var/folders/v9/_2zct4n94d11chv3s4wf_6pw0000gn/T/78F621F9-6FDE-424C-8E5F-95F9684FB051";
+}
+/* com.apple.actool.document.warnings */
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./LaunchImage.launchimage: warning: Launch images are deprecated in iOS 13.0. Use a launch storyboard or XIB instead.
+/* com.apple.actool.document.notices */
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][iphone][57x57][][][1x][][]: notice: 57x57 app icons only apply to iPhone apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][iphone][57x57][][][2x][][]: notice: 57x57@2x app icons only apply to iPhone apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][ipad][50x50][][][1x][][]: notice: 50x50 iPad spotlight icons only apply to iPad apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][ipad][50x50][][][2x][][]: notice: 50x50 iPad spotlight icons only apply to iPad apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][ipad][72x72][][][1x][][]: notice: 72x72 app icons only apply to iPad apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][ipad][72x72][][][2x][][]: notice: 72x72@2x app icons only apply to iPad apps targeting releases of iOS prior to 7.0
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./AppIcon.appiconset/[][ipad][76x76][][][1x][][]: notice: 76x76@1x app icons only apply to iPad apps targeting releases of iOS prior to 10.0.
+/Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal Routing/Images.xcassets:./LaunchImage.launchimage/[iphone][retina4][2x][portrait][full-screen][]: notice: This launch image only applies to iOS 6.x and prior but the minimum deployment is 7.0 or later.
+/* com.apple.actool.compilation-results */
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon20x20@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon20x20@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon29x29.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon29x29@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon29x29@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon40x40@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon40x40@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon57x57.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon57x57@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon60x60@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon60x60@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon20x20~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon20x20@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon29x29~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon29x29@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon40x40~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon40x40@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon50x50~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon50x50@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon72x72~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon72x72@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon76x76~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon76x76@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/AppIcon83.5x83.5@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-1100-Portrait-2436h@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-1100-Landscape-2436h@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-800-Portrait-736h@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-800-Landscape-736h@3x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-800-667h@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700-568h@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700-Portrait~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700-Landscape~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700-Portrait@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-700-Landscape@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-568h@2x.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-Portrait~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-Landscape~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-Portrait@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/LaunchImage-Landscape@2x~ipad.png
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal Routing.app/Assets.car
+/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal Routing.build/Debug-iphonesimulator/Multimodal Routing.build/assetcatalog_generated_info.plist
+
+
+ProcessInfoPlistFile /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app/Info.plist /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal\ Routing/Multimodal\ Routing-Info.plist (in target 'Multimodal Routing' from project 'Multimodal Routing')
+    cd /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios
+    builtin-infoPlistUtility /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios/Multimodal\ Routing/Multimodal\ Routing-Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/MainViewController-PartialInfo.plist -additionalcontentfile /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/CDVLaunchScreen-SBPartialInfo.plist -additionalcontentfile /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/assetcatalog_generated_info.plist -o /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app/Info.plist
+
+warning: 'UILaunchImages' has been deprecated, use launch storyboards instead. (in target 'Multimodal Routing' from project 'Multimodal Routing')
+
+Ld /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app/Multimodal\ Routing normal x86_64 (in target 'Multimodal Routing' from project 'Multimodal Routing')
+    cd /Users/yoeak/Projekte/MUltiMOdalRouting/osm-fulcro/cordova/platforms/ios
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -target x86_64-apple-ios10.0-simulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator13.2.sdk -L/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator -F/Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator -FMultimodal\ Routing/Plugins/cordova-plugin-background-fetch -FMultimodal\ Routing/Plugins/cordova-background-geolocation-lt -filelist /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/Objects-normal/x86_64/Multimodal\ Routing.LinkFileList -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/Objects-normal/x86_64/Multimodal\ Routing_lto.o -Xlinker -export_dynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -fobjc-arc -fobjc-link-runtime -ObjC -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/Multimodal\ Routing.app-Simulated.xcent /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/libCordova.a -framework TSBackgroundFetch -weak_framework AudioToolbox -weak_framework SystemConfiguration -weak_framework AVFoundation -weak-lsqlite3 -weak-lz -framework TSLocationManager -Xlinker -dependency_info -Xlinker /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Intermediates.noindex/Multimodal\ Routing.build/Debug-iphonesimulator/Multimodal\ Routing.build/Objects-normal/x86_64/Multimodal\ Routing_dependency_info.dat -o /Users/yoeak/Library/Developer/Xcode/DerivedData/Multimodal_Routing-fhljdsyzubjglodojojtydeitbln/Build/Products/Debug-iphonesimulator/Multimodal\ Routing.app/Multimodal\ Routing
+
+Undefined symbols for architecture x86_64:
+  "_OBJC_IVAR_$_DDLogMessage._tag", referenced from:
+      -[TSLogFormatter formatLogMessage:] in TSLocationManager(TSLogFormatter.o)
+  "_OBJC_CLASS_$_DDTTYLogger", referenced from:
+      objc-class-ref in TSLocationManager(TSLog.o)
+  "_OBJC_METACLASS_$_DDAbstractDatabaseLogger", referenced from:
+      _OBJC_METACLASS_$_TSDBLogger in TSLocationManager(TSDBLogger.o)
+  "_OBJC_CLASS_$_DDASLLogger", referenced from:
+      objc-class-ref in TSLocationManager(TSLog.o)
+  "_OBJC_CLASS_$_DDAbstractDatabaseLogger", referenced from:
+      _OBJC_CLASS_$_TSDBLogger in TSLocationManager(TSDBLogger.o)
+  "_OBJC_IVAR_$_DDLogMessage._message", referenced from:
+      -[TSDBLogEntry initWithLogMessage:] in TSLocationManager(TSDBLogger.o)
+      -[TSLogFormatter formatLogMessage:] in TSLocationManager(TSLogFormatter.o)
+  "_OBJC_IVAR_$_DDAbstractLogger._logFormatter", referenced from:
+      -[TSDBLogger db_log:] in TSLocationManager(TSDBLogger.o)
+  "_OBJC_IVAR_$_DDAbstractDatabaseLogger._saveThreshold", referenced from:
+      -[TSDBLogger initWithLogDirectory:] in TSLocationManager(TSDBLogger.o)
+  "_OBJC_IVAR_$_DDLogMessage._timestamp", referenced from:
+      -[TSDBLogEntry initWithLogMessage:] in TSLocationManager(TSDBLogger.o)
+  "_OBJC_IVAR_$_DDLogMessage._flag", referenced from:
+      -[TSDBLogEntry initWithLogMessage:] in TSLocationManager(TSDBLogger.o)
+      -[TSLogFormatter formatLogMessage:] in TSLocationManager(TSLogFormatter.o)
+  "_OBJC_IVAR_$_DDLogMessage._context", referenced from:
+      -[TSDBLogEntry initWithLogMessage:] in TSLocationManager(TSDBLogger.o)
+  "_OBJC_IVAR_$_DDLogMessage._function", referenced from:
+      -[TSLogFormatter formatLogMessage:] in TSLocationManager(TSLogFormatter.o)
+  "_OBJC_IVAR_$_DDAbstractDatabaseLogger._maxAge", referenced from:
+      -[TSDBLogger getLog:] in TSLocationManager(TSDBLogger.o)
+      -[TSDBLogger db_delete] in TSLocationManager(TSDBLogger.o)
+  "_OBJC_CLASS_$_DDLog", referenced from:
+      objc-class-ref in TSLocationManager(LocationAuthorization.o)
+      objc-class-ref in TSLocationManager(TSConfig.o)
+      objc-class-ref in TSLocationManager(HttpResponse.o)
+      objc-class-ref in TSLocationManager(TSDBLogger.o)
+      objc-class-ref in TSLocationManager(TSScheduler.o)
+      objc-class-ref in TSLocationManager(RPC.o)
+      objc-class-ref in TSLocationManager(TSGeofenceEvent.o)
+      ...
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+
+Build failed    06.01.20, 14:58    10.7 seconds

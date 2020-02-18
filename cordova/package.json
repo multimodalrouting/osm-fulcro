@@ -1,36 +1,48 @@
 {
-    "name": "io.github.multimodalrouting.routingapp",
-    "displayName": "Multimodla Routing",
-    "version": "1.0.0",
-    "description": "A flexible, configurable routing app for wheel-chair-users und bike carrier services",
-    "scripts": {
-        "build-assets": " cordova-res --icon-source assets-src/MultimodalRoutingLogo-cordova-ios-icon.png --splash-source assets-src/splash/window_and_clock_splash.png",
-        "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "io.github.multimodalrouting.routingapp",
+  "displayName": "Multimodla Routing",
+  "version": "1.0.0",
+  "description": "A flexible, configurable routing app for wheel-chair-users und bike carrier services",
+  "scripts": {
+    "build-assets": " cordova-res --icon-source assets-src/MultimodalRoutingLogo-cordova-ios-icon.png --splash-source assets-src/splash/window_and_clock_splash.png",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "cc.fovea.cordova.openwith": "^2.0.0",
+    "cordova-android": "^8.1.0",
+    "cordova-background-geolocation-lt": "^3.4.2",
+    "cordova-graphhopper-plugin": "git://github.com/multimodalrouting/cordova-graphhopper-plugin.git#master",
+    "cordova-plugin-android-sensor-listeners": "git+https://github.com/QuentinRoy/cordova-plugin-android-sensor-listeners.git",
+    "cordova-plugin-background-fetch": "^5.6.1",
+    "cordova-plugin-badge": "^0.8.8",
+    "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-file": "^6.0.2",
+    "cordova-plugin-file-opener2": "^3.0.0",
+    "cordova-plugin-keyboard": "^1.2.0",
+    "cordova-plugin-splashscreen": "^5.0.3",
+    "cordova-plugin-statusbar": "^2.4.3",
+    "cordova-plugin-whitelist": "^1.3.4",
+    "cordova-plugin-wkwebview-engine": "^1.2.1",
+    "cordova-plugin-wkwebview-file-xhr": "^2.1.1"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-keyboard": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-wkwebview-file-xhr": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-graphhopper-plugin": {},
+      "cordova-plugin-android-sensor-listeners": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-file-opener2": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
-    "license": "GPL-3.0",
-    "dependencies": {
-        "cordova-android": "^8.1.0",
-        "cordova-ios": "^4.5.5",
-        "cordova-plugin-badge": "^0.8.8",
-        "cordova-plugin-device": "^2.0.3",
-        "cordova-plugin-keyboard": "^1.2.0",
-        "cordova-plugin-splashscreen": "^5.0.3",
-        "cordova-plugin-statusbar": "^2.4.3",
-        "cordova-plugin-whitelist": "^1.3.4",
-        "cordova-plugin-wkwebview-engine": "^1.2.1",
-        "cordova-plugin-wkwebview-file-xhr": "^2.1.1"
-    },
-    "cordova": {
-        "plugins": {
-            "cordova-plugin-statusbar": {},
-            "cordova-plugin-keyboard": {},
-            "cordova-plugin-splashscreen": {},
-            "cordova-plugin-wkwebview-file-xhr": {},
-            "cordova-plugin-whitelist": {}
-        },
-        "platforms": [
-            "ios",
-            "android"
-        ]
-    }
+    "platforms": [
+      "android"
+    ]
+  },
+  "devDependencies": {}
 }

@@ -12,3 +12,45 @@
                                :d3SvgPoints (factory D3SvgPoints)
                                :d3SvgLines (factory D3SvgLines)
                                :d3SvgPieChart (factory D3SvgPieChart)})
+
+(def example-layers {:aerial {:base {:name "Esri Aearial"
+                                     :tile {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
+                                     :attribution "&copy; <a href=\"http://esri.com\">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}}}
+                     :osm {:base {:name "OSM Tiles"
+                          :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                                 :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
+                     :memo {:base {:name "PublicTransport (MeMOMaps)"
+                                   :tile {:url "https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png"
+                                          :attribution "<a href=\"https://memomaps.de\">MeMOMaps"}}}
+                     :openpt {:base {:name "PublicTransport (openptmap)"
+                                     :tile {:url "http://openptmap.org/tiles/{z}/{x}/{y}.png"
+                                            :attribution "<a href=\"https://wiki.openstreetmap.org/wiki/Openptmap\">Openptmap"}}}
+                     nil {:base {:name "NONE (only overlays)"
+                                 :tile {:url ""}}}
+                     :hexbin-example {:overlays [{:class :hexbin
+                                                  :dataset :vvo
+                                                  :filter {[:geometry :type] #{"Point"}
+                                                           [:properties :public_transport] #{"stop_position"}}}]}
+                     :vectorGrid-loschwitz {:prechecked true
+                                            :overlays [{:class :vectorGrid
+                                                        :dataset :mvt-loschwitz}]}
+                     :vectorGrid-vvo-connections {:overlays [{:class :vectorGrid
+                                                              :dataset :vvo
+                                                              :filter {[:geometry :type] #{"LineString"}}}]}
+                     :lines-vvo-connections {:prechecked true
+                                             :overlays [{:class :d3SvgLines
+                                                         :dataset :vvo
+                                                         :filter {[:geometry :type] #{"LineString"}}}]}
+                     :points-vvo-stops {:prechecked true
+                                        :overlays [{:class :d3SvgPoints
+                                                    :dataset :vvo
+                                                    :filter {[:geometry :type] #{"Point"}
+                                                             [:properties :public_transport] #{"stop_position"}}}]}
+                     :pieChart-vvo-stops {:prechecked true
+                                          :overlays [{:class :d3SvgPieChart
+                                                      :dataset :vvo
+                                                      :filter {[:geometry :type] #{"Point"}
+                                                               [:properties :public_transport] #{"stop_position"}}}]}
+                     :routes {:prechecked true
+                              :overlays [{:class :d3SvgLines
+                                          :dataset :routes}]}})

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.github.multimodalrouting.routingapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.github.multimodalrouting.routingapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Multimodal Routing</name>
     <description>
         A flexible, configurable routing app for wheel-chair-users und bike carrier services
@@ -19,6 +19,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <plugin name="cordova-graphhopper-plugin" spec="^0.1.1" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.3" />
     <plugin name="cordova-plugin-keyboard" spec="^1.2.0" />
     <plugin name="cordova-plugin-splashscreen" spec="^5.0.3" />
@@ -52,27 +53,6 @@
             <true />
         </config-file>
         <preference name="StatusBarOverlaysWebView" value="true" />
-        <splash src="res/screen/ios/Default@2x~universal~anyany.png" />
-        <icon height="180" src="res/icon/ios/icon-60x60@3x.png" width="180" />
-        <icon height="60" src="res/icon/ios/icon-60x60@1x.png" width="60" />
-        <icon height="120" src="res/icon/ios/icon-60x60@2x.png" width="120" />
-        <icon height="76" src="res/icon/ios/icon-76x76@1x.png" width="76" />
-        <icon height="152" src="res/icon/ios/icon-76x76@2x.png" width="152" />
-        <icon height="228" src="res/icon/ios/icon-76x76@3x.png" width="228" />
-        <icon height="40" src="res/icon/ios/icon-40x40@1x.png" width="40" />
-        <icon height="80" src="res/icon/ios/icon-40x40@2x.png" width="80" />
-        <icon height="87" src="res/icon/ios/icon-29x29@3x.png" width="87" />
-        <icon height="57" src="res/icon/ios/icon-57x57@1x.png" width="57" />
-        <icon height="114" src="res/icon/ios/icon-57x57@2x.png" width="114" />
-        <icon height="72" src="res/icon/ios/icon-72x72@1x.png" width="72" />
-        <icon height="144" src="res/icon/ios/icon-72x72@2x.png" width="144" />
-        <icon height="167" src="res/icon/ios/icon-83.5x83.5@2x.png" width="167" />
-        <icon height="29" src="res/icon/ios/icon-29x29@1x.png" width="29" />
-        <icon height="58" src="res/icon/ios/icon-29x29@2x.png" width="58" />
-        <icon height="50" src="res/icon/ios/icon-50x50@1x.png" width="50" />
-        <icon height="100" src="res/icon/ios/icon-50x50@2x.png" width="100" />
-        <icon height="167" src="res/icon/ios/icon-83.5x83.5@2x.png" width="167" />
-        <icon height="1024" src="res/icon/ios/icon-512x512@2x.png" width="1024" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="20" src="resources/ios/icon/icon-20.png" width="20" />
@@ -123,6 +103,23 @@
         <splash height="1242" src="resources/ios/splash/Default-Landscape-2688h~iphone.png" width="2688" />
         <splash height="1792" src="resources/ios/splash/Default-1792h~iphone.png" width="828" />
         <splash height="828" src="resources/ios/splash/Default-Landscape-1792h~iphone.png" width="1792" />
+        <framework spec="~&gt; 1.0.0" src="OpenSSL" type="podspec" />
+        <config-file parent="NSLocationAlwaysAndWhenInUseUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine
+            </string>
+        </config-file>
+        <config-file parent="NSLocationAlwaysUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine </string>
+        </config-file>
+        <config-file parent="NSLocationWhenInUseUsageDescription" target="*-Info.plist">
+            <string>Background location tracking is required for our app so we can acquire GPX tracks on how you
+                do your day to day routes in comparison with our precalculated routes from the new routing engine </string>
+        </config-file>
+        <config-file parent="NSMotionUsageDescription" target="*-Info.plist">
+            <string>Device motion updates help determine when the device is stationary so the app can save power by turning off location-updates</string>
+        </config-file>
     </platform>
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
@@ -134,5 +131,8 @@
     <preference name="Allow3DTouchLinkPreview" value="false" />
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
     <preference name="AllowInlineMediaPlayback" value="true" />
-    <engine name="ios" spec="^4.5.5" />
+    <plugin name="cordova-plugin-file" spec="^6.0.2" />
+    <plugin name="cordova-plugin-file-opener2" spec="^3.0.0">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
 </widget>

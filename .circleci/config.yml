@@ -1,0 +1,50 @@
+# Clojure CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-clojure/ for more details
+#
+version: 2
+jobs:
+  build:
+    branches:
+      only:
+        - gpx2
+    docker:
+      # specify the version you desire here
+      - image: multimodalrouting/clojurescript-nodejs:shadow-cljs
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    environment:
+      LEIN_ROOT: "true"
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "shadow-cljs.edn" }}-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: yarn install
+      - run: shadow-cljs check :main
+
+      - save_cache:
+          paths:
+            - ~/.m2
+            - ~/repo/node_modules
+          key: v1-dependencies-{{ checksum "shadow-cljs.edn" }}-{{ checksum "yarn.lock" }}
+
+      # run tests!
+      - run: clojure -A:dev:clj-tests
+      - run: npx shadow-cljs compile :ci-tests
+      - run: npx karma start --single-run
+      - run: shadow-cljs release :main
