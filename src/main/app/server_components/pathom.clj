@@ -45,6 +45,16 @@
                {::gf/geojson (json/read-value (slurp filename)
                                               (json/object-mapper {:decode-key-fn true}))})))
 
+(pc/defresolver xy2nodeid [_ _]
+  ;; The geojson returned by overpass-api doesn't contain intermediate nodes of ways. As a quick workaround we do the geocoding here
+  {::pc/output [::gf/xy2nodeid]}
+  {::gf/xy2nodeid (let [nodes (->> (json/read-value (slurp "resources/test/trachenberger.json")
+                                                    (json/object-mapper {:decode-key-fn true}))
+                                   :elements
+                                   (filter #(= "node" (:type %))))]
+                       (zipmap (map (fn [n] [(:lon n) (:lat n)]) nodes)
+                               (map :id nodes)))})
+
 (pc/defresolver index-explorer [env _]
   {::pc/input #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
@@ -53,7 +63,7 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file xy2nodeid])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.

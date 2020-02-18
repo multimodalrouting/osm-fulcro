@@ -44,18 +44,24 @@
                         {:title "Graph" :contents {:done "calculated" :failed "failed to calculate" :active "calculating" :queued "to be calculated"}}
                         {:title "Route" :contents {:done "calculated" :failed "failed to calculate" :active "calculating" :queued "to be calculated"}}]}}})
 
+(defsc XY2NodeId [this props]
+  {:ident (fn [_] [::gf/xy2nodeid "singleton"])
+   :query [::gf/xy2nodeid]})
+
 (defsc State
   "State machine keeping track of loading all required data.
    If you want enforce reloading, just use `steps/update-state-of-step` to set the state back to nil"
   [this {:as props}]
   {:initial-state (fn [_] layers->dataset->graph->route)
-   :query [[::steps/id :layers->dataset->graph->route] (get-query Steps)
-           ::leaflet/id ::gf/id]}
+   :query (fn [] (reduce into [[[::steps/id :layers->dataset->graph->route] (get-query Steps)
+                                 ::leaflet/id ::gf/id]
+                               (get-query XY2NodeId)]))}
 
   (let [state (get props [::steps/id :layers->dataset->graph->route])
         step-list (::steps/step-list state)
         leaflets (::leaflet/id props)
-        geofeatures (::gf/id props)]
+        geofeatures (::gf/id props)
+        xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])]
 
        (if (not (:state (title->step "Layers" step-list)))
            (let [list-of-layers-per-leaflet (map #(count (::leaflet/layers (val %))) leaflets)
@@ -83,7 +89,9 @@
                                                    :step (title->step-index "Geofeatures" step-list)
                                                    :new-state :active
                                                    #_#_:info "get index"})  ;; TODO maybe we just want get the sources without geojson first?
-                 ;; load all ::gf/Geofeature (sources, but not geojson) normalized into ::gf/id
+
+                 (load! this ::gf/xy2nodeid XY2NodeId {})
+
                  (load! this ::gf/all GeoFeaturesAll {:target [:tmp ::gf/all]
                                                       :post-mutation `post-mutation
                                                       :post-mutation-params {:steps :layers->dataset->graph->route
@@ -106,11 +114,12 @@
                                               {:steps :layers->dataset->graph->route
                                                :step (title->step-index "Graph" step-list)
                                                :new-state :active})
-             (calculate-graphs (::gf/id props))
+             (calculate-graphs (::gf/id props) xy2nodeid)
              (let [nodes (reduce + (map #(count (graph/nodes (:graph %))) (vals @graphs)))
                    edges (reduce + (map #(count (graph/edges (:graph %))) (vals @graphs)))]
-                  (let [id2feature (features->id2feature (::gf/id props))
-                        edge-pairs (graph/edges (:graph (first (vals @graphs))))
+                  (let [id2feature (features->id2feature (::gf/id props) xy2nodeid)
+                        edge-pairs (reduce into (map #(graph/edges (:graph %))
+                                                     (vals @graphs)))
                         paths (map #(feature-ids->lngLatPaths % id2feature)
                                    edge-pairs)]
                        (transact! this [(mutate-datasets {:path [:routinggraph]
@@ -131,7 +140,7 @@
                                                :new-state :active})
              (let [[path dist] (calculate-routes)]
                   (transact! this [(mutate-datasets {:path [:routes]
-                                                     :data {::gf/geojson (paths->geojson [(let [id2feature (features->id2feature (::gf/id props))]
+                                                     :data {::gf/geojson (paths->geojson [(let [id2feature (features->id2feature (::gf/id props) xy2nodeid)]
                                                                                                (feature-ids->lngLatPaths path id2feature))]
                                                                                          {:style {:stroke "blue"
                                                                                                   :stroke-width 4}})}})])

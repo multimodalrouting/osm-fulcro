@@ -14,7 +14,7 @@
         y-fn (fn [d] (.-y (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates]))))
         svg (-> sel
               (.select (fn [] (this-as self
-                                (js/console.log self)
+                                #_(js/console.log self)
                                        self.parentNode)))
 
                     )

@@ -1,9 +1,23 @@
 [out:json];
+area[name="Dresden"]->.city;
+nwr(area.city)[operator="DVB"]({{bbox}})->.connections;
+
+/*
+relation.connections[route]->.routes;
+relation.connections[public_transport=stop_area]; (._;>;)->.stop_area;
+*/
+
 way(area.city)({{bbox}}); (._;>;)->.area;
 
-way.area[highway]; (._;>;)->.highways;
+nwr.area[highway]; (._;>;)->.highways;
 way.area[building]; (._;>;)->.buildings;
+(way.area[waterway];
+ //TODO multigon
+  way.area[natural=water];); (._;>;)->.water;
 
-(.highways; .buildings;);
+(.highways; .buildings; .water;);
+//(.routes; .stop_area;);
+//relation.connections[route][ref=3]; (._;>;);
+//node.area[highway="crossing"];
 
 out;
