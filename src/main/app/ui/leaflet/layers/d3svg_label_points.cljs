@@ -33,7 +33,7 @@
                       (.attr "cy" y-fn)
                       (.attr "r" 4)
                       (.attr "fill" #(let [feature (js->clj % :keywordize-keys true)]
-                                          (if (feature->confident? feature)
+                                          (if-not (feature->confident? feature)
                                             (str "url(#" (get-in feature [:properties :wheelchair]) ")")
                                             (color-by-accessibility feature))
                                           ) )
