@@ -6,6 +6,7 @@
     [app.ui.leaflet.layers.d3svg-points :refer [D3SvgPoints]]
     [app.ui.leaflet.layers.d3svg-label-points :refer [D3SvgLabelPoints]]
     [app.ui.leaflet.layers.d3svg-lines :refer [D3SvgLines]]
+    [app.ui.leaflet.layers.d3svg-styled-lines :refer [D3SvgStyledLines]]
     [app.ui.leaflet.layers.d3svg-piechart :refer [D3SvgPieChart]]))
 
 (def overlay-class->component {:vectorGrid (factory VectorGridOverlay)
@@ -13,6 +14,7 @@
                                :d3SvgPoints (factory D3SvgPoints)
                                :d3SvgLabelPoints (factory D3SvgLabelPoints)
                                :d3SvgLines (factory D3SvgLines)
+                               :d3SvgStyledLines (factory D3SvgStyledLines)
                                :d3SvgPieChart (factory D3SvgPieChart)})
 
 (def example-layers {:aerial {:base {:name "Esri Aearial"
@@ -58,7 +60,7 @@
                                     :overlays [{:class :d3SvgLines
                                                 :dataset :routinggraph}]}
                      :routes {:prechecked true
-                              :overlays [{:class :d3SvgLines
+                              :overlays [{:class :d3SvgStyledLines
                                           :dataset :routes}]}
                      #_#_:routesPoints {:prechecked true
                                     :overlays [{:class :d3SvgPoints
