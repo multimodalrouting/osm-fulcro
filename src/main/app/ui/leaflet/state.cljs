@@ -49,6 +49,10 @@
   {:ident (fn [_] [::gf/xy2nodeid "singleton"])
    :query [::gf/xy2nodeid]})
 
+(defsc Comparison [this props]
+  {:ident (fn [_] [::gf/comparison "singleton"])
+   :query [::gf/comparison]})
+
 (defsc State
   "State machine keeping track of loading all required data.
    If you want enforce reloading, just use `steps/update-state-of-step` to set the state back to nil"
@@ -56,13 +60,17 @@
   {:initial-state (fn [_] layers->dataset->graph->route)
    :query (fn [] (reduce into [[[::steps/id :layers->dataset->graph->route] (get-query Steps)
                                  ::leaflet/id ::gf/id]
-                               (get-query XY2NodeId)]))}
+                               (get-query XY2NodeId)
+                               (get-query Comparison)]))}
 
   (let [state (get props [::steps/id :layers->dataset->graph->route])
         step-list (::steps/step-list state)
         leaflets (::leaflet/id props)
         geofeatures (::gf/id props)
-        xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])]
+        xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
+        comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
+      
+       (def comparison comparison)  ;; TODO cleanup
 
        (if (not (:state (title->step "Layers" step-list)))
            (let [list-of-layers-per-leaflet (map #(count (::leaflet/layers (val %))) leaflets)
@@ -90,6 +98,8 @@
                                                    :step (title->step-index "Geofeatures" step-list)
                                                    :new-state :active
                                                    #_#_:info "get index"})  ;; TODO maybe we just want get the sources without geojson first?
+
+                 (load! this ::gf/comparison Comparison {})
 
                  (load! this ::gf/xy2nodeid XY2NodeId {})
 

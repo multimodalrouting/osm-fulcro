@@ -37,6 +37,11 @@
       (.attr "transform" "translate(0,0)")
       (.attr "fill" color)))
 
+(def colormap {"yes"     "#7ED321"                                     ;green
+               "no"      "#D0021B"                                     ;red
+               "limited" "#F5A623"                                     ;orange
+               nil       "grey"})
+
 (defn accessibility-patterns [svg size]
   (let [defs (.append svg "defs")]
     (for [[name color]

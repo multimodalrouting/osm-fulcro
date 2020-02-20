@@ -1,0 +1,2563 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-ide",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2020-02-20T15:00:02Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/201962883",
+        "name": "Nová Ruda",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13012",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0799445,
+          50.7567286
+        ]
+      },
+      "id": "node/201962883"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/201978538",
+        "name": "Za Tratí",
+        "old_name": "Proseč, škola",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13162",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1111619,
+          50.7310994
+        ]
+      },
+      "id": "node/201978538"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/201980368",
+        "name": "Proseč n.N. pošta",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13182",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1168071,
+          50.7276065
+        ]
+      },
+      "id": "node/201980368"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/247992213",
+        "name": "Malodoubská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12862",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=fSEr28tFQTM&feature=related",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0244512,
+          50.7434369
+        ]
+      },
+      "id": "node/247992213"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/265772812",
+        "name": "Kubelíkova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12812",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0325577,
+          50.7510369
+        ]
+      },
+      "id": "node/265772812"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/280899246",
+        "bus": "yes",
+        "name": "Žitavská",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0418338,
+          50.7687382
+        ]
+      },
+      "id": "node/280899246"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/280899911",
+        "bus": "yes",
+        "name": "U Krematoria",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0578319,
+          50.7614209
+        ]
+      },
+      "id": "node/280899911"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/280986970",
+        "bus": "yes",
+        "name": "Školní",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "9382"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0750246,
+          50.7657253
+        ]
+      },
+      "id": "node/280986970"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/280986972",
+        "bus": "yes",
+        "name": "U Vodárny",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0795225,
+          50.7665062
+        ]
+      },
+      "id": "node/280986972"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/282291654",
+        "bus": "yes",
+        "name": "Harcov Myslivna",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1168498,
+          50.7582713
+        ]
+      },
+      "id": "node/282291654"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/306513537",
+        "name": "Liberec-Horní Růžodol",
+        "public_transport": "stop_position",
+        "railway": "stop",
+        "train": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0330358,
+          50.7535522
+        ]
+      },
+      "id": "node/306513537"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/309403217",
+        "name": "Viadukt",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13402",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0425727,
+          50.764879
+        ]
+      },
+      "id": "node/309403217"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/309422785",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0578585,
+          50.7660241
+        ]
+      },
+      "id": "node/309422785"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/309422788",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0570098,
+          50.7654032
+        ]
+      },
+      "id": "node/309422788"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/309422809",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.057187,
+          50.7651359
+        ]
+      },
+      "id": "node/309422809"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/309422810",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0574592,
+          50.7653515
+        ]
+      },
+      "id": "node/309422810"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/470595858",
+        "name": "Vratislavice n.N. výhybna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13122",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1019616,
+          50.7408234
+        ]
+      },
+      "id": "node/470595858"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/612405334",
+        "name": "Nádraží",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "8992",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0465879,
+          50.7622263
+        ]
+      },
+      "id": "node/612405334"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/612405386",
+        "name": "Nádraží",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "8982",
+        "source": "cuzk:km",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0464087,
+          50.7625207
+        ]
+      },
+      "id": "node/612405386"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/612405387",
+        "bus": "yes",
+        "name": "Nádraží",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0464005,
+          50.7624926
+        ]
+      },
+      "id": "node/612405387"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/612405672",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0572786,
+          50.7656034
+        ]
+      },
+      "id": "node/612405672"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/612457910",
+        "name": "Viadukt",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12702",
+        "source": "cuzk:km",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0426155,
+          50.7645085
+        ]
+      },
+      "id": "node/612457910"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/613038770",
+        "name": "U Lomu",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12432",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.07471,
+          50.7628075
+        ]
+      },
+      "id": "node/613038770"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617236201",
+        "name": "Ulice 5.května",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12642",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0613554,
+          50.7705361
+        ]
+      },
+      "id": "node/617236201"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617236229",
+        "name": "Ulice 5.května",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12652",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.062748,
+          50.7713558
+        ]
+      },
+      "id": "node/617236229"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617236231",
+        "name": "Průmyslová škola",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "12632",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0644428,
+          50.7725556
+        ]
+      },
+      "id": "node/617236231"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649481549",
+        "name": "Fügnerova",
+        "public_transport": "stop_position",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0566864,
+          50.7652551
+        ]
+      },
+      "id": "node/649481549"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649481689",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0580049,
+          50.7657932
+        ]
+      },
+      "id": "node/649481689"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882237",
+        "name": "Vratislavice n.N. kostel",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13092",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0927884,
+          50.742928
+        ]
+      },
+      "id": "node/649882237"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882240",
+        "name": "Sídliště Nové Vratislavice",
+        "old_name": "Ústav sociální péče",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13032",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0792004,
+          50.7526472
+        ]
+      },
+      "id": "node/649882240"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882242",
+        "name": "Lékárna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13062",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0853678,
+          50.7457246
+        ]
+      },
+      "id": "node/649882242"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882244",
+        "name": "Vratislavice n.N. výhybna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13102",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1024601,
+          50.7409592
+        ]
+      },
+      "id": "node/649882244"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882248",
+        "name": "Mlýnská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12932",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0635326,
+          50.7641493
+        ]
+      },
+      "id": "node/649882248"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/649882250",
+        "name": "Textilana",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12992",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.067914,
+          50.7650038
+        ]
+      },
+      "id": "node/649882250"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/660816194",
+        "bus": "yes",
+        "name": "Ruprechtice sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0580574,
+          50.7874164
+        ]
+      },
+      "id": "node/660816194"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/662985149",
+        "bus": "yes",
+        "name": "Kunratická sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0957559,
+          50.7607614
+        ]
+      },
+      "id": "node/662985149"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/663014171",
+        "bus": "yes",
+        "name": "Králův Háj",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "9342"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0831361,
+          50.7673343
+        ]
+      },
+      "id": "node/663014171"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913878896",
+        "name": "Staré pekárny",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12742",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0431669,
+          50.7575131
+        ]
+      },
+      "id": "node/913878896"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913878898",
+        "name": "Krkonošská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12732",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0423937,
+          50.7600845
+        ]
+      },
+      "id": "node/913878898"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913878909",
+        "name": "Vápenka",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12772",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0422411,
+          50.7557608
+        ]
+      },
+      "id": "node/913878909"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913891024",
+        "name": "Hanychov kostel",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12872",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=fSEr28tFQTM&feature=related",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0212087,
+          50.7415824
+        ]
+      },
+      "id": "node/913891024"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913891027",
+        "name": "Janův Důl",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12792",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0374836,
+          50.7530011
+        ]
+      },
+      "id": "node/913891027"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913891030",
+        "name": "Spáleniště",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12892",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=fSEr28tFQTM&feature=related",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0169172,
+          50.7402665
+        ]
+      },
+      "id": "node/913891030"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913891035",
+        "name": "Horní Hanychov",
+        "name:de": "Oberhanichen",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12922",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=fSEr28tFQTM&feature=related",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0123885,
+          50.7381496
+        ]
+      },
+      "id": "node/913891035"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/913891036",
+        "name": "Dolní Hanychov",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12822",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.027817,
+          50.7474221
+        ]
+      },
+      "id": "node/913891036"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/919510886",
+        "name": "Proseč n.N. výhybna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13202",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1251755,
+          50.7243118
+        ]
+      },
+      "id": "node/919510886"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1481093112",
+        "bus": "yes",
+        "name": "Škola Kateřinky (školní dvůr)",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0984093,
+          50.7978437
+        ]
+      },
+      "id": "node/1481093112"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1500569336",
+        "bus": "yes",
+        "name": "Zelené Údolí",
+        "public_transport": "stop_position",
+        "source": "local_knowledge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0729121,
+          50.7485191
+        ]
+      },
+      "id": "node/1500569336"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1799829250",
+        "bus": "yes",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0320419,
+          50.7604278
+        ]
+      },
+      "id": "node/1799829250"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1890683120",
+        "name": "Dolní Hanychov",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12842",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0282433,
+          50.7474826
+        ]
+      },
+      "id": "node/1890683120"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988713",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0577413,
+          50.7655827
+        ]
+      },
+      "id": "node/1949988713"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988714",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0576423,
+          50.7658623
+        ]
+      },
+      "id": "node/1949988714"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988716",
+        "bus": "yes",
+        "name": "Poliklinika",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.064369,
+          50.7683398
+        ]
+      },
+      "id": "node/1949988716"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988717",
+        "bus": "yes",
+        "name": "Poliklinika",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0640513,
+          50.7684615
+        ]
+      },
+      "id": "node/1949988717"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988718",
+        "bus": "yes",
+        "name": "U Vodárny",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0800899,
+          50.7668034
+        ]
+      },
+      "id": "node/1949988718"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988719",
+        "bus": "yes",
+        "name": "Vojtěšská",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "9412"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0697753,
+          50.7658128
+        ]
+      },
+      "id": "node/1949988719"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988763",
+        "bus": "yes",
+        "name": "Šaldovo náměstí",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0614621,
+          50.7697462
+        ]
+      },
+      "id": "node/1949988763"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1949988765",
+        "bus": "yes",
+        "name": "Školní",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "9392"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0762292,
+          50.7657024
+        ]
+      },
+      "id": "node/1949988765"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1962574079",
+        "bus": "yes",
+        "name": "Husova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0711425,
+          50.7717093
+        ]
+      },
+      "id": "node/1962574079"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2067367628",
+        "name": "Vesec u Liberce",
+        "public_transport": "stop_position",
+        "railway": "stop",
+        "train": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0806709,
+          50.743564
+        ]
+      },
+      "id": "node/2067367628"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2067367632",
+        "name": "Vesec u Liberce",
+        "public_transport": "stop_position",
+        "railway": "stop",
+        "train": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0807005,
+          50.7435993
+        ]
+      },
+      "id": "node/2067367632"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2067367988",
+        "name": "Pivovarská",
+        "old_name": "Pivovar",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13052",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0826193,
+          50.7488031
+        ]
+      },
+      "id": "node/2067367988"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2267558181",
+        "bus": "yes",
+        "bus_routes": "Flixbus 852; RegioJet",
+        "name": "B (Fügnerova)",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0568772,
+          50.7648373
+        ]
+      },
+      "id": "node/2267558181"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2329198927",
+        "bus": "yes",
+        "name": "Liberec, Františkov, sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0314079,
+          50.7602024
+        ]
+      },
+      "id": "node/2329198927"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2369254815",
+        "highway": "bus_stop",
+        "name": "Janův Důl",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12782",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0360845,
+          50.7528453
+        ]
+      },
+      "id": "node/2369254815"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2752082355",
+        "bus": "yes",
+        "name": "Františkov škola",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0356892,
+          50.7619913
+        ]
+      },
+      "id": "node/2752082355"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2752082394",
+        "bus": "yes",
+        "name": "Domažlická",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0315022,
+          50.756938
+        ]
+      },
+      "id": "node/2752082394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2752082715",
+        "bus": "yes",
+        "name": "Husitská",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0289785,
+          50.7551264
+        ]
+      },
+      "id": "node/2752082715"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2823678881",
+        "name": "Liberec",
+        "public_transport": "stop_position",
+        "train": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0453337,
+          50.7613377
+        ]
+      },
+      "id": "node/2823678881"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2925983716",
+        "bus": "yes",
+        "name": "Úvozní",
+        "public_transport": "stop_position",
+        "shelter": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0342066,
+          50.7753747
+        ]
+      },
+      "id": "node/2925983716"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2925983722",
+        "bus": "yes",
+        "name": "Úvozní",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0337424,
+          50.7753057
+        ]
+      },
+      "id": "node/2925983722"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3011458763",
+        "bus": "yes",
+        "name": "Karlinky",
+        "network": "16",
+        "operator": "dpmlj",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0218233,
+          50.7593378
+        ]
+      },
+      "id": "node/3011458763"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3407123854",
+        "bus": "yes",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0691176,
+          50.7652816
+        ]
+      },
+      "id": "node/3407123854"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3564372594",
+        "bus": "yes",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0312004,
+          50.7774058
+        ]
+      },
+      "id": "node/3564372594"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3564372598",
+        "bus": "yes",
+        "name": "Globus",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0308754,
+          50.7775497
+        ]
+      },
+      "id": "node/3564372598"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4497112340",
+        "bus": "yes",
+        "name": "Kynologické cvičiště",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "8732"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1032025,
+          50.7572543
+        ]
+      },
+      "id": "node/4497112340"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538307888",
+        "name": "Fügnerova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12952",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.05626,
+          50.7662334
+        ]
+      },
+      "id": "node/4538307888"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538308197",
+        "name": "Fügnerova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "10122",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0568646,
+          50.7658787
+        ]
+      },
+      "id": "node/4538308197"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538542751",
+        "name": "Mlýnská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12942",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0619785,
+          50.764472
+        ]
+      },
+      "id": "node/4538542751"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538542780",
+        "name": "Textilana",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13002",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0674639,
+          50.7649384
+        ]
+      },
+      "id": "node/4538542780"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538543098",
+        "name": "U Lomu",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0745086,
+          50.7629459
+        ]
+      },
+      "id": "node/4538543098"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4538543119",
+        "name": "Nová Ruda",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13022",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.079964,
+          50.75655
+        ]
+      },
+      "id": "node/4538543119"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4715807197",
+        "name": "Lékárna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13072",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0851458,
+          50.7460214
+        ]
+      },
+      "id": "node/4715807197"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718254641",
+        "name": "Riegrova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12562",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0788376,
+          50.7763098
+        ]
+      },
+      "id": "node/4718254641"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718254642",
+        "name": "Riegrova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12572",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0791965,
+          50.7764033
+        ]
+      },
+      "id": "node/4718254642"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718254667",
+        "name": "Muzeum - Galerie Lázně",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12602",
+        "source": "survey",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0682225,
+          50.7741615
+        ]
+      },
+      "id": "node/4718254667"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718269484",
+        "name": "Muzeum - Galerie Lázně",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12612",
+        "source": "survey",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0677995,
+          50.7739891
+        ]
+      },
+      "id": "node/4718269484"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718274497",
+        "name": "Botanická zahrada",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12582",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0744896,
+          50.7759497
+        ]
+      },
+      "id": "node/4718274497"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718274501",
+        "name": "Botanická zahrada",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12592",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0752476,
+          50.7760395
+        ]
+      },
+      "id": "node/4718274501"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4718290280",
+        "name": "Lidové sady - ZOO",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12552",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0815114,
+          50.7774165
+        ]
+      },
+      "id": "node/4718290280"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4973726379",
+        "bus": "yes",
+        "name": "Ostašov škola",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.010651,
+          50.7651518
+        ]
+      },
+      "id": "node/4973726379"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5319121150",
+        "name": "Hanychov kostel",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12882",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=fSEr28tFQTM&feature=related",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0213419,
+          50.7420199
+        ]
+      },
+      "id": "node/5319121150"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5545623832",
+        "bus": "yes",
+        "name": "Ostašov škola",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0104025,
+          50.7650169
+        ]
+      },
+      "id": "node/5545623832"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026866",
+        "name": "Pivovarská",
+        "old_name": "Pivovar",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13522",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0832392,
+          50.7481312
+        ]
+      },
+      "id": "node/5793026866"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026868",
+        "name": "Za Tratí",
+        "old_name": "Proseč, škola",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13172",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1112809,
+          50.7308872
+        ]
+      },
+      "id": "node/5793026868"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026871",
+        "name": "Proseč n.N. pošta",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13192",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1167297,
+          50.7277832
+        ]
+      },
+      "id": "node/5793026871"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026873",
+        "name": "Sídliště Nové Vratislavice",
+        "old_name": "Ústav sociální péče",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13042",
+        "source": "knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0790288,
+          50.7528933
+        ]
+      },
+      "id": "node/5793026873"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026884",
+        "name": "Průmyslová škola",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12622",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0642192,
+          50.7724244
+        ]
+      },
+      "id": "node/5793026884"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5793026886",
+        "name": "Lidové sady - ZOO",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12542",
+        "source": "local_knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0813592,
+          50.7776025
+        ]
+      },
+      "id": "node/5793026886"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5888682593",
+        "name": "Kubelíkova",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12802",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0319903,
+          50.7507266
+        ]
+      },
+      "id": "node/5888682593"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5888683847",
+        "bus": "yes",
+        "name": "Pilínkov",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0407982,
+          50.724722
+        ]
+      },
+      "id": "node/5888683847"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6002288751",
+        "name": "Viadukt",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12712",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0439552,
+          50.7649316
+        ]
+      },
+      "id": "node/6002288751"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6002348644",
+        "name": "Dolní Hanychov",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12832",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0280003,
+          50.7477046
+        ]
+      },
+      "id": "node/6002348644"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6002384333",
+        "name": "Malodoubská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12852",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0253114,
+          50.7439947
+        ]
+      },
+      "id": "node/6002384333"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648110",
+        "bus": "yes",
+        "name": "OC Nisa",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0517323,
+          50.7412326
+        ]
+      },
+      "id": "node/6052648110"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648126",
+        "name": "Rybníček",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12962",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0516342,
+          50.7643998
+        ]
+      },
+      "id": "node/6052648126"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648127",
+        "name": "Rybníček",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12972",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0518812,
+          50.7645522
+        ]
+      },
+      "id": "node/6052648127"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648162",
+        "name": "Vratislavice n.N. výhybna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13112",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1020641,
+          50.7410939
+        ]
+      },
+      "id": "node/6052648162"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648166",
+        "name": "Horní Hanychov",
+        "name:de": "Oberhanichen",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12912",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0121526,
+          50.737965
+        ]
+      },
+      "id": "node/6052648166"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648171",
+        "name": "Spáleniště",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12902",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0170428,
+          50.740111
+        ]
+      },
+      "id": "node/6052648171"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648492",
+        "name": "Vápenka",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12762",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0409726,
+          50.755169
+        ]
+      },
+      "id": "node/6052648492"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648495",
+        "name": "Staré pekárny",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12752",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0431828,
+          50.7572947
+        ]
+      },
+      "id": "node/6052648495"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648496",
+        "name": "Krkonošská",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12722",
+        "source": "survey",
+        "source_ref": "http://www.youtube.com/watch?v=qzVcBrsmKpk",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.04223,
+          50.7608341
+        ]
+      },
+      "id": "node/6052648496"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648541",
+        "name": "Rybníček",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12682",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0525199,
+          50.7656039
+        ]
+      },
+      "id": "node/6052648541"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648542",
+        "name": "Rybníček",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "12692",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0518904,
+          50.7652626
+        ]
+      },
+      "id": "node/6052648542"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648547",
+        "name": "Proseč n.N. výhybna",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13212",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1248074,
+          50.7243576
+        ]
+      },
+      "id": "node/6052648547"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6052648689",
+        "name": "Vratislavice n.N. kostel",
+        "public_transport": "stop_position",
+        "railway": "tram_stop",
+        "ref:dpmlj": "13082",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0938131,
+          50.7428301
+        ]
+      },
+      "id": "node/6052648689"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6054352445",
+        "bus": "yes",
+        "name": "Průmyslová zóna sever",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0189757,
+          50.7793264
+        ]
+      },
+      "id": "node/6054352445"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6054352446",
+        "name": "Šaldovo náměstí",
+        "public_transport": "stop_position",
+        "ref:dpmlj": "9432",
+        "source": "cuzk:km;knowledge",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.060249,
+          50.7691146
+        ]
+      },
+      "id": "node/6054352446"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6054352448",
+        "bus": "yes",
+        "name": "Kunratice Mšenská",
+        "official_name": "Liberec,Kunratice,Mšenská",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1166853,
+          50.7523736
+        ]
+      },
+      "id": "node/6054352448"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6061556564",
+        "bus": "yes",
+        "name": "Aréna",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0504482,
+          50.7541162
+        ]
+      },
+      "id": "node/6061556564"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6061559403",
+        "bus": "yes",
+        "name": "Nádraží",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0466023,
+          50.7622491
+        ]
+      },
+      "id": "node/6061559403"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6061559446",
+        "bus": "yes",
+        "name": "Žitavská",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0420705,
+          50.7685451
+        ]
+      },
+      "id": "node/6061559446"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6063143504",
+        "name": "Fügnerova",
+        "public_transport": "stop_position",
+        "tram": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0575742,
+          50.7652699
+        ]
+      },
+      "id": "node/6063143504"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6063143510",
+        "bus": "yes",
+        "name": "Rudolfov",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.1110989,
+          50.7863803
+        ]
+      },
+      "id": "node/6063143510"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6063143523",
+        "bus": "yes",
+        "name": "Fügnerova",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0583017,
+          50.7655763
+        ]
+      },
+      "id": "node/6063143523"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6075455148",
+        "bus": "yes",
+        "name": "Králův Háj",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0824685,
+          50.7673167
+        ]
+      },
+      "id": "node/6075455148"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6075455149",
+        "bus": "yes",
+        "name": "Průmyslová zóna Jih",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0415894,
+          50.7339996
+        ]
+      },
+      "id": "node/6075455149"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6075455165",
+        "bus": "yes",
+        "name": "Škola Kateřinky",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0970853,
+          50.7980464
+        ]
+      },
+      "id": "node/6075455165"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6075455169",
+        "bus": "yes",
+        "name": "Doubí sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0539264,
+          50.7371718
+        ]
+      },
+      "id": "node/6075455169"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6075455170",
+        "bus": "yes",
+        "name": "Šaldovo náměstí",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0602745,
+          50.7691159
+        ]
+      },
+      "id": "node/6075455170"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6083499415",
+        "bus": "yes",
+        "name": "Pekárny",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0775265,
+          50.746879
+        ]
+      },
+      "id": "node/6083499415"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6083499420",
+        "bus": "yes",
+        "name": "Radčice",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0641857,
+          50.8052813
+        ]
+      },
+      "id": "node/6083499420"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6083499422",
+        "bus": "yes",
+        "name": "Doubí sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0534325,
+          50.737182
+        ]
+      },
+      "id": "node/6083499422"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6092104147",
+        "bus": "yes",
+        "name": "Pilínkov",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0406172,
+          50.7249902
+        ]
+      },
+      "id": "node/6092104147"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6105859381",
+        "bus": "yes",
+        "name": "Ruprechtice sídliště",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0579429,
+          50.7871909
+        ]
+      },
+      "id": "node/6105859381"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6105859382",
+        "bus": "yes",
+        "name": "Broumovská",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.0634334,
+          50.759771
+        ]
+      },
+      "id": "node/6105859382"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6334222678",
+        "bus": "yes",
+        "bus_routes": "Flixbus 852, N1300, N1380; RegioJet",
+        "highway": "bus_stop",
+        "name": "Autobusové nádraží",
+        "public_transport": "stop_position"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.046704,
+          50.7637113
+        ]
+      },
+      "id": "node/6334222678"
+    }
+  ]
+}

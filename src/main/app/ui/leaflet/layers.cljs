@@ -7,7 +7,8 @@
     [app.ui.leaflet.layers.d3svg-label-points :refer [D3SvgLabelPoints]]
     [app.ui.leaflet.layers.d3svg-lines :refer [D3SvgLines]]
     [app.ui.leaflet.layers.d3svg-styled-lines :refer [D3SvgStyledLines]]
-    [app.ui.leaflet.layers.d3svg-piechart :refer [D3SvgPieChart]]))
+    [app.ui.leaflet.layers.d3svg-piechart :refer [D3SvgPieChart]]
+    [app.ui.leaflet.layers.d3svg-piechart-comparison :refer [D3SvgPieChartComparison]]))
 
 (def overlay-class->component {:vectorGrid (factory VectorGridOverlay)
                                :hexbin (factory Hexbin)
@@ -15,14 +16,16 @@
                                :d3SvgLabelPoints (factory D3SvgLabelPoints)
                                :d3SvgLines (factory D3SvgLines)
                                :d3SvgStyledLines (factory D3SvgStyledLines)
-                               :d3SvgPieChart (factory D3SvgPieChart)})
+                               :d3SvgPieChart (factory D3SvgPieChart)
+                               :d3SvgPieChartComparison (factory D3SvgPieChartComparison)})
 
 (def example-layers {:aerial {:base {:name "Esri Aearial"
                                      :tile {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
                                      :attribution "&copy; <a href=\"http://esri.com\">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}}}
                      :osm {:base {:name "OSM Tiles"
-                          :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                                 :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
+                                  :checked true
+                                  :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                                         :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
                      :memo {:base {:name "PublicTransport (MeMOMaps)"
                                    :tile {:url "https://tileserver.memomaps.de/tilegen/{z}/{x}/{y}.png"
                                           :attribution "<a href=\"https://memomaps.de\">MeMOMaps"}}}
@@ -50,11 +53,10 @@
                                                     :dataset :vvo-small
                                                     :filter {[:geometry :type] #{"Point"}
                                                              [:properties :public_transport] #{"stop_position"}}}]}
-                     :pieChart-vvo-stops {:prechecked true
-                                          :overlays [{:class :d3SvgPieChart
-                                                      :dataset :vvo-small
-                                                      :filter {[:geometry :type] #{"Point"}
-                                                               [:properties :public_transport] #{"stop_position"}}}]}
+                     :pieChart-stop-positions {:prechecked true
+                                               :overlays [{:class :d3SvgPieChartComparison
+                                                           :dataset :vvo-small  ;; TODO
+                                                           #_#_:dataset :stop-positions}]}
                      :routinggraph {:prechecked true
                                     :overlays [{:class :d3SvgStyledLines
                                                 :dataset :routinggraph}]}

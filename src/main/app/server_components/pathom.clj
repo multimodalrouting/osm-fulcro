@@ -55,6 +55,18 @@
                        (zipmap (map (fn [n] [(:lon n) (:lat n)]) nodes)
                                (map :id nodes)))})
 
+(pc/defresolver comparison [_ _]
+  {::pc/output [::gf/comparison]}
+  {::gf/comparison (->> (for [dataset [#_"berlin" "chemnitz" "dresden" "halle" "leipzig" "liberec" "magdeburg" "potsdam" "praha"]]
+                             {dataset (let [grouped-features (->> (json/read-value (slurp (str "resources/test/comparison/stop_position/" dataset ".geojson"))
+                                                                                   (json/object-mapper {:decode-key-fn true}))
+                                                                  :features
+                                                                  (group-by #(get-in % [:properties :wheelchair])))]
+                                           {:center (->> grouped-features
+                                                         first val last  ;; TODO carefull there is more than one „Halle“
+                                                         :geometry :coordinates)
+                                            :listing (zipmap (keys grouped-features) (map count (vals grouped-features)))})}))})
+
 (pc/defresolver index-explorer [env _]
   {::pc/input #{:com.wsscode.pathom.viz.index-explorer/id}
    ::pc/output [:com.wsscode.pathom.viz.index-explorer/index]}
@@ -63,7 +75,7 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file xy2nodeid])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file xy2nodeid comparison])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
