@@ -7,7 +7,7 @@
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
-    [app.routing.graphs :refer [graphs calculate-graphs paths->geojson features->id2feature feature-ids->lngLatPaths]]
+    [app.routing.graphs :refer [graphs calculate-graphs paths->geojson features->id2feature]]
     [app.routing.route :refer [calculate-routes]]
     [loom.graph :as graph]))
 
@@ -119,11 +119,11 @@
                    edges (reduce + (map #(count (graph/edges (:graph %))) (vals @graphs)))]
                   (let [id2feature (features->id2feature (::gf/id props) xy2nodeid)
                         edge-pairs (reduce into (map #(graph/edges (:graph %))
-                                                     (vals @graphs)))
-                        paths (map #(feature-ids->lngLatPaths % id2feature)
-                                   edge-pairs)]
+                                                     (vals @graphs)))]
                        (transact! this [(mutate-datasets {:path [:routinggraph]
-                                                          :data {::gf/geojson (paths->geojson paths {:style {:stroke-width 2}})}})]))
+                                                          :data {::gf/geojson (paths->geojson id2feature
+                                                                                              edge-pairs
+                                                                                              {:style {:stroke-width 2}})}})]))
                   (update-state-of-step-if-changed this props
                                                    {:steps :layers->dataset->graph->route
                                                     :step (title->step-index "Graph" step-list)
@@ -138,8 +138,8 @@
                                                :new-state :active})
              (let [[path dist] (calculate-routes)]
                   (transact! this [(mutate-datasets {:path [:routes]
-                                                     :data {::gf/geojson (paths->geojson [(let [id2feature (features->id2feature (::gf/id props) xy2nodeid)]
-                                                                                               (feature-ids->lngLatPaths path id2feature))]
+                                                     :data {::gf/geojson (paths->geojson (features->id2feature (::gf/id props) xy2nodeid)
+                                                                                         (partition 2 1 path)
                                                                                          {:style {:stroke-width 6}})}})])
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route

@@ -1,10 +1,35 @@
 (ns app.routing.graphs
   (:require [app.model.geofeatures :as gf]
             [app.ui.leaflet :as leaflet :refer [overlay-filter-rule->filter]]
-            [loom.graph :as graph]))
+            [loom.graph :as graph]
+            [loom.attr]))
 
 
 (defonce graphs (atom {}))
+
+(defn edges+attrs->loom-attrs [list-of-edges-with-attrs &[{:keys [directed] :or {directed false}}]]
+  (let [list-of-edges-with-attrs+symmetric (concat list-of-edges-with-attrs
+                                                   (if-not directed
+                                                           (for [[from to weight attrs] list-of-edges-with-attrs]
+                                                                [to from weight attrs])))
+        by-from (group-by first list-of-edges-with-attrs+symmetric)]
+       (zipmap (keys by-from)
+               (for [by-from-val (vals by-from)
+                     :let [by-to (group-by second by-from-val)]]
+                    {:loom.attr/edge-attrs
+                     (zipmap (keys by-to)
+                             (for [by-to-val (vals by-to)]
+                                  (apply merge (map last by-to-val))))}))))
+
+#_(= (edges+attrs->loom-attrs [[:a :b 1 {:i :x}] [:a :c 2 {:i :y}] [:b :c 3 {:j :k}] [:b :c 4 {:i :z}]])
+   {:a {:loom.attr/edge-attrs {:b {:i :x} :c {:i :y}}}
+    :b {:loom.attr/edge-attrs {:c {:j :k :i :z}}}})
+
+(defn edges+attrs->loom-graph [list-of-edges-with-attrs]
+  (let [edges (for [[n1 n2 weigth attr] list-of-edges-with-attrs]
+                   [n1 n2 weigth])]
+       (assoc (apply graph/weighted-graph edges)
+              :attrs (edges+attrs->loom-attrs list-of-edges-with-attrs))))
 
 
 (defn edge-between-features [feature1id feature2id weight]
@@ -36,15 +61,14 @@
         {:keys [graph-id dataset filter-rule]} args
         features (get-in all-features [dataset ::gf/geojson :features])
         filtered-features (filter (overlay-filter-rule->filter filter-rule) features)
-        edges (->> (for [lineString filtered-features
-                         :let [coordinates (get-in lineString [:geometry :coordinates])
+        edges (->> (for [feature filtered-features
+                         :let [coordinates (get-in feature [:geometry :coordinates])
                                nodeids (map #(get xy2nodeid %) coordinates)]]
                         (for [segment (partition 2 1 nodeids)
                               :let [[id1 id2] segment]]
-                             [id1 id2 3])) ;; TODO weight
+                             [id1 id2 3 {:id (:id feature)}])) ;; TODO weight
                    (apply concat))]
-       (js/console.log edges)
-       (swap! graphs assoc graph-id {:graph (apply graph/weighted-graph edges)
+       (swap! graphs assoc graph-id {:graph (edges+attrs->loom-graph edges)
                                      :dataset dataset
                                      #_#_:id-fn id-fn})))
 
@@ -87,12 +111,25 @@
        (map #(get id2feature %))
        (map #(get-in % [:geometry :coordinates]))))
 
-(defn paths->geojson [lngLatPaths {:keys [style]}]
+(defn weight [wayId fromId toId]
+  {:cost (if-not wayId
+                 (+ 5 (rand-int 5))
+                 (+ 1 (rand-int 3)))
+   :confidence (if wayId (rand))
+   :wheelchair (if wayId (rand-nth ["yes" "limited" "no"]))})
+
+(defn paths->geojson [id2feature edge-pairs {:keys [style]}]
+  (let [[fromId toId] (last edge-pairs)
+        wayId (loom.attr/attr (get-in @graphs [:highways :graph])
+                              [fromId toId] :id)]
+       (prn wayId fromId toId (weight wayId fromId toId)))
   {:type "FeatureCollection"
-   :features (for [lngLatPath lngLatPaths]
+   :features (for [[fromId toId] edge-pairs
+                   :let [lngLatPath (feature-ids->lngLatPaths [fromId toId] id2feature)
+                         wayId (loom.attr/attr (get-in @graphs [:highways :graph])
+                                                [fromId toId] :id)]]
                   {:type "Feature"
                    :geometry {:type "LineString"
                               :coordinates (into [] lngLatPath)}
-                   :properties {:style style
-                                :confidence (rand)
-                                :wheelchair (rand-nth ["yes" "limited" "no" nil])}})})
+                   :properties (merge (weight wayId fromId toId)
+                                      {:style style})})})
