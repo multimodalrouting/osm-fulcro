@@ -1,12 +1,7 @@
 (ns app.ui.leaflet.layers.d3svg-label-points
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc]]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility accessibility-patterns]]))
-
-
-(defn feature->confident? [feature]
-  (if-let [confidence (get-in feature [:properties :confidence])]
-     (>= confidence 0.5)))
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility accessibility-patterns feature->confident?]]))
 
 (defn d3DrawCallback [sel proj data]
   (let [radius 3

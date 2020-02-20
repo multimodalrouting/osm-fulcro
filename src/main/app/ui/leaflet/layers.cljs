@@ -38,8 +38,7 @@
                      :vectorGrid-loschwitz {:prechecked true
                                             :overlays [{:class :vectorGrid
                                                         :dataset :mvt-loschwitz}]}
-                     :vectorGrid-trachenberger {:prechecked true
-                                                :overlays [{:class :vectorGrid
+                     :vectorGrid-trachenberger {:overlays [{:class :vectorGrid
                                                             :dataset :trachenberger
                                                             :filter {[:geometry :type] #{"LineString"}}}]}
                      :lines-vvo-connections {:prechecked true
@@ -47,7 +46,7 @@
                                                          :dataset :vvo
                                                          :filter {[:geometry :type] #{"LineString"}}}]}
                      :points-vvo-stops {:prechecked true
-                                        :overlays [{:class :d3SvgLabelPoints
+                                        :overlays [{:class :d3SvgPoints #_:d3SvgLabelPoints
                                                     :dataset :vvo-small
                                                     :filter {[:geometry :type] #{"Point"}
                                                              [:properties :public_transport] #{"stop_position"}}}]}
@@ -57,7 +56,7 @@
                                                       :filter {[:geometry :type] #{"Point"}
                                                                [:properties :public_transport] #{"stop_position"}}}]}
                      :routinggraph {:prechecked true
-                                    :overlays [{:class :d3SvgLines
+                                    :overlays [{:class :d3SvgStyledLines
                                                 :dataset :routinggraph}]}
                      :routes {:prechecked true
                               :overlays [{:class :d3SvgStyledLines

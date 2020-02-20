@@ -123,9 +123,7 @@
                         paths (map #(feature-ids->lngLatPaths % id2feature)
                                    edge-pairs)]
                        (transact! this [(mutate-datasets {:path [:routinggraph]
-                                                          :data {::gf/geojson (paths->geojson paths
-                                                                                              {:style {:stroke "darkgreen"
-                                                                                                       :stroke-width 1}})}})]))
+                                                          :data {::gf/geojson (paths->geojson paths {:style {:stroke-width 2}})}})]))
                   (update-state-of-step-if-changed this props
                                                    {:steps :layers->dataset->graph->route
                                                     :step (title->step-index "Graph" step-list)
@@ -142,8 +140,7 @@
                   (transact! this [(mutate-datasets {:path [:routes]
                                                      :data {::gf/geojson (paths->geojson [(let [id2feature (features->id2feature (::gf/id props) xy2nodeid)]
                                                                                                (feature-ids->lngLatPaths path id2feature))]
-                                                                                         {:style {:stroke "blue"
-                                                                                                  :stroke-width 4}})}})])
+                                                                                         {:style {:stroke-width 6}})}})])
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Route" step-list)

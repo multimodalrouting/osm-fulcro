@@ -9,7 +9,7 @@
   "returns the path+dist of the route selected or expected to be best"
   []
   ;; TODO depending on fulcro-state
-  (let [g+meta (last (vals @graphs))
+  (let [g+meta (first (vals @graphs))
         g (:graph g+meta)
         from (first (graph/nodes g))
         to (last (graph/nodes g))

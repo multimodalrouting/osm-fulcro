@@ -59,6 +59,7 @@
                                (remove nil?))]
                 (if-not (empty? overlays)
                         (layersControlOverlay {:key layer-name :name layer-name :checked (boolean (:prechecked layer))}
+                                              ;; TODO why are not prechecked layers displayed?
                                               overlays)))]))))
 
 (def leaflet (factory Leaflet))

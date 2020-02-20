@@ -93,4 +93,6 @@
                   {:type "Feature"
                    :geometry {:type "LineString"
                               :coordinates (into [] lngLatPath)}
-                   :properties {:style style}})})
+                   :properties {:style style
+                                :confidence (rand)
+                                :wheelchair (rand-nth ["yes" "limited" "no" nil])}})})

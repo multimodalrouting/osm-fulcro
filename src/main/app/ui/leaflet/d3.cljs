@@ -55,3 +55,7 @@
    (get-in (js->clj d :keywordize-keys true)
            [:properties :wheelchair])
    "grey"))
+
+(defn feature->confident? [feature]
+  (if-let [confidence (get-in feature [:properties :confidence])]
+          (>= confidence 0.5)))
