@@ -61,6 +61,5 @@
                      :routes {:prechecked true
                               :overlays [{:class :d3SvgStyledLines
                                           :dataset :routes}]}
-                     #_#_:routesPoints {:prechecked true
-                                    :overlays [{:class :d3SvgPoints
-                                                :dataset :routes}]}})
+                     :isochrones {:overlays [{:class :d3SvgLines
+                                              :dataset :isochrones}]}})

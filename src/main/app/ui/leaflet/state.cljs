@@ -9,6 +9,7 @@
     [app.ui.leaflet :as leaflet]
     [app.routing.graphs :refer [graphs calculate-graphs paths->geojson features->id2feature]]
     [app.routing.route :refer [calculate-routes]]
+    [app.routing.isochrone :refer [isochrone->geojson]]
     [loom.graph :as graph]))
 
 
@@ -136,6 +137,15 @@
                                               {:steps :layers->dataset->graph->route
                                                :step (title->step-index "Route" step-list)
                                                :new-state :active})
+
+             (doseq [gf (filter #(= (get-in (val %) [::gf/calculate :type]) :isochrones)
+                                geofeatures)
+                     :let [id (key gf)
+                           args (get-in (val gf) [::gf/calculate :args])]]
+                    (transact! this [(mutate-datasets {:path [id]
+                                                       :data {::gf/geojson (isochrone->geojson (features->id2feature (::gf/id props) xy2nodeid)
+                                                                                               args)}})]))
+
              (let [[path dist] (calculate-routes)]
                   (transact! this [(mutate-datasets {:path [:routes]
                                                      :data {::gf/geojson (paths->geojson (features->id2feature (::gf/id props) xy2nodeid)
