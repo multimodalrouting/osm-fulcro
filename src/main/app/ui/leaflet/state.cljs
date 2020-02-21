@@ -3,7 +3,10 @@
     [com.fulcrologic.fulcro.mutations :refer [defmutation]]
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact!]]
+    [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
+    [app.model.osm :as osm :refer [OsmData]]
+    [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
@@ -53,13 +56,20 @@
   {:ident (fn [_] [::gf/comparison "singleton"])
    :query [::gf/comparison]})
 
+(defn component+query->tree [component query]
+  (let [state (-> component (aget "props") (aget "fulcro$app")
+                  :com.fulcrologic.fulcro.application/state-atom deref)]
+       (fdn/db->tree query state state)))
+
 (defsc State
   "State machine keeping track of loading all required data.
    If you want enforce reloading, just use `steps/update-state-of-step` to set the state back to nil"
   [this {:as props}]
   {:initial-state (fn [_] layers->dataset->graph->route)
-   :query (fn [] (reduce into [[[::steps/id :layers->dataset->graph->route] (get-query Steps)
-                                 ::leaflet/id ::gf/id]
+   :query (fn [] (reduce into [[[::steps/id :layers->dataset->graph->route]
+                                 ::leaflet/id]
+                                (get-query Steps)
+                               [{::osm-dataset/root (get-query OsmDataset)}]
                                (get-query XY2NodeId)
                                (get-query Comparison)]))}
 
@@ -67,8 +77,14 @@
         step-list (::steps/step-list state)
         leaflets (::leaflet/id props)
         geofeatures (::gf/id props)
+        osm-dataset (::osm-dataset/id props)
+        osm (::osm/id props)
         xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
+    
+       (js/console.log (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            props
+                            ::osm-dataset/root))
       
        (def comparison comparison)  ;; TODO cleanup
 
@@ -99,15 +115,21 @@
                                                    :new-state :active
                                                    #_#_:info "get index"})  ;; TODO maybe we just want get the sources without geojson first?
 
-                 (load! this ::gf/comparison Comparison {})
+                 #_(load! this ::gf/comparison Comparison {})
 
-                 (load! this ::gf/xy2nodeid XY2NodeId {})
+                 #_(load! this ::gf/xy2nodeid XY2NodeId {})
 
-                 (load! this ::gf/all GeoFeaturesAll {:target [:tmp ::gf/all]
+                 #_(load! this ::gf/all GeoFeaturesAll {:target [:tmp ::gf/all]
                                                       :post-mutation `post-mutation
                                                       :post-mutation-params {:steps :layers->dataset->graph->route
                                                                              :step (title->step-index "Geofeatures" step-list)
-                                                                             :ok-condition (fn [db] (::gf/id db))}}))
+                                                                             :ok-condition (fn [db] (::gf/id db))}})
+
+                 (load! this ::osm-dataset/root OsmDataset {:post-mutation `post-mutation
+                                                            :post-mutation-params {:steps :layers->dataset->graph->route
+                                                                                   :step (title->step-index "Geofeatures" step-list)
+                                                                                   :ok-condition (fn [db] (::osm/id db))}}))
+
                  ;; TODO use app.ui.leaflet.state/mutate-datasets-load to load features from non-default remotes
 
        (if (and (= :done (:state (title->step "Geofeatures" step-list)))
@@ -116,8 +138,9 @@
                                             {:steps :layers->dataset->graph->route
                                              :step (title->step-index "Geofeatures" step-list)
                                              :new-state :done
-                                             :info (str (count geofeatures) " Sources; "
-                                                        (reduce + (map #(count (get-in % [::gf/geojson :features])) (vals geofeatures))) " Features")}))
+                                             :info (str ;(count osm) " Sources; "
+                                                        (count (filter :required (vals osm-dataset))) " Required; "
+                                                        (count (vals osm)) " Features")}))
 
        (when (and (#{:done} (:state (title->step "Geofeatures" step-list)))
                   (not (:state (title->step "Graph" step-list))))

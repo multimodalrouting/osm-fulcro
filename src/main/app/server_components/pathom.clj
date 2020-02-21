@@ -8,7 +8,9 @@
     [clojure.core.async :as async]
     [app.server-components.config :refer [config]]
     [jsonista.core :as json]
-    [app.model.geofeatures :as gf]))
+    [app.model.geofeatures :as gf]
+    [app.model.osm-dataset :as osm-dataset]
+    [app.model.osm :as osm]))
 
 (def geofeatures {;:vvo {::gf/source {:comment "VVO stops+lines"
                   ;                   :remote :pathom :type :geojson}
@@ -25,6 +27,44 @@
                   :mvt-loschwitz {::gf/source {:remote :mvt :type :geojson
                                                :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
                                                        :layer "roads"}}}})
+
+(def osm-datasets {:bahnhof-neustadt {::osm-dataset/source {:comment "Bahnhof Dresden Neustadt"
+                                                            :remote :pathom :type :osmjson}}})
+(defn qualify
+  "namespace-qualifies a map"
+  [new-ns m]
+  (zipmap (map #(keyword new-ns (if (keyword? %) (name %) (str %)))
+               (keys m))
+          (vals m)))
+(comment (= (qualify "foo" {"a" :b :c {:d :e}})
+                     #:foo{:a :b :c {:d :e}}))
+
+(defn osm-dataset-file [{::osm-dataset/keys [id]}]
+  (let [known_files {:trachenberger "resources/test/trachenberger.json"
+                     :bahnhof-neustadt "resources/test/bahnhof-neustadt.json"}
+        dataset (if-let [filename (get known_files id)]
+                        (json/read-value (slurp filename) (json/object-mapper {:decode-key-fn true})))]
+        (->> (update-in dataset [:elements] (fn [elements] (map #(qualify "app.model.osm" %) elements)))
+             (qualify "app.model.osm-dataset"))))
+
+(pc/defresolver osm-dataset-root [_ _]
+  {::pc/output [::osm-dataset/root ::osm-dataset/id]}
+  {::osm-dataset/root (into [] (map #(hash-map ::osm-dataset/id (key %))
+                                osm-datasets))})
+
+(pc/defresolver osm-dataset-source [_ {::osm-dataset/keys [id]}]
+  {::pc/input #{::osm-dataset/id}
+   ::pc/output [::osm-dataset/source]}
+  (-> (get osm-datasets id)
+      (select-keys [::osm-dataset/source])))
+
+(pc/defresolver osm-dataset-elements [_ {::osm-dataset/keys [id] :as props}]
+  {::pc/input #{::osm-dataset/id}
+   ::pc/output [{::osm-dataset/elements [::osm/id ::osm/lon ::osm/lat ::osm/type ::osm/nodes ::osm/members ::osm/tags]}]}
+  (osm-dataset-file props) #_
+  (update-in (osm-dataset-file props) [::osm-dataset/elements]
+             (fn [elements] (map #(select-keys % [::osm/id]) elements))))
+
 
 (pc/defresolver gf-all [_ _]
   {::pc/output [::gf/all ::gf/id]}
@@ -79,7 +119,8 @@
        (update ::pc/index-resolvers #(into [] (map (fn [[k v]] [k (dissoc v ::pc/resolve)])) %))
        (update ::pc/index-mutations #(into [] (map (fn [[k v]] [k (dissoc v ::pc/mutate)])) %)))})
 
-(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file xy2nodeid comparison])
+(defn all-resolvers [] [index-explorer gf-all gf-source gf-geojson-file xy2nodeid comparison
+                        osm-dataset-root osm-dataset-source osm-dataset-elements])
 
 (defn preprocess-parser-plugin
   "Helper to create a plugin that can view/modify the env/tx of a top-level request.
@@ -131,4 +172,7 @@
   :start (build-parser nil))
 
 (comment
-  (parser {} [{::gf/all [::gf/source]}]))
+  (parser {} [{::osm-dataset/root [::osm-dataset/source]}])
+  (parser {} [{[::osm-dataset/id :bahnhof-neustadt] [::osm-dataset/source]}])
+  (parser {} [{[::osm-dataset/id :bahnhof-neustadt] [{::osm-dataset/elements [::osm/id ::osm/lon ::osm/lat]}]}])
+)

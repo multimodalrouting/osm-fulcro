@@ -5,6 +5,8 @@
             [com.fulcrologic.fulcro.components :refer [defsc get-query get-initial-state transact!]]
             [com.fulcrologic.fulcro.dom :as dom]
             [app.model.geofeatures :as gf]
+            [app.model.osm-dataset :as osm-dataset]
+            [app.model.osm :as osm]
             [app.application :refer [SPA_conf conf-with-default-remote]]
             [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
             [app.ui.leaflet.layers :refer [example-layers]]
@@ -12,9 +14,10 @@
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.0657 13.739]
-                                                       ::leaflet/zoom 15
-                                                       ::leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}))
+                                 {::leaflet/id {:main {::leaflet/center [51.0657 13.741]
+                                                       ::leaflet/zoom 17
+                                                       ::leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}
+                                  ::osm-dataset/id {:bahnhof-neustadt {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 
