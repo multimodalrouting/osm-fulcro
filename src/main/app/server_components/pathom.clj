@@ -16,6 +16,8 @@
                                            :remote :pathom :type :geojson}}
                   :trachenberger {::gf/source {:comment "Trachenberger Platz: Streets+Buildings"
                                                :remote :pathom :type :geojson}}
+                  :bahnhof-neustadt {::gf/source {:comment "Bahnhof Neustadt"
+                                                  :remote :pathom :type :geojson}}
                   :overpass-example {::gf/source {:remote :overpass :type :geojson
                                                   :query ["area[name=\"Dresden\"]->.city;"
                                                           "nwr(area.city)[operator=\"DVB\"]->.connections;"
@@ -40,7 +42,8 @@
    ::pc/output [::gf/geojson]}
   (let [known_files {:vvo "resources/test/vvo.geojson"
                      :vvo-small "resources/test/vvo-small.geojson"
-                     :trachenberger "resources/test/trachenberger.geojson"}]
+                     :trachenberger "resources/test/trachenberger.geojson"
+                     :bahnhof-neustadt "resources/test/bahnhof-neustadt.geojson"}]
        (if-let [filename (get known_files id)]
                {::gf/geojson (json/read-value (slurp filename)
                                               (json/object-mapper {:decode-key-fn true}))})))
@@ -48,7 +51,8 @@
 (pc/defresolver xy2nodeid [_ _]
   ;; The geojson returned by overpass-api doesn't contain intermediate nodes of ways. As a quick workaround we do the geocoding here
   {::pc/output [::gf/xy2nodeid]}
-  {::gf/xy2nodeid (let [nodes (->> (json/read-value (slurp "resources/test/trachenberger.json")
+  {::gf/xy2nodeid (let [nodes (->> (json/read-value (slurp #_"resources/test/trachenberger.json"
+                                                           "resources/test/bahnhof-neustadt.json")
                                                     (json/object-mapper {:decode-key-fn true}))
                                    :elements
                                    (filter #(= "node" (:type %))))]

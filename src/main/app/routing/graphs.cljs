@@ -57,7 +57,7 @@
 
 (defn highways [all-features xy2nodeid]
   (let [args {:graph-id :highways
-              :dataset :trachenberger
+              :dataset :bahnhof-neustadt ;:trachenberger
               :filter-rule {[:geometry :type] #{"LineString"}
                             [:properties :highway] some?}}
         {:keys [graph-id dataset filter-rule]} args
@@ -101,7 +101,7 @@
   (merge (zipmap (vals xy2nodeid)
                  (map (fn [xy] {:geometry {:coordinates xy}})
                       (keys xy2nodeid)))
-         (->> (for [dataset [:trachenberger :vvo-small]
+         (->> (for [dataset [:bahnhof-neustadt :trachenberger :vvo-small]
                     :let [id-fn :id  ;; TODO
                           features (get-in geofeatures [dataset ::gf/geojson :features])
                           id2feature (zipmap (map id-fn features) features)]]
@@ -151,8 +151,9 @@
                                                [fromId toId] :id)
                          [wayFeature fromFeature toFeature] (map #(get id2feature %) [wayId fromId toId])
                          lngLatPath (map #(get-in % [:geometry :coordinates]) [fromFeature toFeature])]]
-                  {:type "Feature"
-                   :geometry {:type "LineString"
-                              :coordinates (into [] lngLatPath)}
-                   :properties (merge (weight wayFeature fromFeature toFeature)
-                                      {:style style})})})
+                  (if (and fromFeature toFeature)
+                      {:type "Feature"
+                       :geometry {:type "LineString"
+                                  :coordinates (into [] lngLatPath)}
+                       :properties (merge (weight wayFeature fromFeature toFeature)
+                                          {:style style})}))})
