@@ -21,7 +21,9 @@
                              (for [by-to-val (vals by-to)]
                                   (apply merge (map last by-to-val))))}))))
 
-#_(= (edges+attrs->loom-attrs [[:a :b 1 {:i :x}] [:a :c 2 {:i :y}] [:b :c 3 {:j :k}] [:b :c 4 {:i :z}]])
+#_(= (edges+attrs->loom-attrs [[:a :b 1 {:i :x}] [:a :c 2 {:i :y}]
+                               [:b :c 3 {:j :k}] [:b :c 4 {:i :z}]]
+                              {:directed true})
    {:a {:loom.attr/edge-attrs {:b {:i :x} :c {:i :y}}}
     :b {:loom.attr/edge-attrs {:c {:j :k :i :z}}}})
 
@@ -94,42 +96,63 @@
 ;; helpers for creating a geojson 
 
 (defn features->id2feature
-  "Return a lookup table to calculate features from their ids. This can be canculated form geofeatures, as well as from a xy2nodeid-mapping."
+  "Return a lookup table to calculate features from their ids. This can be calculated form geofeatures, as well as from a xy2nodeid-mapping."
   [geofeatures xy2nodeid]
-  (merge
-    (zipmap (vals xy2nodeid)
-            (map (fn [xy] {:geometry {:coordinates xy}})
-                 (keys xy2nodeid)))
-    (let [id-fn :id  ;; TODO
-          dataset :vvo-small
-          features (get-in geofeatures [dataset ::gf/geojson :features])
-          id2feature (zipmap (map id-fn features) features)]
-         id2feature)))
+  (merge (zipmap (vals xy2nodeid)
+                 (map (fn [xy] {:geometry {:coordinates xy}})
+                      (keys xy2nodeid)))
+         (->> (for [dataset [:trachenberger :vvo-small]
+                    :let [id-fn :id  ;; TODO
+                          features (get-in geofeatures [dataset ::gf/geojson :features])
+                          id2feature (zipmap (map id-fn features) features)]]
+                   id2feature)
+              (apply merge))))
 
 (defn feature-ids->lngLatPaths [feature-ids id2feature]
   (->> feature-ids
        (map #(get id2feature %))
        (map #(get-in % [:geometry :coordinates]))))
 
-(defn weight [wayId fromId toId]
-  {:cost (if-not wayId
+(defn weight [wayFeature fromFeature toFeature]
+  {:cost (if-not wayFeature
                  (+ 5 (rand-int 5))
                  (+ 1 (rand-int 3)))
-   :confidence (if wayId (rand))
-   :wheelchair (if wayId (rand-nth ["yes" "limited" "no"]))})
+   :confidence (if wayFeature (rand))
+   :wheelchair (case (get-in wayFeature [:properties :highway])
+                     "footway"
+                       "yes"
+                     "cyleway"
+                       "yes"
+                     "residential"
+                       "limited"
+                     "primary"
+                       "no"
+                     "secondary"
+                       "no"
+                     "tertiary"
+                       "no"
+                     nil #_(rand-nth ["yes" "limited" "no"]))})
 
 (defn paths->geojson [id2feature edge-pairs {:keys [style]}]
   (let [[fromId toId] (last edge-pairs)
         wayId (loom.attr/attr (get-in @graphs [:highways :graph])
-                              [fromId toId] :id)]
-       (prn wayId fromId toId (weight wayId fromId toId)))
+                              [fromId toId] :id)
+        [wayFeature fromFeature toFeature] (map #(get id2feature %) [wayId fromId toId])]
+       (js/console.log (merge {:wayId wayId
+                               :wayFeature wayFeature
+                               :fromId fromId
+                               :fromFeature fromFeature
+                               :toId toId
+                               :toFeature toFeature}
+                              (weight wayId fromFeature toFeature))))
   {:type "FeatureCollection"
    :features (for [[fromId toId] edge-pairs
-                   :let [lngLatPath (feature-ids->lngLatPaths [fromId toId] id2feature)
-                         wayId (loom.attr/attr (get-in @graphs [:highways :graph])
-                                                [fromId toId] :id)]]
+                   :let [wayId (loom.attr/attr (get-in @graphs [:highways :graph])
+                                               [fromId toId] :id)
+                         [wayFeature fromFeature toFeature] (map #(get id2feature %) [wayId fromId toId])
+                         lngLatPath (map #(get-in % [:geometry :coordinates]) [fromFeature toFeature])]]
                   {:type "Feature"
                    :geometry {:type "LineString"
                               :coordinates (into [] lngLatPath)}
-                   :properties (merge (weight wayId fromId toId)
+                   :properties (merge (weight wayFeature fromFeature toFeature)
                                       {:style style})})})
