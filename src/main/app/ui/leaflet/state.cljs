@@ -82,10 +82,16 @@
         xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
     
-       (js/console.log (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            props
-                            ::osm-dataset/root))
-      
+
+       (js/console.log "Bytes"
+                       (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            str count))
+       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            ::osm-dataset/root first
+                            ::osm-dataset/elements (filter ::osm/members) first
+                            ::osm/members))
+    
+
        (def comparison comparison)  ;; TODO cleanup
 
        (if (not (:state (title->step "Layers" step-list)))

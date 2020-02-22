@@ -221,5 +221,5 @@
 (comment
   (parser {} [{::osm-dataset/root [::osm-dataset/source]}])
   (parser {} [{[::osm-dataset/id :bahnhof-neustadt] [::osm-dataset/source]}])
-  (parser {} [{[::osm-dataset/id :bahnhof-neustadt] [{::osm-dataset/elements [::osm/id ::osm/lon ::osm/lat]}]}])
+  (time (parser {} [{[::osm-dataset/id :bahnhof-neustadt] [{::osm-dataset/elements [::osm/id ::osm/lon ::osm/lat]}]}]))
 )
