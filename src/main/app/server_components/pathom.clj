@@ -39,13 +39,60 @@
 (comment (= (qualify "foo" {"a" :b :c {:d :e}})
                      #:foo{:a :b :c {:d :e}}))
 
+(defn explicit-foreign-key [node]
+  (hash-map ::osm/id node))
+
+(defn explicit-foreign-keys [nodes]
+  (map explicit-foreign-key nodes))
+
+(defn update-if-key-exists [m k f]
+  (if (get m k)
+      (update m k f)
+      m))
+
+(defn pathomize [osmjson]
+  (-> (qualify "app.model.osm-dataset" osmjson)
+      (update ::osm-dataset/elements
+              (fn [elements]
+                  (map (fn [element] (-> (qualify "app.model.osm" element)
+                                         (update-if-key-exists ::osm/nodes explicit-foreign-keys)
+                                         (update-if-key-exists ::osm/members (fn [members] (map (fn [member]
+                                                                                                    (-> (qualify "app.model.osm" member)
+                                                                                                        (update ::osm/ref explicit-foreign-key)))
+                                                                                                members)))))
+                       elements)))))
+
+#_(def cache (atom {}))
+
+#_(defn caching! [content k]
+  (swap! assoc cache k content))
+
+#_(defn spiting! [content filename &[{:keys [pprint] :or {pprint false}}]]
+  (spit filename (if pprint
+                     (with-out-str (clojure.pprint/pprint content))
+                     content))
+  content)
+
 (defn osm-dataset-file [{::osm-dataset/keys [id]}]
   (let [known_files {:trachenberger "resources/test/trachenberger.json"
-                     :bahnhof-neustadt "resources/test/bahnhof-neustadt.json"}
-        dataset (if-let [filename (get known_files id)]
-                        (json/read-value (slurp filename) (json/object-mapper {:decode-key-fn true})))]
-        (->> (update-in dataset [:elements] (fn [elements] (map #(qualify "app.model.osm" %) elements)))
-             (qualify "app.model.osm-dataset"))))
+                     :bahnhof-neustadt "resources/test/bahnhof-neustadt.json"}]
+       (prn "Read dataset" id)
+       (time
+         (if-let [filename (get known_files id)]
+                 (cond ;(get @cache id)
+                         ;(get @cache id)
+                       (clojure.string/ends-with? filename ".json")
+                         (-> (slurp filename)
+                             (json/read-value  (json/object-mapper {:decode-key-fn true}))
+                             pathomize
+                             ;(caching! id)
+                             #_(spiting! (clojure.string/replace filename #"\.json" ".pathom")))
+                       (clojure.string/ends-with? filename ".pathom")
+                         (-> (slurp filename)
+                             (clojure.edn/read-string)))))))
+(comment
+  (time (type (str (osm-dataset-file {::osm-dataset/id :bahnhof-neustadt})))))
+        
 
 (pc/defresolver osm-dataset-root [_ _]
   {::pc/output [::osm-dataset/root ::osm-dataset/id]}

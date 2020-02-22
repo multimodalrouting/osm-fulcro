@@ -69,7 +69,7 @@
    :query (fn [] (reduce into [[[::steps/id :layers->dataset->graph->route]
                                  ::leaflet/id]
                                 (get-query Steps)
-                               [{::osm-dataset/root (get-query OsmDataset)}]
+                               [{::osm-dataset/root (get-query OsmDataset)} ::osm-dataset/id ::osm/id]
                                (get-query XY2NodeId)
                                (get-query Comparison)]))}
 
@@ -138,7 +138,7 @@
                                             {:steps :layers->dataset->graph->route
                                              :step (title->step-index "Geofeatures" step-list)
                                              :new-state :done
-                                             :info (str ;(count osm) " Sources; "
+                                             :info (str ;(count osm-dataset) " Sources; "
                                                         (count (filter :required (vals osm-dataset))) " Required; "
                                                         (count (vals osm)) " Features")}))
 
