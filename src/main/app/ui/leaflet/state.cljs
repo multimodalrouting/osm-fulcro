@@ -88,8 +88,9 @@
                             str count))
        (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
                             ::osm-dataset/root first
-                            ::osm-dataset/elements (filter ::osm/members) first
-                            ::osm/members))
+                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %))) first
+                            #_::osm/members 
+                            #_(map ::osm/ref)))
     
 
        (def comparison comparison)  ;; TODO cleanup

@@ -92,7 +92,18 @@
                              (clojure.edn/read-string)))))))
 (comment
   (time (type (str (osm-dataset-file {::osm-dataset/id :bahnhof-neustadt})))))
-        
+
+
+(defn filter-dataset [dataset {:as params}]
+  (update dataset ::osm-dataset/elements
+          (fn [elements]
+              (map (fn [element] ((apply comp (remove nil? [(if (get-in params [:remove :members])
+                                                                #(dissoc % ::osm/members))
+                                                            (if (get-in params [:remove :members-when-incomplete])
+                                                                #(dissoc % ::osm/members))  ;; TODO
+                                                            ]))
+                                  element))
+                   elements))))
 
 (pc/defresolver osm-dataset-root [_ _]
   {::pc/output [::osm-dataset/root ::osm-dataset/id]}
@@ -105,12 +116,11 @@
   (-> (get osm-datasets id)
       (select-keys [::osm-dataset/source])))
 
-(pc/defresolver osm-dataset-elements [_ {::osm-dataset/keys [id] :as props}]
+(pc/defresolver osm-dataset-elements [env {::osm-dataset/keys [id] :as props}]
   {::pc/input #{::osm-dataset/id}
    ::pc/output [{::osm-dataset/elements [::osm/id ::osm/lon ::osm/lat ::osm/type ::osm/nodes ::osm/members ::osm/tags]}]}
-  (osm-dataset-file props) #_
-  (update-in (osm-dataset-file props) [::osm-dataset/elements]
-             (fn [elements] (map #(select-keys % [::osm/id]) elements))))
+  (-> (osm-dataset-file props)
+      (filter-dataset (get-in env [:ast :params]))))
 
 
 (pc/defresolver gf-all [_ _]
