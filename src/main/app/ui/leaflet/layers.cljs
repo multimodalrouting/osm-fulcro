@@ -3,6 +3,7 @@
     [com.fulcrologic.fulcro.components :refer [factory]]
     [app.ui.leaflet.layers.vectorGrid :refer [VectorGridOverlay]]
     [app.ui.leaflet.layers.hexbin :refer [Hexbin]]
+    [app.ui.leaflet.layers.d3svg-osm :refer [D3SvgOSM]]
     [app.ui.leaflet.layers.d3svg-points :refer [D3SvgPoints]]
     [app.ui.leaflet.layers.d3svg-label-points :refer [D3SvgLabelPoints]]
     [app.ui.leaflet.layers.d3svg-lines :refer [D3SvgLines]]
@@ -12,6 +13,7 @@
 
 (def overlay-class->component {:vectorGrid (factory VectorGridOverlay)
                                :hexbin (factory Hexbin)
+                               :d3SvgOSM (factory D3SvgOSM)
                                :d3SvgPoints (factory D3SvgPoints)
                                :d3SvgLabelPoints (factory D3SvgLabelPoints)
                                :d3SvgLines (factory D3SvgLines)
@@ -23,7 +25,6 @@
                                      :tile {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
                                      :attribution "&copy; <a href=\"http://esri.com\">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}}}
                      :osm {:base {:name "OSM Tiles"
-                                  :checked true
                                   :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
                                          :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
                      :memo {:base {:name "PublicTransport (MeMOMaps)"

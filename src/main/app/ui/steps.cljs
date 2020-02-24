@@ -4,15 +4,16 @@
             [com.fulcrologic.fulcro.dom :as dom]
             [app.ui.steps-helper :refer [title->step-index]]))
 
-(defmutation update-state-of-step [{:keys [steps step new-state info]}]
+(defmutation update-state-of-step [{:keys [steps step new-state info info-popup]}]
   (action [{:keys [state]}]
           (swap! state assoc-in [::id steps ::step-list step :state] new-state)
-          (swap! state assoc-in [::id steps ::step-list step :info] info)))
+          (swap! state assoc-in [::id steps ::step-list step :info] info)
+          (swap! state assoc-in [::id steps ::step-list step :info-popup] info-popup)))
 
-(defn update-state-of-step-if-changed [app-or-comp props {:keys [steps step new-state info]}]
+(defn update-state-of-step-if-changed [app-or-comp props {:keys [steps step new-state info info-popup]}]
   (if-not (and (= new-state (get-in props [[::id steps] ::step-list step :state]))
                (= info (get-in props [[::id steps] ::step-list step :info])))
-          (transact! app-or-comp [(update-state-of-step {:steps steps :step step :new-state new-state :info info})])))
+          (transact! app-or-comp [(update-state-of-step {:steps steps :step step :new-state new-state :info info :info-popup info-popup})])))
 
 (defmutation post-mutation
   "To be used with `scom.fulcrologic.fulcro.data-fetch/load!` when it changes the state.
@@ -44,7 +45,7 @@
         (dom/div {:classes ["content"]}
           (dom/div {:classes ["title"]} (:title step))
           (dom/div {:classes ["description"]} (get (:contents step) state))
-          (dom/div {:classes ["description"]} (str (:info step))))))
+          (dom/div {:classes ["description"] :title (:info-popup step)} (:info step)))))
 
     (if-not (empty? (:com.fulcrologic.fulcro.application/active-remotes props))
                     (dom/div {:classes ["ui" "active" "dimmer"]}

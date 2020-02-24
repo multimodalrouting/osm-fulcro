@@ -5,5 +5,4 @@
 (defsc OsmDataset
   [this {::keys [id] :as props}]
   {:ident (fn [] [::id id])
-   :query [::id ::source {'(::elements {:remove {:members true
-                                                 :members-when-incomplete true}}) (get-query OsmData)}]})
+   :query [::id ::source {'(::elements {:remove {:members-when-incomplete true}}) (get-query OsmData)}]})

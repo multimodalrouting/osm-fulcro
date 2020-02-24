@@ -9,7 +9,8 @@
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
     ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay LayersControl.BaseLayer TileLayer]]
     [com.fulcrologic.fulcro.dom :as dom]
-    [app.model.geofeatures :as gf]))
+    [app.model.geofeatures :as gf]
+    [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]))
 
 (def leafletMap (react-factory Map))
 (def layersControl (react-factory LayersControl))
@@ -33,8 +34,9 @@
                         zoom 12
                         style {:height "100%" :width "100%"}}}]
   {:ident (fn [] [:leaflet/id id])
-   :query [::id ::layers ::center ::zoom
-           ::gf/id :style]}
+   :query (fn [] [::id ::layers ::center ::zoom
+                  {::osm-dataset/root (get-query OsmDataset)}
+                  ::gf/id :style])}
   ;(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 
   (leafletMap {:style style
@@ -48,6 +50,9 @@
            (if-let [base (:base layer)]
              (layersControlBaseLayer base
                (tileLayer (:tile base))))
+
+           ((overlay-class->component :d3SvgOSM) {:key :osm-elements
+                                                  :elements props})
 
            (let [overlays (->> (for [overlay (:overlays layer)
                                      :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])

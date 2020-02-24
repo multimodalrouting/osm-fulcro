@@ -28,7 +28,9 @@
                                                :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
                                                        :layer "roads"}}}})
 
-(def osm-datasets {:bahnhof-neustadt {::osm-dataset/source {:comment "Bahnhof Dresden Neustadt"
+(def osm-datasets {:linie3 {::osm-dataset/source {:comment "DVB Straßenbahnlinie 3"
+                                                  :remote :pathom :type :osmjson}}
+                   #_#_:bahnhof-neustadt {::osm-dataset/source {:comment "Bahnhof Dresden Neustadt"
                                                             :remote :pathom :type :osmjson}}})
 (defn qualify
   "namespace-qualifies a map"
@@ -74,7 +76,8 @@
   content)
 
 (defn osm-dataset-file [{::osm-dataset/keys [id]}]
-  (let [known_files {:trachenberger "resources/test/trachenberger.json"
+  (let [known_files {:linie3 "resources/test/linie3.json"
+                     :trachenberger "resources/test/trachenberger.json"
                      :bahnhof-neustadt "resources/test/bahnhof-neustadt.json"}]
        (prn "Read dataset" id)
        (time
@@ -90,16 +93,13 @@
                        (clojure.string/ends-with? filename ".pathom")
                          (-> (slurp filename)
                              (clojure.edn/read-string)))))))
-(comment
-  (time (type (str (osm-dataset-file {::osm-dataset/id :bahnhof-neustadt})))))
-
 
 (defn filter-dataset [dataset {:as params}]
   (update dataset ::osm-dataset/elements
           (fn [elements]
               (map (fn [element] ((apply comp (remove nil? [(if (get-in params [:remove :members])
                                                                 #(dissoc % ::osm/members))
-                                                            (if (get-in params [:remove :members-when-incomplete])
+                                                            #_(if (get-in params [:remove :members-when-incomplete])
                                                                 #(dissoc % ::osm/members))  ;; TODO
                                                             ]))
                                   element))

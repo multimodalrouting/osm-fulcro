@@ -4,6 +4,7 @@
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
     [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact!]]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
+    [com.fulcrologic.fulcro.dom :as dom]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.model.osm :as osm :refer [OsmData]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]
@@ -83,14 +84,24 @@
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
     
 
-       (js/console.log "Bytes"
+#_       (js/console.log "Bytes"
                        (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            str count))
-       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            #_#_str count time))
+#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
                             ::osm-dataset/root first
-                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %))) first
-                            #_::osm/members 
-                            #_(map ::osm/ref)))
+                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %)))
+                                                   (filter #(= (get-in % [::osm/tags :type]) "route"))
+                                                   (filter #(= (get-in % [::osm/tags :ref]) "3"))))
+#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            ::osm-dataset/root first
+                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %)))
+                                                   (filter #(= (get-in % [::osm/tags :name]) "Zeithainer Straße"))))
+
+#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                            ::osm-dataset/root first
+                            ::osm-dataset/elements
+                            (group-by ::osm/type)
+                            (#(zipmap (keys %) (map count (vals %))))))
     
 
        (def comparison comparison)  ;; TODO cleanup
@@ -147,7 +158,10 @@
                                              :new-state :done
                                              :info (str ;(count osm-dataset) " Sources; "
                                                         (count (filter :required (vals osm-dataset))) " Required; "
-                                                        (count (vals osm)) " Features")}))
+                                                        (count (vals osm)) " Features")
+                                             :info-popup (str (->> (vals osm)
+                                                                   (group-by ::osm/type)
+                                                                   (#(zipmap (keys %) (map count (vals %))))))}))
 
        (when (and (#{:done} (:state (title->step "Geofeatures" step-list)))
                   (not (:state (title->step "Graph" step-list))))
