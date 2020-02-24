@@ -10,6 +10,12 @@
 (defn lngLat->Point [proj [lng lat]]
   (.latLngToLayerPoint proj (clj->js {:lat lat :lng lng})))
 
+(defn proj->bounds [proj]
+  [[(-> proj .getBounds .-_southWest .-lng)
+    (-> proj .getBounds .-_southWest .-lat)]
+   [(-> proj .getBounds .-_northEast .-lng)
+    (-> proj .getBounds .-_northEast .-lat)]])
+
 (defn bounds->circumcircleRadius [proj bounds]
   (some->> bounds
            (map (partial lngLat->Point proj))
@@ -18,6 +24,18 @@
                               (* (.-y %) (.-y %)))))
            (* 0.5)))
 
+(defn filter-nodes-within-bounds [bounds elements]
+  (filter #(and (< (-> bounds first first) (:lon %) (-> bounds second first))
+                (< (-> bounds first second) (:lat %) (-> bounds second second)))
+          elements))
+
+(defn filter-ways-within-bounds [bounds elements]
+  ;; Maybe we want keep the first nodes outside or only filter when all nodes are outside
+  (->> elements
+       (map (fn [element] (let [nodes (filter-nodes-within-bounds bounds (:nodes element))]
+                               (if-not (empty? nodes)
+                                       element))))
+       (remove nil?)))
 
 (defn stripe-pattern [defs id size color]
   "generates a stripe pattern as in the given defs

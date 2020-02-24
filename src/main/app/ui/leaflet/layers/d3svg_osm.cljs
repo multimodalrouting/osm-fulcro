@@ -2,7 +2,7 @@
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility]]
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point proj->bounds filter-nodes-within-bounds filter-ways-within-bounds color-by-accessibility]]
     [app.model.osm :as osm :refer [OsmData]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]))
 
@@ -11,7 +11,9 @@
        (lngLat->Point proj [(:lon node) (:lat node)])))
 
 (defn d3DrawCallback-Nodes [upd proj data &[{:keys [svg]}]]
-  (-> (.data upd (clj->js (filter #(= (:type %) "node") data)))
+  (-> (.data upd (->> (filter #(= (:type %) "node") data)
+                      (filter-nodes-within-bounds (proj->bounds proj))
+                      clj->js))
       (.enter)
       (.append "a")
       (.append "circle")
@@ -24,7 +26,9 @@
       (.on "click" (fn [d i ds] (js/console.log (js->clj d :keywordize-keys true))))))
 
 (defn d3DrawCallback-Ways [upd proj data &[{:keys [svg]}]]
-  (-> (.data upd (clj->js (filter #(= (:type %) "way") data)))
+  (-> (.data upd (->> (filter #(= (:type %) "way") data)
+                      (filter-ways-within-bounds (proj->bounds proj))
+                      clj->js))
       (.enter)
       (.append "a")
       (.append "polyline")
