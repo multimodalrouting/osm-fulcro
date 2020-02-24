@@ -7,7 +7,7 @@
     [com.fulcrologic.fulcro.dom :as dom]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.model.osm :as osm :refer [OsmData]]
-    [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]
+    [app.model.osm-dataset :as osm-dataset :refer [OsmDataset OsmDatasetMeta]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
@@ -143,7 +143,9 @@
                                                                              :step (title->step-index "Geofeatures" step-list)
                                                                              :ok-condition (fn [db] (::gf/id db))}})
 
-                 (load! this ::osm-dataset/root OsmDataset {:post-mutation `post-mutation
+                 (load! this ::osm-dataset/root OsmDatasetMeta {})
+
+                 (load! this [::osm-dataset/id :linie3 #_:bahnhof-neustadt] OsmDataset {:post-mutation `post-mutation
                                                             :post-mutation-params {:steps :layers->dataset->graph->route
                                                                                    :step (title->step-index "Geofeatures" step-list)
                                                                                    :ok-condition (fn [db] (::osm/id db))}}))

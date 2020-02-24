@@ -1,4 +1,4 @@
-(ns app.routing.bahnhof-neustadt-ws
+(ns app.routing.zeithainer-ws
   (:require [nubank.workspaces.core :refer [defcard]]
             [nubank.workspaces.card-types.fulcro3 :as ct.fulcro]
             [nubank.workspaces.model :as wsm]
@@ -14,10 +14,10 @@
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.0657 13.741]
-                                                       ::leaflet/zoom 17
-                                                       ::leaflet/layers example-layers}}
-                                  ::osm-dataset/id {:linie3 #_:bahnhof-neustadt {:required true}}}))
+                                 {::leaflet/id {:main {::leaflet/center [51.0824 13.7300]
+                                                       ::leaflet/zoom 19
+                                                       ::leaflet/layers (assoc-in example-layers [nil :base :checked] true)}}
+                                  ::osm-dataset/id {:linie3 {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 
@@ -29,7 +29,7 @@
                                                    (filter map? (get-query Leaflet)))))
                    {:style {:height "80%" :width "100%"}}))))
 
-(defcard bahnhof-neustadt
+(defcard zeithainer
   {::wsm/align {:flex 1}}  ;; fullscreen
   (ct.fulcro/fulcro-card
     {::ct.fulcro/root Root
