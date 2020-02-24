@@ -14,10 +14,10 @@
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.0657 13.741]
-                                                       ::leaflet/zoom 17
+                                 {::leaflet/id {:main {::leaflet/center [51.066 13.740]
+                                                       ::leaflet/zoom 18
                                                        ::leaflet/layers example-layers}}
-                                  ::osm-dataset/id {:linie3 #_:bahnhof-neustadt {:required true}}}))
+                                  ::osm-dataset/id {:bahnhof-neustadt {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 

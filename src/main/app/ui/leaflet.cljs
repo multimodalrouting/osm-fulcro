@@ -51,8 +51,15 @@
              (layersControlBaseLayer base
                (tileLayer (:tile base))))
 
-           ((overlay-class->component :d3SvgOSM) {:key :osm-elements
-                                                  :elements props})
+           (if-let [layer-conf (:osm layer)]
+                   ((overlay-class->component :d3SvgOSM) {:key :osm-elements
+                                                          :elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                                                                         props
+                                                                         ::osm-dataset/root
+                                                                         ;; TODO here we want filter the datasets
+                                                                         (map ::osm-dataset/elements)
+                                                                         (apply concat))}))
+
 
            (let [overlays (->> (for [overlay (:overlays layer)
                                      :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])

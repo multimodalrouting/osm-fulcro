@@ -33,6 +33,7 @@
       (.append "a")
       (.append "polyline")
       (.attr "points" (fn [d] (->> (:nodes (js->clj d :keywordize-keys true))
+                                   (remove #(nil? (or (:lon %) (:lat %))))
                                    (map #(osmNode->Point proj %))
                                    (map #(str (.-x %) "," (.-y %)))
                                    (clojure.string/join " "))))
@@ -42,8 +43,8 @@
       (.on "click" (fn [d i ds] (js/console.log (js->clj d))))))
 
 (defn d3DrawCallback [sel proj data &[{:keys [relation-way-attr relation-node-attr way-attr node-attr way-node-attr node-attr]
-                                       :or {relation-way-attr {:svg {:stroke "blue" :stroke-width 3}}
-                                            relation-node-attr {:svg {:stroke "blue" :r 5}}
+                                       :or {;relation-way-attr {:svg {:stroke "blue" :stroke-width 3}}
+                                            ;relation-node-attr {:svg {:stroke "blue" :r 5}}
                                             way-attr {:svg {:stroke "green" :stroke-width 1}}
                                             node-attr {:svg {:stroke "red" :r 2}}
                                             way-node-attr {:svg {:stroke "yellow" :r 2}}}}]]
@@ -63,8 +64,5 @@
 
 (defsc D3SvgOSM [this {:keys [key elements]}]
   (d3SvgOverlay {:key key
-                 :data (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            elements
-                            ::osm-dataset/root first #_second
-                            ::osm-dataset/elements)
+                 :data elements
                  :drawCallback d3DrawCallback}))

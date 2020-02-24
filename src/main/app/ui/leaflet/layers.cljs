@@ -21,7 +21,9 @@
                                :d3SvgPieChart (factory D3SvgPieChart)
                                :d3SvgPieChartComparison (factory D3SvgPieChartComparison)})
 
-(def example-layers {:aerial {:base {:name "Esri Aearial"
+(def example-layers {nil {:base {:name "NONE (only overlays)"
+                                 :tile {:url ""}}}
+                     :aerial {:base {:name "Esri Aearial"
                                      :tile {:url "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
                                      :attribution "&copy; <a href=\"http://esri.com\">Esri</a>, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}}}
                      :osm {:base {:name "OSM Tiles"
@@ -33,8 +35,12 @@
                      :openpt {:base {:name "PublicTransport (openptmap)"
                                      :tile {:url "http://openptmap.org/tiles/{z}/{x}/{y}.png"
                                             :attribution "<a href=\"https://wiki.openstreetmap.org/wiki/Openptmap\">Openptmap"}}}
-                     nil {:base {:name "NONE (only overlays)"
-                                 :tile {:url ""}}}
+
+
+                     :topo {:osm {:name "Topography of OsmJson-Dataset"
+                                  :datasets nil}} ;;all in osm-dataset/root
+
+
                      :hexbin-example {:overlays [{:class :hexbin
                                                   :dataset :vvo-small
                                                   :filter {[:geometry :type] #{"Point"}
@@ -58,10 +64,10 @@
                                                :overlays [{:class :d3SvgPieChartComparison
                                                            :dataset :vvo-small  ;; TODO
                                                            #_#_:dataset :stop-positions}]}
-                     :routinggraph {:prechecked true
+                     #_#_:routinggraph {:prechecked true
                                     :overlays [{:class :d3SvgStyledLines
                                                 :dataset :routinggraph}]}
-                     :routes {:prechecked true
+                     #_#_:routes {:prechecked true
                               :overlays [{:class :d3SvgStyledLines
                                           :dataset :routes}]}
                      :isochrones {:overlays [{:class :d3SvgLines

@@ -62,6 +62,18 @@
                   :com.fulcrologic.fulcro.application/state-atom deref)]
        (fdn/db->tree query state state)))
 
+(defmutation load-required-datasets [{:keys [path data]}]
+  (action [{:keys [app state]}]
+    (let [osm-dataset (::osm-dataset/id @state)
+          step-list (get-in @state [::steps/id :layers->dataset->graph->route ::steps/step-list])]
+         (doseq [required-dataset (->> (filter :required (vals osm-dataset))
+                                       (map ::osm-dataset/id)
+                                       (remove nil?))]
+                (load! app [::osm-dataset/id required-dataset] OsmDataset {:post-mutation `post-mutation
+                                                                           :post-mutation-params {:steps :layers->dataset->graph->route
+                                                                                                  :step (title->step-index "Geofeatures" step-list)
+                                                                                                  :ok-condition (fn [db] (::osm/id db))}})))))  ;; TODO
+
 (defsc State
   "State machine keeping track of loading all required data.
    If you want enforce reloading, just use `steps/update-state-of-step` to set the state back to nil"
@@ -130,27 +142,9 @@
                  (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Geofeatures" step-list)
-                                                   :new-state :active
-                                                   #_#_:info "get index"})  ;; TODO maybe we just want get the sources without geojson first?
+                                                   :new-state :active})
 
-                 #_(load! this ::gf/comparison Comparison {})
-
-                 #_(load! this ::gf/xy2nodeid XY2NodeId {})
-
-                 #_(load! this ::gf/all GeoFeaturesAll {:target [:tmp ::gf/all]
-                                                      :post-mutation `post-mutation
-                                                      :post-mutation-params {:steps :layers->dataset->graph->route
-                                                                             :step (title->step-index "Geofeatures" step-list)
-                                                                             :ok-condition (fn [db] (::gf/id db))}})
-
-                 (load! this ::osm-dataset/root OsmDatasetMeta {})
-
-                 (load! this [::osm-dataset/id :linie3 #_:bahnhof-neustadt] OsmDataset {:post-mutation `post-mutation
-                                                            :post-mutation-params {:steps :layers->dataset->graph->route
-                                                                                   :step (title->step-index "Geofeatures" step-list)
-                                                                                   :ok-condition (fn [db] (::osm/id db))}}))
-
-                 ;; TODO use app.ui.leaflet.state/mutate-datasets-load to load features from non-default remotes
+                 (load! this ::osm-dataset/root OsmDatasetMeta {:post-mutation `load-required-datasets}))
 
        (if (and (= :done (:state (title->step "Geofeatures" step-list)))
                 (not (:info (title->step "Geofeatures" step-list))))
