@@ -3,12 +3,14 @@
     [com.fulcrologic.fulcro.mutations :refer [defmutation]]
     [com.fulcrologic.fulcro.components :refer [transact!]]
     [com.fulcrologic.fulcro.data-fetch :refer [load!]]
-    [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact!]]
+    [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact! ]]
+    [com.fulcrologic.fulcro.algorithms.merge :as merge]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
     [com.fulcrologic.fulcro.dom :as dom]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
     [app.model.osm :as osm :refer [OsmData]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset OsmDatasetMeta]]
+    [app.model.routing :as routing :refer [Routing]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
@@ -79,7 +81,7 @@
                         {:title "Graph" :contents {:done "calculated" :failed "failed to calculate" :active "calculating" :queued "to be calculated"}}
                         {:title "Route" :contents {:done "calculated" :failed "failed to calculate" :active "calculating" :queued "to be calculated"}}]}}})
 
-(defsc XY2NodeId [this props]
+#_(defsc XY2NodeId [this props]
   {:ident (fn [_] [::gf/xy2nodeid "singleton"])
    :query [::gf/xy2nodeid]})
 
@@ -113,7 +115,8 @@
                                  ::leaflet/id]
                                 (get-query Steps)
                                [{::osm-dataset/root (get-query OsmDataset)} ::osm-dataset/id ::osm/id]
-                               (get-query XY2NodeId)
+                               [::routing/id]
+                               #_(get-query XY2NodeId)
                                (get-query Comparison)]))}
 
   (let [state (get props [::steps/id :layers->dataset->graph->route])
@@ -122,29 +125,13 @@
         geofeatures (::gf/id props)
         osm-dataset (::osm-dataset/id props)
         osm (::osm/id props)
-        xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
+        routing (::routing/id props)
+        ;xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
-    
 
-#_       (js/console.log "Bytes"
-                       (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            #_#_str count time))
-#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            ::osm-dataset/root first
-                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %)))
-                                                   (filter #(= (get-in % [::osm/tags :type]) "route"))
-                                                   (filter #(= (get-in % [::osm/tags :ref]) "3"))))
-#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            ::osm-dataset/root first
-                            ::osm-dataset/elements (filter #(= "relation" (::osm/type %)))
-                                                   (filter #(= (get-in % [::osm/tags :name]) "Zeithainer Straße"))))
-
-#_       (js/console.log (->> (component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                            ::osm-dataset/root first
-                            ::osm-dataset/elements
-                            (group-by ::osm/type)
-                            (#(zipmap (keys %) (map count (vals %))))))
-    
+       ;;TODO this way the to and from is set
+       (merge/merge-component! this Routing {::routing/id :main
+                                             ::routing/to 4532859077})
 
        (def comparison comparison)  ;; TODO cleanup
 
@@ -195,10 +182,20 @@
                                               {:steps :layers->dataset->graph->route
                                                :step (title->step-index "Graph" step-list)
                                                :new-state :active})
-             (calculate-graphs (::gf/id props) xy2nodeid)
+
+             (doseq [[id routing-conf_] routing]
+                    (let [routing-conf (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
+                                           (get [::routing/id id]))]
+                         ;(js/console.log (get-in routing-conf [::routing/from ::osm/id]))
+                         (js/console.log (get-in routing-conf [::routing/results]))
+                         (merge/merge-component! this OsmData {::osm/id #_2586314408 274454849} :append [::routing/id id ::routing/results])))
+                           
+
+             ;(calculate-graphs (::gf/id props) xy2nodeid)
+
              (let [nodes (reduce + (map #(count (graph/nodes (:graph %))) (vals @graphs)))
                    edges (reduce + (map #(count (graph/edges (:graph %))) (vals @graphs)))]
-                  (let [id2feature (features->id2feature (::gf/id props) xy2nodeid)
+                  #_(let [id2feature (features->id2feature (::gf/id props) xy2nodeid)
                         edge-pairs (reduce into (map #(graph/edges (:graph %))
                                                      (vals @graphs)))]
                        (transact! this [(mutate-datasets {:path [:routinggraph]
@@ -218,7 +215,7 @@
                                                :step (title->step-index "Route" step-list)
                                                :new-state :active})
 
-             (doseq [gf (filter #(= (get-in (val %) [::gf/calculate :type]) :isochrones)
+             #_(doseq [gf (filter #(= (get-in (val %) [::gf/calculate :type]) :isochrones)
                                 geofeatures)
                      :let [id (key gf)
                            args (get-in (val gf) [::gf/calculate :args])]]
@@ -226,8 +223,12 @@
                                                        :data {::gf/geojson (isochrone->geojson (features->id2feature (::gf/id props) xy2nodeid)
                                                                                                args)}})]))
 
+
+             (js/console.log routing)
+
+
              (let [[path dist] (calculate-routes)]
-                  (transact! this [(mutate-datasets {:path [:routes]
+                  #_(transact! this [(mutate-datasets {:path [:routes]
                                                      :data {::gf/geojson (paths->geojson (features->id2feature (::gf/id props) xy2nodeid)
                                                                                          (partition 2 1 path)
                                                                                          {:style {:stroke-width 6}})}})])

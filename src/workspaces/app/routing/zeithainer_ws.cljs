@@ -7,6 +7,7 @@
             [app.model.geofeatures :as gf]
             [app.model.osm-dataset :as osm-dataset]
             [app.model.osm :as osm]
+            [app.model.routing :as routing]
             [app.application :refer [SPA_conf conf-with-default-remote]]
             [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
             [app.ui.leaflet.layers :refer [example-layers]]
@@ -21,7 +22,9 @@
                                                                          :streets {:osm {:styles style-streets}}
                                                                          :public-transport {:osm {:styles style-public-transport}}}}}
                                   ::osm-dataset/id {:trachenberger {:required true}
-                                                    :linie3 {:required true}}}))
+                                                    :linie3 {:required true}}
+                                  ::routing/id {:main {::routing/from {::osm/id 2586314408}
+                                                       ::routing/to {::osm/id 2791679402}}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 
