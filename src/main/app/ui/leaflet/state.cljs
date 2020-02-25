@@ -62,7 +62,7 @@
                   :com.fulcrologic.fulcro.application/state-atom deref)]
        (fdn/db->tree query state state)))
 
-(defmutation load-required-datasets [{:keys [path data]}]
+(defmutation load-required-datasets [_]
   (action [{:keys [app state]}]
     (let [osm-dataset (::osm-dataset/id @state)
           step-list (get-in @state [::steps/id :layers->dataset->graph->route ::steps/step-list])]

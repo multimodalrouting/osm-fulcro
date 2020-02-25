@@ -5,7 +5,8 @@
     [app.ui.leaflet.layers :refer [overlay-class->component]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
     [app.ui.leaflet.layers.extern.mvt :refer [mvtLayer]]
-    [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
+    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
+    [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact!]]
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
     ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay LayersControl.BaseLayer TileLayer]]
     [com.fulcrologic.fulcro.dom :as dom]
@@ -27,23 +28,27 @@
                     filter-rule)
           (reduce #(and %1 %2))))))
 
+(defmutation refresh [{::keys [id] :keys [target]}]
+  (action [{:keys [app state]}]
+    (swap! state assoc-in [::id id ::center] [(-> target .getCenter .-lat) (-> target .getCenter .-lng)])
+    (swap! state assoc-in [::id id ::zoom] (.getZoom target))))
+
 (defsc Leaflet
   [this {:as props ::keys [id center zoom layers]
                    :keys [style]
                    :or {center [51.055 13.74]
                         zoom 12
                         style {:height "100%" :width "100%"}}}]
-  {:ident (fn [] [:leaflet/id id])
+  {:ident (fn [] [::id id])
    :query (fn [] [::id ::layers ::center ::zoom
                   {::osm-dataset/root (get-query OsmDataset)}
                   ::gf/id :style])}
-  ;(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
 
   (leafletMap {:style style
-               :center center :zoom zoom}
-    ;(controlOpenSidebar {})
+               :center center :zoom zoom
+               :onMoveEnd #(transact! this [(refresh {::id :main :target (.-target %)})])
+               :onZoomEnd #(transact! this [(refresh {::id :main :target (.-target %)})])}
     (layersControl {}
-      ;mvtLayer
 
       (for [[layer-name layer] layers] [
 
@@ -53,6 +58,7 @@
 
            (if-let [layer-conf (:osm layer)]
                    ((overlay-class->component :d3SvgOSM) {:key :osm-elements
+                                                          ::center center ::zoom zoom
                                                           :elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
                                                                          props
                                                                          ::osm-dataset/root

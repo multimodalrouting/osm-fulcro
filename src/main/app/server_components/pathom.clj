@@ -30,6 +30,8 @@
 
 (def osm-datasets {:linie3 {::osm-dataset/source {:comment "DVB Straßenbahnlinie 3"
                                                   :remote :pathom :type :osmjson}}
+                   :trachenberger {::gf/source {:comment "Trachenberger Platz: Streets+Buildings"
+                                                :remote :pathom :type :geojson}}
                    :bahnhof-neustadt {::osm-dataset/source {:comment "Bahnhof Dresden Neustadt"
                                                             :remote :pathom :type :osmjson}}})
 (defn qualify

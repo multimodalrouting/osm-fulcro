@@ -17,7 +17,8 @@
                                  {::leaflet/id {:main {::leaflet/center [51.0824 13.7300]
                                                        ::leaflet/zoom 19
                                                        ::leaflet/layers (assoc-in example-layers [:osm :base :checked] true)}}
-                                  ::osm-dataset/id {:linie3 {:required true}}}))
+                                  ::osm-dataset/id {:trachenberger {:required true}
+                                                    :linie3 {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 
