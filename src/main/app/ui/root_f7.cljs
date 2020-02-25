@@ -1,8 +1,9 @@
 (ns app.ui.root-f7
   (:require
-    [app.ui.leaflet :refer [Leaflet leaflet]]
+    [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
     [app.ui.leaflet.state :refer [State state mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
+    [app.model.osm-dataset :as osm-dataset]
     [app.ui.framework7.components :refer
      [f7-app f7-panel f7-view f7-views f7-page f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
@@ -13,13 +14,20 @@
     [app.utils.file-save :refer [store-file open-with]]
     [app.utils.gpx :refer [geo->gpx-xml]]
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
-    [app.ui.leaflet.layers :refer [example-layers]]
-    ))
+    [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport]]))
 
 (defsc MapView [this props]
   {
    :initial-state (fn [_] (merge (comp/get-initial-state State)
-                                 {:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}))
+                                 {::leaflet/id {:main {::leaflet/center [51.0824 13.7300]
+                                                       ::leaflet/zoom 19
+                                                       ::leaflet/layers {:background {:osm {:styles style-background}}
+                                                                         :streets {:osm {:styles style-streets}}
+                                                                         :public-transport {:osm {:styles style-public-transport}}}}}
+                                  ::osm-dataset/id {:trachenberger {:required true}
+                                                    :linie3 {:required true}}}
+                                 #_{:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}
+                                 ))
    :query (fn [] (reduce into [(comp/get-query State)
                                (comp/get-query Leaflet)]))
 
@@ -44,7 +52,11 @@
         )
       (f7-toolbar {:position "bottom"}
                   (state props))
-      (leaflet (merge (get-in props [:app.ui.leaflet/id :main]) (select-keys props [:app.model.geofeatures/id]) {:style {:height "100%" :width "100%"}}))
+      (leaflet (merge (get-in props [::leaflet/id :main])
+                      (select-keys props (concat (filter keyword? (get-query Leaflet))
+                                                 (map #(first (keys %))
+                                                      (filter map? (get-query Leaflet)))))
+                      {:style {:height "100%" :width "100%"}}))
       )))
 
 (def mapView (comp/factory MapView))
