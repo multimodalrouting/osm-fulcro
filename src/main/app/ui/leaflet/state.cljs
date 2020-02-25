@@ -125,13 +125,13 @@
         geofeatures (::gf/id props)
         osm-dataset (::osm-dataset/id props)
         osm (::osm/id props)
-        routing (::routing/id props)
+        routings (::routing/id props)
         ;xy2nodeid (get-in props [::gf/xy2nodeid "singleton" ::gf/xy2nodeid])
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
 
        ;;TODO this way the to and from is set
        (merge/merge-component! this Routing {::routing/id :main
-                                             ::routing/to 4532859077})
+                                             ::routing/to {::osm/id 4532859077}})
 
        (def comparison comparison)  ;; TODO cleanup
 
@@ -183,12 +183,26 @@
                                                :step (title->step-index "Graph" step-list)
                                                :new-state :active})
 
-             (doseq [[id routing-conf_] routing]
-                    (let [routing-conf (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
-                                           (get [::routing/id id]))]
-                         ;(js/console.log (get-in routing-conf [::routing/from ::osm/id]))
-                         (js/console.log (get-in routing-conf [::routing/results]))
-                         (merge/merge-component! this OsmData {::osm/id #_2586314408 274454849} :append [::routing/id id ::routing/results])))
+             (doseq [[id routing_] routings]
+                    (let [routing (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
+                                      (get [::routing/id id]))
+                          from (get osm (get-in routing [::routing/from ::osm/id]))
+                          to (get osm (get-in routing [::routing/to ::osm/id]))]
+                         (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
+                                                                  ::osm-dataset/elements [(assoc from
+                                                                                                 ::osm/id (keyword (str "route" id :from))
+                                                                                                 ::osm/tags {:routing {::routing/id id}})
+                                                                                          (assoc to
+                                                                                                 ::osm/id (keyword (str "route" id :to))
+                                                                                                 ::osm/tags {:routing {::routing/id id}})
+                                                                                          {::osm/id (keyword (str "route" id))
+                                                                                           ::osm/type "way"
+                                                                                           ::osm/tags {:routing {::routing/id id}}
+                                                                                           ::osm/nodes [{::osm/id (keyword (str "route" id :from))}
+                                                                                                        {::osm/id (keyword (str "route" id :to))}]}]}
+                                                 #_#_:append [::routing/id id ::routing/results]
+                                                 :append [::osm-dataset/root])
+                         #_(merge/merge-component! this OsmData {::osm/id #_2586314408 274454849} :append [::routing/id id ::routing/results])))
                            
 
              ;(calculate-graphs (::gf/id props) xy2nodeid)
@@ -224,7 +238,7 @@
                                                                                                args)}})]))
 
 
-             (js/console.log routing)
+             (js/console.log routings)
 
 
              (let [[path dist] (calculate-routes)]

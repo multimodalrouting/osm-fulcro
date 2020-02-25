@@ -21,8 +21,8 @@
       (.attr "cy" #(.-y (osmNode->Point proj %)))
       (.attr "r" (:r svg))
       (.attr "stroke" (:stroke svg))
-      #_(.attr "fill" "red" #_#(color-by-accessibility (js->clj % :keywordize-keys true)))
-      (.attr "fill-opacity" 0)
+      (.attr "fill" (:fill svg "none"))
+      (.attr "fill-opacity" (if-not (:fill svg) 0 (:fill-opacity svg 1)))
       (.on "click" (fn [d i ds] (js/console.log (js->clj d :keywordize-keys true))))))
 
 (defn d3DrawCallback-Ways [upd proj data &[{:keys [svg]}]]
@@ -53,14 +53,18 @@
                         :style {:way {:svg {:stroke "silver" :stroke-width 1}}}}])
 
 (def style-streets [{:rule [:tags :highway]
-                            :style {:way {:svg {:stroke "yellow" :stroke-width 2}}
-                                    :way-node {:svg {:stroke "yellow" :r 2}}}}])
+                     :style {:way {:svg {:stroke "yellow" :stroke-width 2}}
+                             :way-node {:svg {:stroke "yellow" :r 2}}}}])
 
 (def style-public-transport [{:rule [:tags :public_transport]
                               :style {:way {:svg {:stroke "green" :stroke-width 2}}
                                       :node {:svg {:stroke "green" :r 3}}}}
                              {:rule [:tags :railway]
                               :style {:way {:svg {:stroke "green" :stroke-width 3}}}}])
+
+(def style-route [{:rule [:tags :routing]
+                   :style {:way {:svg {:stroke "blue" :stroke-width 4}}
+                           :node {:svg {:stroke "blue" :r 10 :fill "blue"}}}}])
 
 (defn filter-elements
  "TODO"
@@ -71,6 +75,7 @@
 (defn d3DrawCallback [sel proj data]
   (let [upd (.selectAll sel "a")
         {:keys [elements styles]} (js->clj data :keywordize-keys true)]  ;; carefull, the keywords are not longer namespaced
+       (js/console.log (last elements))
        (doseq [{:keys [rule style]} styles
                :let [{:keys [relation-way relation-node way node way-node node]} style
                      filtered (filter-elements rule elements)
