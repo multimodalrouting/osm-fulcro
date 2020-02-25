@@ -3,11 +3,6 @@
     [com.fulcrologic.fulcro.components :refer [defsc]]
     [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility accessibility-patterns feature->confident?]]))
 
-
-(defn feature->confident? [feature]
-  (if-let [confidence (get-in feature [:properties :confidence])]
-     (>= confidence 0.5)))
-
 (defn d3DrawCallback [sel proj data]
   (let [radius 3
         x-fn (fn [d] (.-x (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates]))))

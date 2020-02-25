@@ -70,34 +70,6 @@
       (stripe-pattern defs name size color)
       )))
 
-(defn stripe-pattern [defs id size color]
-  "generates a stripe pattern as in the given defs
-  it can be referenced using url(#id) in a shape, where
-  id is the concrete id given here
-  "
-  (-> defs
-      (.append "pattern")
-      (.attr "id" id)
-      (.attr "width" size)
-      (.attr "height" size)
-      (.attr "patternUnits" "userSpaceOnUse")
-      (.attr "patternTransform" "rotate(60)")
-      (.append "rect")
-      (.attr "width" (/ size 2))
-      (.attr "height" size)
-      (.attr "transform" "translate(0,0)")
-      (.attr "fill" color)))
-
-(defn accessibility-patterns [svg size]
-  (let [defs (.append svg "defs")]
-    (for [[name color]
-          [["yes" "#7ED321"]
-           ["no" "#D0021B"]
-           ["limited" "#F5A623"]
-           ["other" "grey"]]]
-      (stripe-pattern defs name size color)
-      )))
-
 (defn color-by-accessibility [d]
   ({"yes"     "#7ED321"                                     ;green
     "no"      "#D0021B"                                     ;red

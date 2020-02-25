@@ -46,8 +46,8 @@
                                        :or {;relation-way-attr {:svg {:stroke "blue" :stroke-width 3}}
                                             ;relation-node-attr {:svg {:stroke "blue" :r 5}}
                                             way-attr {:svg {:stroke "green" :stroke-width 1}}
-                                            node-attr {:svg {:stroke "red" :r 2}}
-                                            way-node-attr {:svg {:stroke "yellow" :r 2}}}}]]
+                                            ;node-attr {:svg {:stroke "red" :r 2}}
+                                            #_#_way-node-attr {:svg {:stroke "yellow" :r 2}}}}]]
   (let [upd (.selectAll sel "a")
         elements (js->clj data :keywordize-keys true)  ;; carefull, the keywords are not longer namespaced
         ways (filter :nodes elements)
