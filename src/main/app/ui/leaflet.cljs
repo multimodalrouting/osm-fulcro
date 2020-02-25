@@ -62,15 +62,14 @@
                (tileLayer (:tile base))))
 
            (if-let [layer-conf (:osm layer)]
-                   ((overlay-class->component :d3SvgOSM) {:key :osm-elements
-                                                          ::center center ::zoom zoom
+                   ((overlay-class->component :d3SvgOSM) {::center center ::zoom zoom
                                                           :elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
                                                                          props
                                                                          ::osm-dataset/root
                                                                          ;; TODO here we want filter the datasets
                                                                          (map ::osm-dataset/elements)
                                                                          (apply concat))
-                                                          :style (:style layer-conf)}))
+                                                          :styles (:styles layer-conf)}))
 
 
            (let [overlays (->> (for [overlay (:overlays layer)
@@ -87,4 +86,3 @@
                                               overlays)))]))))
 
 (def leaflet (factory Leaflet))
-

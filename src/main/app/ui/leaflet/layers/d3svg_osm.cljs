@@ -42,36 +42,50 @@
       (.attr "fill" "none")
       (.on "click" (fn [d i ds] (js/console.log (js->clj d))))))
 
-(def style-topo {:relation-way {:svg {:stroke "blue" :stroke-width 3}}
-                 :relation-node {:svg {:stroke "blue" :r 5}}
-                 :way {:svg {:stroke "green" :stroke-width 1}}
-                 :node {:svg {:stroke "red" :r 2}}
-                 :way-node {:svg {:stroke "yellow" :r 2}}})
+(def style-topo [{:rule [:tags]
+                  :style {:relation-way {:svg {:stroke "blue" :stroke-width 3}}
+                          :relation-node {:svg {:stroke "blue" :r 5}}
+                          :way {:svg {:stroke "green" :stroke-width 1}}
+                          :node {:svg {:stroke "red" :r 2}}
+                          :way-node {:svg {:stroke "yellow" :r 2}}}}])
 
-(def style-background {:way {:svg {:stroke "silver" :stroke-width 1}}})
+(def style-background [{:rule [:tags :building]
+                        :style {:way {:svg {:stroke "silver" :stroke-width 1}}}}])
+
+(def style-streets [{:rule [:tags :highway]
+                            :style {:way {:svg {:stroke "yellow" :stroke-width 2}}
+                                    :way-node {:svg {:stroke "yellow" :r 2}}}}])
+
+(def style-public-transport [{:rule [:tags :public_transport]
+                              :style {:way {:svg {:stroke "green" :stroke-width 2}}
+                                      :node {:svg {:stroke "green" :r 3}}}}
+                             {:rule [:tags :railway]
+                              :style {:way {:svg {:stroke "green" :stroke-width 3}}}}])
+
+(defn filter-elements
+ "TODO"
+ [rule elements]
+ (filter #(get-in % (map keyword rule))
+         elements))
 
 (defn d3DrawCallback [sel proj data]
   (let [upd (.selectAll sel "a")
-        {:keys [elements
-                relation-way relation-node way node way-node node]}
-          (js->clj data :keywordize-keys true)  ;; carefull, the keywords are not longer namespaced
-;        _ (js/console.log elements)  
-        ways (filter :nodes elements)
-        relations (filter :members elements)]
-       ;; By intention we have this drawing order:
-       ;; * first relations (to be in background) -> they should have a bigger :r and :stroke-width
-       ;; * next ways and nodes
-       ;; * last way-nodes (when defined), so they can overwrite normal nodes
-       (if relation-way (d3DrawCallback-Ways upd proj (map :ref (apply concat (map :members relations))) relation-way))
-       (if relation-node (d3DrawCallback-Nodes upd proj (map :ref (apply concat (map :members relations))) relation-node))
-       (if way (d3DrawCallback-Ways upd proj ways way))
-       (if node (d3DrawCallback-Nodes upd proj elements node))
-       (if way-node (d3DrawCallback-Nodes upd proj (apply concat (map :nodes ways)) way-node))))
+        {:keys [elements styles]} (js->clj data :keywordize-keys true)]  ;; carefull, the keywords are not longer namespaced
+       (doseq [{:keys [rule style]} styles
+               :let [{:keys [relation-way relation-node way node way-node node]} style
+                     filtered (filter-elements rule elements)
+                     ways (filter :nodes filtered)
+                     relations (filter :members filtered)]]
+              ;; By intention we have this drawing order:
+              ;; * first relations (to be in background) -> they should have a bigger :r and :stroke-width
+              ;; * next ways and nodes
+              ;; * last way-nodes (when defined), so they can overwrite normal nodes
+              (if relation-way (d3DrawCallback-Ways upd proj (map :ref (apply concat (map :members relations))) relation-way))
+              (if relation-node (d3DrawCallback-Nodes upd proj (map :ref (apply concat (map :members relations))) relation-node))
+              (if way (d3DrawCallback-Ways upd proj ways way))
+              (if node (d3DrawCallback-Nodes upd proj filtered node))
+              (if way-node (d3DrawCallback-Nodes upd proj (apply concat (map :nodes ways)) way-node)))))
 
-(defsc D3SvgOSM [this {:keys [elements style]}]
-  (js/console.log elements)  
-  (d3SvgOverlay {:key key
-                 :data (merge #_(select-keys style-topo [:way-attr :node-attr])
-                              style
-                              {:elements elements})
+(defsc D3SvgOSM [this elements+styles]
+  (d3SvgOverlay {:data elements+styles
                  :drawCallback d3DrawCallback}))

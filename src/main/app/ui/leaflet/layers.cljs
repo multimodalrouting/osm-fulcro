@@ -39,7 +39,7 @@
 
                      :topo {:osm {:name "Topography of OsmJson-Dataset"
                                   :datasets nil ;;all in osm-dataset/root
-                                  :style style-topo}}
+                                  :styles style-topo}}
 
 
                      :hexbin-example {:overlays [{:class :hexbin

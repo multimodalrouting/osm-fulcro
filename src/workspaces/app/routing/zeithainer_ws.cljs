@@ -11,15 +11,15 @@
             [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
             [app.ui.leaflet.layers :refer [example-layers]]
             [app.ui.leaflet.state :refer [State state mutate-layers]]
-            [app.ui.leaflet.layers.d3svg-osm :refer [style-topo style-background]]))
+            [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport]]))
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
                                  {::leaflet/id {:main {::leaflet/center [51.0824 13.7300]
                                                        ::leaflet/zoom 19
-                                                       ::leaflet/layers {:topo {:osm {:name "Topography of OsmJson-Dataset"
-                                                                                      :datasets nil
-                                                                                      :style style-background}}}}}
+                                                       ::leaflet/layers {:background {:osm {:styles style-background}}
+                                                                         :streets {:osm {:styles style-streets}}
+                                                                         :public-transport {:osm {:styles style-public-transport}}}}}
                                   ::osm-dataset/id {:trachenberger {:required true}
                                                     :linie3 {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
