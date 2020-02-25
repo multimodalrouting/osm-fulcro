@@ -69,7 +69,8 @@
                                                                          ::osm-dataset/root
                                                                          ;; TODO here we want filter the datasets
                                                                          (map ::osm-dataset/elements)
-                                                                         (apply concat))}))
+                                                                         (apply concat))
+                                                          :style (:style layer-conf)}))
 
 
            (let [overlays (->> (for [overlay (:overlays layer)

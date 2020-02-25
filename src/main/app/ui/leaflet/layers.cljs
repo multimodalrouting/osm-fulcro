@@ -3,7 +3,7 @@
     [com.fulcrologic.fulcro.components :refer [factory]]
     [app.ui.leaflet.layers.vectorGrid :refer [VectorGridOverlay]]
     [app.ui.leaflet.layers.hexbin :refer [Hexbin]]
-    [app.ui.leaflet.layers.d3svg-osm :refer [D3SvgOSM]]
+    [app.ui.leaflet.layers.d3svg-osm :refer [D3SvgOSM style-topo]]
     [app.ui.leaflet.layers.d3svg-points :refer [D3SvgPoints]]
     [app.ui.leaflet.layers.d3svg-label-points :refer [D3SvgLabelPoints]]
     [app.ui.leaflet.layers.d3svg-lines :refer [D3SvgLines]]
@@ -38,7 +38,8 @@
 
 
                      :topo {:osm {:name "Topography of OsmJson-Dataset"
-                                  :datasets nil}} ;;all in osm-dataset/root
+                                  :datasets nil ;;all in osm-dataset/root
+                                  :style style-topo}}
 
 
                      :hexbin-example {:overlays [{:class :hexbin
