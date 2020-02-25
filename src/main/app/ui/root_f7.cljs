@@ -1,11 +1,14 @@
 (ns app.ui.root-f7
   (:require
+    [clojure.string :as s]
     [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
     [app.ui.leaflet.state :refer [State state mutate-layers]]
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
     [app.model.osm-dataset :as osm-dataset]
+    [app.model.osm :as osm]
+    [app.model.osm-helper :refer [closest]]
     [app.ui.framework7.components :refer
-     [f7-app f7-panel f7-view f7-views f7-page f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon]]
+     [f7-app f7-panel f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -16,20 +19,110 @@
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
     [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport]]))
 
+(defmutation map-clicked [{:keys [id latlng]}]
+  (action [{:keys [app state]}]
+          (swap! state assoc-in [::id id ::latlng] latlng)
+          (if-let [geofeature (closest latlng (:app.model.osm/id @state ))]
+            (let [osmid (::osm/id geofeature)]
+              (swap! state assoc-in [::id id ::osm-id] osmid)
+              (swap! state assoc-in [(::current-edit @state)] osmid))
+            )
+          ))
+
+(defmutation edit-start-point [_]
+  (action [{:keys [app state]}]
+          (swap! state assoc-in [::current-edit] ::start)
+          ))
+(defmutation edit-destination [_]
+  (action [{:keys [app state]}]
+          (swap! state assoc-in [::current-edit] ::destination)
+          ))
+
+
+(defsc StartDestinationInput [this props]
+  {:initial-state {
+                   ::start       {}
+                   ::destination {}
+                   ::current-edit ::destination
+                   }
+   :query         [::start ::destination ::current-edit]
+   }
+  (prn props)
+  (f7-block
+    {:style {:width "100%" }}
+    (f7-row
+      {}
+      (f7-col
+        {}
+        (f7-link
+          {:style {:background-color
+                   (if (= (::current-edit props) ::start)
+                     "#eedfd9")}
+           :onClick #(comp/transact! this [(edit-start-point nil)])
+           }
+          (::startLabel props)
+          ))
+      (f7-col
+        {}
+        (f7-icon
+          {:icon "arrow-right"}
+          )
+        "nach"
+        )
+      (f7-col
+        {}
+        (f7-link
+          {:style {:background-color
+                      (if (= (::current-edit props) ::destination)
+                        "#eedfd9")}
+           :onClick #(comp/transact! this [(edit-destination nil)])
+           }
+          (::destinationLabel props)
+          )))
+    ))
+
+(def startDestinationInput (comp/factory StartDestinationInput))
+
+
+(defn geofeature->label [feature]
+  (if-not feature
+    "not set"
+    (if-let [tags (::osm/tags feature)]
+      (->> [:name
+            :amenity
+            :addr:street
+            :addr:housenumber
+            :addr:city
+            ]
+           (map #(% tags))
+           (remove nil?)
+           (s/join ", ")
+           )
+      (str (::osm/lat feature) "," (::osm/lon feature))
+      )))
+
 (defsc MapView [this props]
   {
    :initial-state (fn [_] (merge (comp/get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.0824 13.7300]
-                                                       ::leaflet/zoom 19
-                                                       ::leaflet/layers {:background {:osm {:styles style-background}}
-                                                                         :streets {:osm {:styles style-streets}}
-                                                                         :public-transport {:osm {:styles style-public-transport}}}}}
+                                 (comp/get-initial-state StartDestinationInput)
+                                 {::leaflet/id     {:main {::leaflet/center [51.0824 13.7300]
+                                                           ::leaflet/zoom   19
+                                                           ::leaflet/layers {
+                                                                             :tiles            {:base {:name "OSM Tiles"
+                                                                                                       :tile {:url         "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                                                                                                              :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
+                                                                             :background       {:osm {:styles style-background}}
+                                                                             :streets          {:osm {:styles style-streets}}
+                                                                             :public-transport {:osm {:styles style-public-transport}}
+                                                                             }}}
                                   ::osm-dataset/id {:trachenberger {:required true}
-                                                    :linie3 {:required true}}}
+                                                    ;:linie3 {:required true}
+                                                    }}
                                  #_{:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}
                                  ))
-   :query (fn [] (reduce into [(comp/get-query State)
-                               (comp/get-query Leaflet)]))
+   :query         (fn [] (reduce into [(comp/get-query State)
+                                       (comp/get-query Leaflet)
+                                       (comp/get-query StartDestinationInput)]))
 
    :ident         (fn [] [:component/id :map-view])
    :route-segment ["main"]
@@ -42,13 +135,26 @@
         {:position  "left-top"
          :slot      "fixed"
          :className "panel-open"
-         :panel "left"
+         :panel     "left"
          }
         (f7-icon
           {
-           :icon    "bars"
+           :icon "bars"
            }
-          )
+          ))
+      (f7-toolbar
+        {:position "top" :inner true}
+        (f7-link nil "")
+        (startDestinationInput
+          (merge
+            {
+             ::startLabel (geofeature->label (get-in props [::osm/id (::start props)]))
+             ::destinationLabel (geofeature->label (get-in props [::osm/id (::destination props)]))
+             }
+            (select-keys props (concat (filter keyword? (get-query StartDestinationInput))
+                                       (map #(first (keys %))
+                                            (filter map? (get-query StartDestinationInput)))))))
+        (f7-link nil "")
         )
       (f7-toolbar {:position "bottom"}
                   (state props))
@@ -56,7 +162,11 @@
                       (select-keys props (concat (filter keyword? (get-query Leaflet))
                                                  (map #(first (keys %))
                                                       (filter map? (get-query Leaflet)))))
-                      {:style {:height "100%" :width "100%"}}))
+                      {
+                       :style {:height "100%" :width "100%"}
+                       ::leaflet/onMapClick (fn [evt]
+                                     (comp/transact! this [(map-clicked evt)]))
+                       }))
       )))
 
 (def mapView (comp/factory MapView))
@@ -181,8 +291,8 @@
 (def ui-app-main (comp/factory AppMain))
 
 #_(defsc Root [this {:root/keys [main-app]}]
-  {:query         [{:root/main-app (comp/get-query AppMain)}]
-   :ident         (fn [] [:component/id :ROOT])
-   :initial-state (fn [_] {:root/main-app (comp/get-initial-state AppMain)})
-   }
-  (ui-app-main main-app))
+    {:query         [{:root/main-app (comp/get-query AppMain)}]
+     :ident         (fn [] [:component/id :ROOT])
+     :initial-state (fn [_] {:root/main-app (comp/get-initial-state AppMain)})
+     }
+    (ui-app-main main-app))
