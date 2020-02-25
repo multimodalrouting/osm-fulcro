@@ -39,7 +39,7 @@
     (swap! state assoc-in [::id id ::zoom] (.getZoom target))))
 
 (defsc Leaflet
-  [this {:as props ::keys [id center zoom layers]
+  [this {:as props ::keys [id center zoom layers onMapClick]
                    :keys [style]
                    :or {center [51.055 13.74]
                         zoom 12
@@ -49,8 +49,11 @@
                   {::osm-dataset/root (get-query OsmDataset)}
                   ::gf/id :style])}
 
-  (leafletMap {:style style
-               :center center :zoom zoom
+  (leafletMap {:style     style
+               :center    center :zoom zoom
+               :onClick   (fn [evt]
+                            (if onMapClick
+                              (onMapClick {:id :main :latlng {:lat (-> (.-latlng evt) .-lat) :lon (-> (.-latlng evt) .-lng)}})))
                :onMoveEnd #(transact! this [(refresh {::id :main :target (.-target %)})])
                :onZoomEnd #(transact! this [(refresh {::id :main :target (.-target %)})])}
     (layersControl {}
