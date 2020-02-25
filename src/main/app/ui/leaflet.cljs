@@ -4,13 +4,15 @@
     [app.ui.leaflet.tracking :refer [controlToggleTracking ControlToggleTracking]]
     [app.ui.leaflet.layers.extern.base :refer [baseLayers]]
     [app.ui.leaflet.layers.extern.mvt :refer [mvtLayer]]
-    [com.fulcrologic.fulcro.components :refer [defsc factory get-query]]
+    [com.fulcrologic.fulcro.mutations :refer [defmutation]]
+    [com.fulcrologic.fulcro.components :refer [defsc factory get-query transact!]]
     [com.fulcrologic.fulcro.algorithms.react-interop :refer [react-factory]]
     ["react-leaflet" :refer [withLeaflet Map LayersControl LayersControl.Overlay Marker Popup GeoJSON Polyline LayersControl.BaseLayer TileLayer]]
     ["leaflet" :as l]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.components :as comp]
-    [app.model.geofeatures :as gf]))
+    [app.model.geofeatures :as gf]
+    [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]))
 
 (def leafletMap (react-factory Map))
 (def layersControl (react-factory LayersControl))
@@ -31,25 +33,10 @@
                     filter-rule)
           (reduce #(and %1 %2))))))
 
-#_(defsc StartStopMarker
-  [this {:keys [lat lng]}]
-  {:query         [:lat :lng]
-   :initial-state {:lat 51 :lng 13}
-   }
-   (marker {:position [lat lng]
-           :icon     (.icon. l (clj->js
-                                 {
-                                  :iconUrl     "https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png"
-                                  :shadowUrl   "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png"
-                                  :iconSize    [25, 41]
-                                  :iconAnchor  [12, 41]
-                                  :popupAnchor [1, -34]
-                                  :shadowSize  [41, 41]
-                                  }
-                                 ))}))
-
-#_(def startStopMarker (factory StartStopMarker {:key-fn #((hash [(:lat %) (:lng %)]))}))
-
+(defmutation refresh [{::keys [id] :keys [target]}]
+  (action [{:keys [app state]}]
+    (swap! state assoc-in [::id id ::center] [(-> target .getCenter .-lat) (-> target .getCenter .-lng)])
+    (swap! state assoc-in [::id id ::zoom] (.getZoom target))))
 
 (defsc Leaflet
   [this {:as props ::keys [id center zoom layers]
@@ -57,25 +44,33 @@
                    :or {center [51.055 13.74]
                         zoom 12
                         style {:height "100%" :width "100%"}}}]
-  {:ident (fn [] [:leaflet/id id])
-   :query [::id ::layers ::center ::zoom
-           ::gf/id :style
-           {:background-location/state (comp/get-query ControlToggleTracking)}
-           ]}
-  ;(routing-example (get-in props [:leaflet/datasets :vvo :data :geojson]))
+  {:ident (fn [] [::id id])
+   :query (fn [] [::id ::layers ::center ::zoom
+                  {::osm-dataset/root (get-query OsmDataset)}
+                  ::gf/id :style])}
 
   (leafletMap {:style style
-               :center center :zoom zoom}
-    ;(controlOpenSidebar {})
-    (controlToggleTracking (:background-location/state props))
+               :center center :zoom zoom
+               :onMoveEnd #(transact! this [(refresh {::id :main :target (.-target %)})])
+               :onZoomEnd #(transact! this [(refresh {::id :main :target (.-target %)})])}
     (layersControl {}
-      ;mvtLayer
 
       (for [[layer-name layer] layers] [
 
            (if-let [base (:base layer)]
              (layersControlBaseLayer base
                (tileLayer (:tile base))))
+
+           (if-let [layer-conf (:osm layer)]
+                   ((overlay-class->component :d3SvgOSM) {:key :osm-elements
+                                                          ::center center ::zoom zoom
+                                                          :elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                                                                         props
+                                                                         ::osm-dataset/root
+                                                                         ;; TODO here we want filter the datasets
+                                                                         (map ::osm-dataset/elements)
+                                                                         (apply concat))}))
+
 
            (let [overlays (->> (for [overlay (:overlays layer)
                                      :let [dataset-features (get-in props [::gf/id (:dataset overlay) ::gf/geojson :features])
@@ -87,6 +82,7 @@
                                (remove nil?))]
                 (if-not (empty? overlays)
                         (layersControlOverlay {:key layer-name :name layer-name :checked (boolean (:prechecked layer))}
+                                              ;; TODO why are not prechecked layers displayed?
                                               overlays)))]))))
 
 (def leaflet (factory Leaflet))

@@ -1,0 +1,5 @@
+[out:json];
+area[name="Dresden"]->.city;
+node(area.city)[public_transport=stop_position];
+out;
+

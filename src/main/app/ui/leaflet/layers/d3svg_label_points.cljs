@@ -1,7 +1,7 @@
 (ns app.ui.leaflet.layers.d3svg-label-points
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc]]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility accessibility-patterns]]))
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point color-by-accessibility accessibility-patterns feature->confident?]]))
 
 
 (defn feature->confident? [feature]
@@ -14,7 +14,6 @@
         y-fn (fn [d] (.-y (lngLat->Point proj (get-in (js->clj d :keywordize-keys true) [:geometry :coordinates]))))
         svg (-> sel
               (.select (fn [] (this-as self
-                                (js/console.log self)
                                        self.parentNode)))
 
                     )
@@ -33,7 +32,7 @@
                       (.attr "cy" y-fn)
                       (.attr "r" 4)
                       (.attr "fill" #(let [feature (js->clj % :keywordize-keys true)]
-                                          (if (feature->confident? feature)
+                                          (if-not (feature->confident? feature)
                                             (str "url(#" (get-in feature [:properties :wheelchair]) ")")
                                             (color-by-accessibility feature))
                                           ) )
