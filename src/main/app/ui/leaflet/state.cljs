@@ -97,14 +97,16 @@
 (defmutation load-required-datasets [_]
   (action [{:keys [app state]}]
     (let [osm-dataset (::osm-dataset/id @state)
-          step-list (get-in @state [::steps/id :layers->dataset->graph->route ::steps/step-list])]
-         (doseq [required-dataset (->> (filter :required (vals osm-dataset))
-                                       (map ::osm-dataset/id)
-                                       (remove nil?))]
-                (load! app [::osm-dataset/id required-dataset] OsmDataset {:post-mutation `post-mutation
-                                                                           :post-mutation-params {:steps :layers->dataset->graph->route
-                                                                                                  :step (title->step-index "Geofeatures" step-list)
-                                                                                                  :ok-condition (fn [db] (::osm/id db))}})))))  ;; TODO
+          step-list (get-in @state [::steps/id :layers->dataset->graph->route ::steps/step-list])
+          required-datasets (->> (filter :required (vals osm-dataset))
+                                 (map ::osm-dataset/id)
+                                 (remove nil?))]
+         (doseq [datasetId required-datasets]
+                (load! app [::osm-dataset/id datasetId] OsmDataset (if (= datasetId (last required-datasets))
+                                                                       {:post-mutation `post-mutation
+                                                                        :post-mutation-params {:steps :layers->dataset->graph->route
+                                                                                               :step (title->step-index "Geofeatures" step-list)
+                                                                                               :ok-condition (fn [db] (::osm/id db))}}))))))
 
 (defsc State
   "State machine keeping track of loading all required data.

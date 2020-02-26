@@ -10,13 +10,19 @@
             [app.application :refer [SPA_conf conf-with-default-remote]]
             [app.ui.leaflet :as leaflet :refer [leaflet Leaflet]]
             [app.ui.leaflet.layers :refer [example-layers]]
-            [app.ui.leaflet.state :refer [State state mutate-layers]]))
+            [app.ui.leaflet.state :refer [State state mutate-layers]]
+            [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport style-route]]))
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.066 13.740]
+                                 {::leaflet/id {:main {::leaflet/center [51.0655 13.740]
                                                        ::leaflet/zoom 18
-                                                       ::leaflet/layers example-layers}}
+                                                       ::leaflet/layers {:osm {:base {:name "OSM Tiles"
+                                                                                      :checked true
+                                                                                      :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"}}}
+                                                                         :streets {:osm {:styles style-streets}}
+                                                                         :public-transport {:osm {:styles style-public-transport}}
+                                                                         :route:main {:osm {:styles style-route}}}}}
                                   ::osm-dataset/id {:bahnhof-neustadt {:required true}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}

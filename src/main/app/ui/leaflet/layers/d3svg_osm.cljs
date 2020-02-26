@@ -54,7 +54,7 @@
 
 (def style-streets [{:rule [:tags :highway]
                      :style {:way {:svg {:stroke "yellow" :stroke-width 2}}
-                             :way-node {:svg {:stroke "yellow" :r 2}}}}])
+                             #_#_:way-node {:svg {:stroke "yellow" :r 2}}}}])
 
 (def style-public-transport [{:rule [:tags :public_transport]
                               :style {:way {:svg {:stroke "green" :stroke-width 2}}

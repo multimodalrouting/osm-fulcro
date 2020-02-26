@@ -97,16 +97,30 @@
                          (-> (slurp filename)
                              (clojure.edn/read-string)))))))
 
-(defn filter-dataset [dataset {:as params}]
+(comment
+  (for [dataset [:linie3 :trachenberger :bahnhof-neustadt]]
+       {dataset (->> (parser {} [{[::osm-dataset/id dataset] [::osm-dataset/elements]}])
+                      vals first ::osm-dataset/elements count)}))
+
+(defn filter-with-deps [elements {:as conf}]
+  (let [elements-by-id (group-by ::osm/id elements)
+        positive-list (filter (fn [element] (or (= (get-in element [::osm/type]) "relation")
+                                                (get-in element [::osm/tags :highway])
+                                                (get-in element [::osm/tags :public_transport])
+                                                (get-in element [::osm/tags :railway])))
+                              elements)]
+       (->> (concat positive-list
+                    (apply concat (map ::osm/nodes positive-list))
+                    (apply concat (map ::osm/members positive-list)))
+            (into #{})
+            (map (fn [e] (first (get elements-by-id (::osm/id e))))))))
+
+(defn filter-dataset [dataset {:as conf}]
   (update dataset ::osm-dataset/elements
           (fn [elements]
-              (map (fn [element] ((apply comp (remove nil? [(if (get-in params [:remove :members])
-                                                                #(dissoc % ::osm/members))
-                                                            #_(if (get-in params [:remove :members-when-incomplete])
-                                                                #(dissoc % ::osm/members))  ;; TODO
-                                                            ]))
-                                  element))
-                   elements))))
+              (->> elements
+                   (#(filter-with-deps % conf))
+                   (remove #(empty? (dissoc % ::osm/id)))))))
 
 (pc/defresolver osm-dataset-root [_ _]
   {::pc/output [::osm-dataset/root ::osm-dataset/id]}

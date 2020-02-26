@@ -1,4 +1,4 @@
-(ns app.routing.zeithainer-ws
+(ns app.routing.trachenberger-ws
   (:require [nubank.workspaces.core :refer [defcard]]
             [nubank.workspaces.card-types.fulcro3 :as ct.fulcro]
             [nubank.workspaces.model :as wsm]
@@ -16,15 +16,18 @@
 
 (defsc Root [this props]
   {:initial-state (fn [_] (merge (get-initial-state State)
-                                 {::leaflet/id {:main {::leaflet/center [51.0825 13.7300]
-                                                       ::leaflet/zoom 16
-                                                       ::leaflet/layers {:background {:osm {:styles style-background}}
+                                 {::leaflet/id {:main {::leaflet/center [51.0845 13.728]
+                                                       ::leaflet/zoom 17
+                                                       ::leaflet/layers {:osm {:base {:name "OSM Tiles"
+                                                                                      :checked true
+                                                                                      :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"}}}
+                                                                         #_#_:background {:osm {:styles style-background}}  ;; only without the loading-filter
                                                                          :streets {:osm {:styles style-streets}}
                                                                          :public-transport {:osm {:styles style-public-transport}}
                                                                          :route:main {:osm {:styles style-route}}}}}
-                                  ::osm-dataset/id {:trachenberger {:required true}
-                                                    #_#_:linie3 {:required true}}
-                                  ::routing/id {:main {::routing/from {::osm/id 198189065}
+                                  ::osm-dataset/id {:linie3 {:required true}
+                                                    :trachenberger {:required true}}
+                                  ::routing/id {:main {::routing/from {::osm/id 1010804810}
                                                        ::routing/to {::osm/id 3331425510}}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
@@ -37,7 +40,7 @@
                                                    (filter map? (get-query Leaflet)))))
                    {:style {:height "80%" :width "100%"}}))))
 
-(defcard zeithainer
+(defcard trachenberger
   {::wsm/align {:flex 1}}  ;; fullscreen
   (ct.fulcro/fulcro-card
     {::ct.fulcro/root Root
