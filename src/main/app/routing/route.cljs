@@ -9,6 +9,7 @@
   "returns the path+dist of the route selected or expected to be best"
   [g from to]
   ;; TODO depending on fulcro-state
-  (let [result (alg/dijkstra-path-dist g from to)]
+  (prn "start routing" (type g) from to)
+  (let [result (if g (alg/dijkstra-path-dist g from to))]
        (prn "route:" result)
        result))

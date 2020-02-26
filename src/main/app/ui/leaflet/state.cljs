@@ -220,8 +220,10 @@
                    to (get-in routing [::routing/to ::osm/id])
                    [path dist] (calculate-routes g from to)]
 
-                  (when (and tweak
-                             path (> dist 0))
+                  (when (and (:osm tweak)
+                             path
+                             (> dist 0)
+                             (> (count (vals osm)) (get-in tweak [:osm :limit])))
                         (update-state-of-step-if-changed this props
                                                          {:steps :layers->dataset->graph->route
                                                           :step (title->step-index "Geofeatures" step-list)
@@ -231,7 +233,13 @@
                                      :com.fulcrologic.fulcro.application/state-atom)]
                            (swap! state assoc ::osm/id {})
                            (swap! state assoc ::osm-dataset/id {}))
-                      (reset! graphs {}))
+                      (when (:graph tweak)
+                            (update-state-of-step-if-changed this props
+                                                             {:steps :layers->dataset->graph->route
+                                                              :step (title->step-index "Graph" step-list)
+                                                              :new-state :done
+                                                              :info "Pruned"})
+                            (reset! graphs {})))
 
                   (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
                                                            ::osm-dataset/elements [(assoc (get osm from)

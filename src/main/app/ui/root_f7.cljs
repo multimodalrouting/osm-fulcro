@@ -42,13 +42,8 @@
 
 
 (defsc StartDestinationInput [this props]
-  {:initial-state {
-                   ::start       {}
-                   ::destination {}
-                   ::current-edit ::destination
-                   }
-   :query         [::start ::destination ::current-edit]
-   }
+  {:initial-state {::current-edit ::destination}
+   :query         [::start ::destination ::current-edit]}
   (f7-block
     {:style {:width "100%" }}
     (f7-row
@@ -103,36 +98,30 @@
       )))
 
 (defsc MapView [this props]
-  {
-   :initial-state (fn [_] (merge (comp/get-initial-state State)
+  {:initial-state (fn [_] (merge (comp/get-initial-state State)
                                  (comp/get-initial-state StartDestinationInput)
-                                 {::leaflet/id     {:main {:tweak true
-                                                           ::leaflet/center [51.0824 13.7300]
-                                                           ::leaflet/zoom   19
-                                                           ::leaflet/layers {
-                                                                             :tiles            {:base {:name "OSM Tiles"
+                                 {::leaflet/id     {:main {:tweak {:redraw true  ;; should be very efficient
+                                                                   :osm {:limit 5000}  ;; is not longer needed (except geocoding) once the graph is calculated
+                                                                   :graph false}  ;; the graph is required to continue routing
+                                                           ::leaflet/center [51.0845 13.728]
+                                                           ::leaflet/zoom   16
+                                                           ::leaflet/layers {:tiles            {:base {:name "OSM Tiles"
                                                                                                        :checked true
                                                                                                        :tile {:url         "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
                                                                                                               :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
                                                                              ;:background       {:osm {:styles style-background}}
                                                                              ;:streets          {:osm {:styles style-streets}}
                                                                              ;:public-transport {:osm {:styles style-public-transport}}
-                                                                             :route:main       {:osm {:styles style-route}}
-                                                                             }}}
-                                  ::osm-dataset/id {        ;:trachenberger {:required true}
-                                                    :linie3 {:required true}
-                                                    }}
-                                 #_{:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}
-                                 ))
-   :query         (fn [] (reduce into [
-                                       [::steps/id :layers->dataset->graph->route ::steps/step-list]
+                                                                             :route:main       {:osm {:styles style-route}}}}}
+                                  ::osm-dataset/id {:linie3 {:required true}
+                                                    :trachenberger {:required true}}
+                                  ::start 4532859072}))
+   :query         (fn [] (reduce into [[::steps/id :layers->dataset->graph->route ::steps/step-list]
                                        (comp/get-query State)
                                        (comp/get-query Leaflet)
                                        (comp/get-query StartDestinationInput)]))
-
    :ident         (fn [] [:component/id :map-view])
-   :route-segment ["main"]
-   }
+   :route-segment ["main"]}
 
   (merge/merge-component! this Routing {::routing/id :main
                                         ::routing/from {::osm/id (::start props)}

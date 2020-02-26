@@ -67,7 +67,7 @@
 
            (if-let [layer-conf (:osm layer)]
                    ((overlay-class->component :d3SvgOSM) (merge
-                                                           (if-not (:tweak props)
+                                                           (if-not (get-in props [:tweak :redraw])
                                                                    {:center center ::zoom zoom})  ;; TODO be more intelligent when to update
                                                            {:elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
                                                                            props
