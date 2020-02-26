@@ -7,6 +7,9 @@
     [app.model.osm-dataset :as osm-dataset]
     [app.model.osm :as osm]
     [app.model.osm-helper :refer [closest]]
+    [app.model.routing :as routing :refer [Routing]]
+    [app.ui.steps-helper :refer [title->step-index]]
+    [app.ui.steps :as steps :refer [post-mutation]]
     [app.ui.framework7.components :refer
      [f7-app f7-panel f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
@@ -14,10 +17,11 @@
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
     [com.fulcrologic.fulcro.ui-state-machines :as uism :refer [defstatemachine]]
     [com.fulcrologic.fulcro.mutations :refer [defmutation]]
+    [com.fulcrologic.fulcro.algorithms.merge :as merge]
     [app.utils.file-save :refer [store-file open-with]]
     [app.utils.gpx :refer [geo->gpx-xml]]
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
-    [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport]]))
+    [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport style-route]]))
 
 (defmutation map-clicked [{:keys [id latlng]}]
   (action [{:keys [app state]}]
@@ -26,8 +30,8 @@
             (let [osmid (::osm/id geofeature)]
               (swap! state assoc-in [::id id ::osm-id] osmid)
               (swap! state assoc-in [(::current-edit @state)] osmid))
-            )
-          ))
+
+            )))
 
 (defmutation edit-start-point [_]
   (action [{:keys [app state]}]
@@ -55,7 +59,7 @@
       (f7-col
         {}
         (f7-link
-          {:style {:background-color
+          {:style {:backgroundColor
                    (if (= (::current-edit props) ::start)
                      "#eedfd9")}
            :onClick #(comp/transact! this [(edit-start-point nil)])
@@ -72,7 +76,7 @@
       (f7-col
         {}
         (f7-link
-          {:style {:background-color
+          {:style {:backgroundColor
                       (if (= (::current-edit props) ::destination)
                         "#eedfd9")}
            :onClick #(comp/transact! this [(edit-destination nil)])
@@ -114,19 +118,29 @@
                                                                              :background       {:osm {:styles style-background}}
                                                                              :streets          {:osm {:styles style-streets}}
                                                                              :public-transport {:osm {:styles style-public-transport}}
+                                                                             :route:main       {:osm {:styles style-route}}
                                                                              }}}
                                   ::osm-dataset/id {:trachenberger {:required true}
                                                     ;:linie3 {:required true}
                                                     }}
                                  #_{:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}
                                  ))
-   :query         (fn [] (reduce into [(comp/get-query State)
+   :query         (fn [] (reduce into [
+                                       [::steps/id :layers->dataset->graph->route ::steps/step-list]
+                                       (comp/get-query State)
                                        (comp/get-query Leaflet)
                                        (comp/get-query StartDestinationInput)]))
 
    :ident         (fn [] [:component/id :map-view])
    :route-segment ["main"]
    }
+
+  (merge/merge-component! this Routing {::routing/id :main
+                                        ::routing/from {::osm/id (::start props)}
+                                        ::routing/to {::osm/id (::destination props)}})
+
+  (prn (get-in props [::steps/id :layers->dataset->graph->route ::steps/step-list]))
+
   (f7-view
     nil
     (f7-page
@@ -163,9 +177,11 @@
                                                  (map #(first (keys %))
                                                       (filter map? (get-query Leaflet)))))
                       {
-                       :style {:height "100%" :width "100%"}
+                       :style               {:height "100%" :width "100%"}
                        ::leaflet/onMapClick (fn [evt]
-                                     (comp/transact! this [(map-clicked evt)]))
+                                              (comp/transact! this [(map-clicked evt)] {:post-mutation        `post-mutation
+                                                                                        :post-mutation-params {:steps :layers->dataset->graph->route
+                                                                                                               :step  2#_(title->step-index "Graph" (get-in props [::steps/id :layers->dataset->graph->route ::steps/step-list]))}}))
                        }))
       )))
 
