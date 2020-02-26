@@ -62,7 +62,7 @@
                          :let [nodes (map #(apply hash-map %) (::osm/nodes way))]]
                         (for [segment (partition 2 1 (map ::osm/id nodes))
                               :let [[id1 id2] segment]]
-                             [id1 id2 3 {:id (::osm/id way)}])) ;; TODO weight
+                             [id1 id2 0.5 {:id (::osm/id way)}])) ;; TODO weight
                    (apply concat))]
        (swap! graphs assoc graph-id {:graph (edges+attrs->loom-graph edges)})))
 

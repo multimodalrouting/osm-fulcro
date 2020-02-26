@@ -182,27 +182,6 @@
                                               {:steps :layers->dataset->graph->route
                                                :step (title->step-index "Graph" step-list)
                                                :new-state :active})
-
-             (doseq [[id routing_] routings]
-                    (let [routing (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
-                                      (get [::routing/id id]))
-                          from (get osm (get-in routing [::routing/from ::osm/id]))
-                          to (get osm (get-in routing [::routing/to ::osm/id]))]
-                         (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
-                                                                  ::osm-dataset/elements [(assoc from
-                                                                                                 ::osm/id (keyword (str "route" id :from))
-                                                                                                 ::osm/tags {:routing {::routing/id id}})
-                                                                                          (assoc to
-                                                                                                 ::osm/id (keyword (str "route" id :to))
-                                                                                                 ::osm/tags {:routing {::routing/id id}})
-                                                                                          {::osm/id (keyword (str "route" id))
-                                                                                           ::osm/type "way"
-                                                                                           ::osm/tags {:routing {::routing/id id}}
-                                                                                           ::osm/nodes [{::osm/id (keyword (str "route" id :from))}
-                                                                                                        {::osm/id (keyword (str "route" id :to))}]}]}
-                                                 #_#_:append [::routing/id id ::routing/results]
-                                                 :append [::osm-dataset/root])
-                         #_(merge/merge-component! this OsmData {::osm/id #_2586314408 274454849} :append [::routing/id id ::routing/results])))
                            
              (calculate-graphs (vals osm))
 
@@ -236,11 +215,36 @@
                    from (get-in routing [::routing/from ::osm/id])
                    to (get-in routing [::routing/to ::osm/id])
                    [path dist] (calculate-routes g from to)]
+                  (js/console.log (get osm from))
+                  (js/console.log (get osm to))
+                  (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
+                                                           ::osm-dataset/elements [(assoc (get osm from)
+                                                                                          ::osm/id (keyword (str "route" id :from))
+                                                                                          ::osm/tags {:routing {::routing/id id}})
+                                                                                   (assoc (get osm to)
+                                                                                          ::osm/id (keyword (str "route" id :to))
+                                                                                          ::osm/tags {:routing {::routing/id id}})
+                                                                                   {::osm/id (keyword (str "route" id))
+                                                                                    ::osm/type "way"
+                                                                                    ::osm/tags {:routing {::routing/id id}}
+                                                                                    ::osm/nodes (->> path
+                                                                                                     (map (fn [i] {::osm/id i}))
+                                                                                                     (into []))
+                                                                                                #_[{::osm/id (keyword (str "route" id :from))}
+                                                                                                 {::osm/id (keyword (str "route" id :to))}]}]}
+                                          :append [::osm-dataset/root])
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Route" step-list)
                                                    :new-state (if path :done :failed)
-                                                   :info (str "ETA " dist "min")})))
+                                                   :info (str "ETA " dist "min")}))
+
+             (doseq [[id routing_] routings]
+                    (let [routing (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
+                                      (get [::routing/id id]))
+                          from (get osm (get-in routing [::routing/from ::osm/id]))
+                          to (get osm (get-in routing [::routing/to ::osm/id]))]
+                                                 :append [::osm-dataset/root])))
 
       (steps/steps (merge state {:style {:width "100%"}}))))
 
