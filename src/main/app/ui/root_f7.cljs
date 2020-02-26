@@ -29,7 +29,6 @@
             (let [osmid (::osm/id geofeature)]
               (swap! state assoc-in [::id id ::osm-id] osmid)
               (swap! state assoc-in [(::current-edit @state)] osmid)
-              (prn "foooooooo")
               (comp/transact! app [(update-state-of-step {:steps :layers->dataset->graph->route :step 3})])))))
 
 (defmutation edit-start-point [_]

@@ -215,8 +215,20 @@
                    from (get-in routing [::routing/from ::osm/id])
                    to (get-in routing [::routing/to ::osm/id])
                    [path dist] (calculate-routes g from to)]
-                  (js/console.log (get osm from))
-                  (js/console.log (get osm to))
+
+                  (when (and path (> dist 0))
+                        (update-state-of-step-if-changed this props
+                                                         {:steps :layers->dataset->graph->route
+                                                          :step (title->step-index "Geofeatures" step-list)
+                                                          :new-state :done
+                                                          :info "Pruned"})
+                      (let [state (-> this (aget "props") (aget "fulcro$app")
+                                     :com.fulcrologic.fulcro.application/state-atom)]
+                           (swap! state assoc ::osm/id {})
+                           (swap! state assoc ::osm-dataset/id {})
+                           (swap! state assoc ::osm-dataset/root {}))
+                      (reset! graphs {}))
+
                   (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
                                                            ::osm-dataset/elements [(assoc (get osm from)
                                                                                           ::osm/id (keyword (str "route" id :from))
@@ -228,11 +240,12 @@
                                                                                     ::osm/type "way"
                                                                                     ::osm/tags {:routing {::routing/id id}}
                                                                                     ::osm/nodes (->> path
-                                                                                                     (map (fn [i] {::osm/id i}))
+                                                                                                     (map (fn [i] (get osm i) #_{::osm/id i}))
                                                                                                      (into []))
                                                                                                 #_[{::osm/id (keyword (str "route" id :from))}
                                                                                                  {::osm/id (keyword (str "route" id :to))}]}]}
                                           :append [::osm-dataset/root])
+
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Route" step-list)
