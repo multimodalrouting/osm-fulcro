@@ -8,8 +8,7 @@
     [app.model.osm :as osm]
     [app.model.osm-helper :refer [closest]]
     [app.model.routing :as routing :refer [Routing]]
-    [app.ui.steps-helper :refer [title->step-index]]
-    [app.ui.steps :as steps :refer [post-mutation]]
+    [app.ui.steps :as steps :refer [update-state-of-step]]
     [app.ui.framework7.components :refer
      [f7-app f7-panel f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
@@ -29,9 +28,9 @@
           (if-let [geofeature (closest latlng (:app.model.osm/id @state ))]
             (let [osmid (::osm/id geofeature)]
               (swap! state assoc-in [::id id ::osm-id] osmid)
-              (swap! state assoc-in [(::current-edit @state)] osmid))
-
-            )))
+              (swap! state assoc-in [(::current-edit @state)] osmid)
+              (prn "foooooooo")
+              (comp/transact! app [(update-state-of-step {:steps :layers->dataset->graph->route :step 3})])))))
 
 (defmutation edit-start-point [_]
   (action [{:keys [app state]}]
@@ -51,7 +50,6 @@
                    }
    :query         [::start ::destination ::current-edit]
    }
-  (prn props)
   (f7-block
     {:style {:width "100%" }}
     (f7-row
@@ -140,7 +138,7 @@
                                         ::routing/from {::osm/id (::start props)}
                                         ::routing/to {::osm/id (::destination props)}})
 
-  (prn (get-in props [::steps/id :layers->dataset->graph->route ::steps/step-list]))
+  ;(prn (get-in props [::steps/id :layers->dataset->graph->route ::steps/step-list]))
 
   (f7-view
     nil
@@ -180,9 +178,7 @@
                       {
                        :style               {:height "100%" :width "100%"}
                        ::leaflet/onMapClick (fn [evt]
-                                              (comp/transact! this [(map-clicked evt)] {:post-mutation        `post-mutation
-                                                                                        :post-mutation-params {:steps :layers->dataset->graph->route
-                                                                                                               :step  2#_(title->step-index "Graph" (get-in props [::steps/id :layers->dataset->graph->route ::steps/step-list]))}}))
+                                              (comp/transact! this [(map-clicked evt)]))
                        }))
       )))
 
