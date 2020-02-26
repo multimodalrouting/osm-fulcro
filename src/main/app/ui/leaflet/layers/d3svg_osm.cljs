@@ -75,6 +75,7 @@
 (defn d3DrawCallback [sel proj data]
   (let [upd (.selectAll sel "a")
         {:keys [elements styles]} (js->clj data :keywordize-keys true)]  ;; carefull, the keywords are not longer namespaced
+       ;(js/console.log (last elements))
        (doseq [{:keys [rule style]} styles
                :let [{:keys [relation-way relation-node way node way-node node]} style
                      filtered (filter-elements rule elements)

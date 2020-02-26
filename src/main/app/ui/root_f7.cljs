@@ -113,11 +113,12 @@
                                                            ::leaflet/zoom   19
                                                            ::leaflet/layers {
                                                                              :tiles            {:base {:name "OSM Tiles"
+                                                                                                       :checked true
                                                                                                        :tile {:url         "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
                                                                                                               :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
-                                                                             :background       {:osm {:styles style-background}}
-                                                                             :streets          {:osm {:styles style-streets}}
-                                                                             :public-transport {:osm {:styles style-public-transport}}
+                                                                             ;:background       {:osm {:styles style-background}}
+                                                                             ;:streets          {:osm {:styles style-streets}}
+                                                                             ;:public-transport {:osm {:styles style-public-transport}}
                                                                              :route:main       {:osm {:styles style-route}}
                                                                              }}}
                                   ::osm-dataset/id {        ;:trachenberger {:required true}
