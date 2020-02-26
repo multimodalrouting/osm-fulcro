@@ -29,7 +29,6 @@
             (let [osmid (::osm/id geofeature)]
               (swap! state assoc-in [::id id ::osm-id] osmid)
               (swap! state assoc-in [(::current-edit @state)] osmid)
-              (prn "foooooooo")
               (comp/transact! app [(update-state-of-step {:steps :layers->dataset->graph->route :step 3})])))))
 
 (defmutation edit-start-point [_]
@@ -107,7 +106,8 @@
   {
    :initial-state (fn [_] (merge (comp/get-initial-state State)
                                  (comp/get-initial-state StartDestinationInput)
-                                 {::leaflet/id     {:main {::leaflet/center [51.0824 13.7300]
+                                 {::leaflet/id     {:main {:tweak true
+                                                           ::leaflet/center [51.0824 13.7300]
                                                            ::leaflet/zoom   19
                                                            ::leaflet/layers {
                                                                              :tiles            {:base {:name "OSM Tiles"
