@@ -119,8 +119,8 @@
                                                                              ;:public-transport {:osm {:styles style-public-transport}}
                                                                              :route:main       {:osm {:styles style-route}}
                                                                              }}}
-                                  ::osm-dataset/id {:trachenberger {:required true}
-                                                    ;:linie3 {:required true}
+                                  ::osm-dataset/id {        ;:trachenberger {:required true}
+                                                    :linie3 {:required true}
                                                     }}
                                  #_{:app.ui.leaflet/id {:main {:app.ui.leaflet/layers (assoc-in example-layers [:aerial :base :checked] true)}}}
                                  ))
@@ -144,7 +144,7 @@
     nil
     (f7-page
       nil
-      (f7-fab
+      #_(f7-fab
         {:position  "left-top"
          :slot      "fixed"
          :className "panel-open"
@@ -157,7 +157,11 @@
           ))
       (f7-toolbar
         {:position "top" :inner true}
-        (f7-link nil "")
+        (f7-link
+          {:icon "bars"
+           :panelOpen "left"
+           }
+          )
         (startDestinationInput
           (merge
             {
