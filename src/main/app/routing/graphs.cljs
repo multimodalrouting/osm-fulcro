@@ -1,9 +1,9 @@
 (ns app.routing.graphs
   (:require [app.model.geofeatures :as gf]
+            [app.model.osm :as osm]
             [app.ui.leaflet :as leaflet :refer [overlay-filter-rule->filter]]
             [loom.graph :as graph]
             [loom.attr]))
-
 
 (defonce graphs (atom {}))
 
@@ -55,24 +55,16 @@
                                      :dataset dataset
                                      :id-fn id-fn})))
 
-(defn highways [all-features xy2nodeid]
-  (let [args {:graph-id :highways
-              :dataset :bahnhof-neustadt ;:trachenberger
-              :filter-rule {[:geometry :type] #{"LineString"}
-                            [:properties :highway] some?}}
-        {:keys [graph-id dataset filter-rule]} args
-        features (get-in all-features [dataset ::gf/geojson :features])
-        filtered-features (filter (overlay-filter-rule->filter filter-rule) features)
-        edges (->> (for [feature filtered-features
-                         :let [coordinates (get-in feature [:geometry :coordinates])
-                               nodeids (map #(get xy2nodeid %) coordinates)]]
-                        (for [segment (partition 2 1 nodeids)
+(defn highways [elements]
+  (let [graph-id :highways
+        _ (js/console.log elements)
+        edges (->> (for [way (filter ::osm/nodes elements)
+                         :let [nodes (map #(apply hash-map %) (::osm/nodes way))]]
+                        (for [segment (partition 2 1 (map ::osm/id nodes))
                               :let [[id1 id2] segment]]
-                             [id1 id2 3 {:id (:id feature)}])) ;; TODO weight
+                             [id1 id2 3 {:id (::osm/id way)}])) ;; TODO weight
                    (apply concat))]
-       (swap! graphs assoc graph-id {:graph (edges+attrs->loom-graph edges)
-                                     :dataset dataset
-                                     #_#_:id-fn id-fn})))
+       (swap! graphs assoc graph-id {:graph (edges+attrs->loom-graph edges)})))
 
 
 (defn connect-stop-positions [all-features]
@@ -87,10 +79,10 @@
                           :id-fn :id}))
 
 
-(defn calculate-graphs [all-features xy2nodeid]
+(defn calculate-graphs [elements]
   ;; TODO depending on fulcro-state
-  (highways all-features xy2nodeid)
-  (connect-stop-positions all-features))
+  (highways elements)
+  #_(connect-stop-positions all-features))
 
 
 ;; helpers for creating a geojson 

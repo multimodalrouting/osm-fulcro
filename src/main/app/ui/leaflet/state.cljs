@@ -14,7 +14,7 @@
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
-    [app.routing.graphs :refer [graphs calculate-graphs paths->geojson features->id2feature]]
+    [app.routing.graphs :refer [graphs calculate-graphs]]
     [app.routing.route :refer [calculate-routes]]
     [app.routing.isochrone :refer [isochrone->geojson]]
     [loom.graph :as graph]))
@@ -130,7 +130,7 @@
         comparison (apply merge (get-in props [::gf/comparison "singleton" ::gf/comparison]))]
 
        ;;TODO this way the to and from is set
-       (merge/merge-component! this Routing {::routing/id :main
+       #_(merge/merge-component! this Routing {::routing/id :main
                                              ::routing/to {::osm/id 4532859077}})
 
        (def comparison comparison)  ;; TODO cleanup
@@ -204,18 +204,10 @@
                                                  :append [::osm-dataset/root])
                          #_(merge/merge-component! this OsmData {::osm/id #_2586314408 274454849} :append [::routing/id id ::routing/results])))
                            
-
-             ;(calculate-graphs (::gf/id props) xy2nodeid)
+             (calculate-graphs (vals osm))
 
              (let [nodes (reduce + (map #(count (graph/nodes (:graph %))) (vals @graphs)))
                    edges (reduce + (map #(count (graph/edges (:graph %))) (vals @graphs)))]
-                  #_(let [id2feature (features->id2feature (::gf/id props) xy2nodeid)
-                        edge-pairs (reduce into (map #(graph/edges (:graph %))
-                                                     (vals @graphs)))]
-                       (transact! this [(mutate-datasets {:path [:routinggraph]
-                                                          :data {::gf/geojson (paths->geojson id2feature
-                                                                                              edge-pairs
-                                                                                              {:style {:stroke-width 2}})}})]))
                   (update-state-of-step-if-changed this props
                                                    {:steps :layers->dataset->graph->route
                                                     :step (title->step-index "Graph" step-list)
@@ -237,15 +229,13 @@
                                                        :data {::gf/geojson (isochrone->geojson (features->id2feature (::gf/id props) xy2nodeid)
                                                                                                args)}})]))
 
-
-             (js/console.log routings)
-
-
-             (let [[path dist] (calculate-routes)]
-                  #_(transact! this [(mutate-datasets {:path [:routes]
-                                                     :data {::gf/geojson (paths->geojson (features->id2feature (::gf/id props) xy2nodeid)
-                                                                                         (partition 2 1 path)
-                                                                                         {:style {:stroke-width 6}})}})])
+             (let [[id routing_] (first routings)
+                   routing (-> (component+query->tree this [{[::routing/id id] (get-query Routing)}])
+                               (get [::routing/id id]))
+                   g (:graph (:highways @graphs))
+                   from (get-in routing [::routing/from ::osm/id])
+                   to (get-in routing [::routing/to ::osm/id])
+                   [path dist] (calculate-routes g from to)]
                   (update-state-of-step-if-changed this props
                                                   {:steps :layers->dataset->graph->route
                                                    :step (title->step-index "Route" step-list)

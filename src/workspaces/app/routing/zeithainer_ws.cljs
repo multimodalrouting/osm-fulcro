@@ -24,8 +24,8 @@
                                                                          :route:main {:osm {:styles style-route}}}}}
                                   ::osm-dataset/id {:trachenberger {:required true}
                                                     :linie3 {:required true}}
-                                  ::routing/id {:main {::routing/from {::osm/id 2586314408}
-                                                       ::routing/to {::osm/id 2791679402}}}}))
+                                  ::routing/id {:main {::routing/from {::osm/id 2120500033}
+                                                       ::routing/to {::osm/id 2120500077}}}}))
    :query (fn [] (reduce into [(get-query State)
                                (get-query Leaflet)]))}
 
