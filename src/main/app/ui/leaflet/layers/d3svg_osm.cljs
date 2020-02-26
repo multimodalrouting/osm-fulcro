@@ -63,8 +63,10 @@
                               :style {:way {:svg {:stroke "green" :stroke-width 3}}}}])
 
 (def style-route [{:rule [:tags :routing]
-                   :style {:way {:svg {:stroke "blue" :stroke-width 4}}
-                           :node {:svg {:stroke "blue" :r 10 :fill "blue"}}}}])
+                   :style {:way {:svg {:stroke "white" :stroke-width 4}}
+                           :node {:svg {:stroke "orange" :r 3 #_#_:fill "blue"}}}}
+                  {:rule [:tags :routing #_:rel]
+                   :style {:node {:svg {:stroke "orange" :r 6 #_#_:fill "blue"}}}}])
 
 (defn filter-elements
  "TODO"

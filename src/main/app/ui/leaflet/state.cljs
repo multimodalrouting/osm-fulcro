@@ -15,6 +15,7 @@
     [app.ui.steps-helper :refer [title->step title->step-index]]
     [app.ui.leaflet :as leaflet]
     [app.routing.graphs :refer [graphs calculate-graphs]]
+    [app.routing.graph.weight :refer [weight]]
     [app.routing.route :refer [calculate-routes]]
     [app.routing.isochrone :refer [isochrone->geojson]]
     [loom.graph :as graph]))
@@ -244,15 +245,19 @@
                   (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
                                                            ::osm-dataset/elements [(assoc (get osm from)
                                                                                           ::osm/id (keyword (str "route" id :from))
-                                                                                          ::osm/tags {:routing {::routing/id id}})
+                                                                                          ::osm/tags {:routing {::routing/id id
+                                                                                                                :rel :from}})
                                                                                    (assoc (get osm to)
                                                                                           ::osm/id (keyword (str "route" id :to))
-                                                                                          ::osm/tags {:routing {::routing/id id}})
+                                                                                          ::osm/tags {:routing {::routing/id id
+                                                                                                                :rel :stop}})
                                                                                    {::osm/id (keyword (str "route" id))
                                                                                     ::osm/type "way"
                                                                                     ::osm/tags {:routing {::routing/id id}}
                                                                                     ::osm/nodes (->> path
-                                                                                                     (map (fn [i] (get osm i) #_{::osm/id i}))
+                                                                                                     (map (fn [i] (-> (get osm i)
+                                                                                                                      #_(update-in [::osm/tags :routing]
+                                                                                                                                 merge (weight (get osm i))))))
                                                                                                      (into []))
                                                                                                 #_[{::osm/id (keyword (str "route" id :from))}
                                                                                                  {::osm/id (keyword (str "route" id :to))}]}]}

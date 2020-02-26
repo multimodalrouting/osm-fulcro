@@ -57,7 +57,6 @@
 
 (defn highways [elements]
   (let [graph-id :highways
-        _ (js/console.log elements)
         edges (->> (for [way (filter ::osm/nodes elements)
                          :let [nodes (map #(apply hash-map %) (::osm/nodes way))]]
                         (for [segment (partition 2 1 (map ::osm/id nodes))
@@ -105,7 +104,7 @@
        (map #(get id2feature %))
        (map #(get-in % [:geometry :coordinates]))))
 
-(defn weight [wayFeature fromFeature toFeature]
+(defn weight [wayFeature fromFeature toFeature] ;; deprecated
   {:cost (if-not wayFeature
                  (+ 5 (rand-int 5))
                  (+ 1 (rand-int 3)))
@@ -125,7 +124,7 @@
                        "no"
                      nil #_(rand-nth ["yes" "limited" "no"]))})
 
-(defn paths->geojson [id2feature edge-pairs {:keys [style]}]
+(defn paths->geojson [id2feature edge-pairs {:keys [style]}]  ;; deprecated
   (let [[fromId toId] (last edge-pairs)
         wayId (loom.attr/attr (get-in @graphs [:highways :graph])
                               [fromId toId] :id)
@@ -147,5 +146,5 @@
                       {:type "Feature"
                        :geometry {:type "LineString"
                                   :coordinates (into [] lngLatPath)}
-                       :properties (merge (weight wayFeature fromFeature toFeature)
+                       :properties (merge (weight wayFeature fromFeature toFeature)  ;; deprecated
                                           {:style style})}))})
