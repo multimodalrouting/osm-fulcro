@@ -106,7 +106,8 @@
   {
    :initial-state (fn [_] (merge (comp/get-initial-state State)
                                  (comp/get-initial-state StartDestinationInput)
-                                 {::leaflet/id     {:main {::leaflet/center [51.0824 13.7300]
+                                 {::leaflet/id     {:main {:tweak true
+                                                           ::leaflet/center [51.0824 13.7300]
                                                            ::leaflet/zoom   19
                                                            ::leaflet/layers {
                                                                              :tiles            {:base {:name "OSM Tiles"

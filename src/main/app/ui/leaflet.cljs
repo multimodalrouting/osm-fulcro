@@ -45,7 +45,8 @@
                         zoom 12
                         style {:height "100%" :width "100%"}}}]
   {:ident (fn [] [::id id])
-   :query (fn [] [::id ::layers ::center ::zoom
+   :query (fn [] [::id :tweak
+                  ::layers ::center ::zoom
                   {::osm-dataset/root (get-query OsmDataset)}
                   ::gf/id :style])}
 
@@ -65,14 +66,16 @@
                (tileLayer (:tile base))))
 
            (if-let [layer-conf (:osm layer)]
-                   ((overlay-class->component :d3SvgOSM) {::center center ::zoom zoom
-                                                          :elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
-                                                                         props
-                                                                         ::osm-dataset/root
-                                                                         ;; TODO here we want filter the datasets
-                                                                         (map ::osm-dataset/elements)
-                                                                         (apply concat))
-                                                          :styles (:styles layer-conf)}))
+                   ((overlay-class->component :d3SvgOSM) (merge
+                                                           (if-not (:tweak props)
+                                                                   {:center center ::zoom zoom})  ;; TODO be more intelligent when to update
+                                                           {:elements (->> #_(component+query->tree this [{::osm-dataset/root (get-query OsmDataset)}])
+                                                                           props
+                                                                           ::osm-dataset/root
+                                                                           ;; TODO here we want filter the datasets
+                                                                           (map ::osm-dataset/elements)
+                                                                           (apply concat))
+                                                            :styles (:styles layer-conf)})))
 
 
            (let [overlays (->> (for [overlay (:overlays layer)
