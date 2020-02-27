@@ -105,10 +105,12 @@
                                                                    :graph false}  ;; the graph is required to continue routing
                                                            ::leaflet/center [51.0845 13.728]
                                                            ::leaflet/zoom   16
-                                                           ::leaflet/layers {:tiles            {:base {:name "OSM Tiles"
-                                                                                                       :checked true
-                                                                                                       :tile {:url         "https://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                                                                                                              :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}}
+                                                           ::leaflet/layers {nil {:base {:name "NONE (only overlays)"
+                                                                                         :tile {:url ""}}}
+                                                                             :osm {:base {:name "OSM Tiles"
+                                                                                          :checked true
+                                                                                          :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"}
+                                                                                          :attribution "&copy; <a href=\"http://osm.org/copyright\">OpenStreetMap</a> contributors"}}
                                                                              ;:background       {:osm {:styles style-background}}
                                                                              ;:streets          {:osm {:styles style-streets}}
                                                                              ;:public-transport {:osm {:styles style-public-transport}}

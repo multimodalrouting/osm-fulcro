@@ -2,7 +2,7 @@
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point proj->bounds filter-nodes-within-bounds filter-ways-within-bounds color-by-accessibility float->colortransition]]
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point proj->bounds filter-nodes-within-bounds filter-ways-within-bounds color-by-accessibility float->colortransition colormap]]
     [app.model.osm :as osm :refer [OsmData]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]))
 
@@ -12,7 +12,8 @@
 
 
 (def fn-map {"cost->color" #(-> % :tags :routing :cost float->colortransition)
-             "confidence->color" #(-> % :tags :routing :confidence float->colortransition)})
+             "confidence->color" #(-> % :tags :routing :confidence float->colortransition)
+             "wheelchair->color" #(-> % :tags :routing :wheelchair colormap)})
 
 
 (defn d3DrawCallback-Nodes [upd proj data &[{:keys [svg]}]]
@@ -73,7 +74,7 @@
 
 (def style-route [{:rule [:tags :routing]
                    :style {:node {:svg {:stroke "blue" :r 8 :fill "blue" :fill-opacity 0.3 :stroke-width 2}}
-                           :way {:f :confidence->color
+                           :way {:f #_:confidence->color :wheelchair->color
                                  :svg {:stroke "blue" :stroke-width 4}}
                            :way-node {:svg {:stroke "blue" :r 3}}}}])
 

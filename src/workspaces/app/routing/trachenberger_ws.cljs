@@ -18,7 +18,9 @@
   {:initial-state (fn [_] (merge (get-initial-state State)
                                  {::leaflet/id {:main {::leaflet/center [51.0845 13.728]
                                                        ::leaflet/zoom 17
-                                                       ::leaflet/layers {:osm {:base {:name "OSM Tiles"
+                                                       ::leaflet/layers {nil {:base {:name "NONE (only overlays)"
+                                                                              :tile {:url ""}}}
+                                                                         :osm {:base {:name "OSM Tiles"
                                                                                       :checked true
                                                                                       :tile {:url "https://{s}.tile.osm.org/{z}/{x}/{y}.png"}}}
                                                                          #_#_:background {:osm {:styles style-background}}  ;; only without the loading-filter
