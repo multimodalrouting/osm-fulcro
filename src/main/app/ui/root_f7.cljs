@@ -100,8 +100,8 @@
 (defsc MapView [this props]
   {:initial-state (fn [_] (merge (comp/get-initial-state State)
                                  (comp/get-initial-state StartDestinationInput)
-                                 {::leaflet/id     {:main {:tweak {:redraw true  ;; should be very efficient
-                                                                   :osm {:limit 5000}  ;; is not longer needed (except geocoding) once the graph is calculated
+                                 {::leaflet/id     {:main {:tweak {:redraw false #_true  ;; should be very efficient
+                                                                   :osm {:limit 10000}  ;; is not longer needed (except geocoding) once the graph is calculated
                                                                    :graph false}  ;; the graph is required to continue routing
                                                            ::leaflet/center [51.0845 13.728]
                                                            ::leaflet/zoom   16
@@ -146,7 +146,7 @@
            :icon "bars"
            }
           ))
-      (f7-toolbar
+      #_(f7-toolbar
         {:position "top" :inner true}
         (f7-link
           {:icon "bars"
