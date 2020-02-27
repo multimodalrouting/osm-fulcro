@@ -82,3 +82,16 @@
 (defn feature->confident? [feature]
   (if-let [confidence (get-in feature [:properties :confidence])]
           (>= confidence 0.5)))
+(defn hex
+  "return a 2 digit hex"
+  [i]
+  (str (if (< i 16) "0")
+       (.toString i 16)))
+
+(defn float->colortransition
+  "0 ~ green; 0.5 ~ yellow; 1 ~ red"
+  [value]
+  (let [value-bound (max 0 (min 1 value))
+        r (int (* 2 255 (max 0 (min 0.5 value))))
+        g (int (* 2 255 (- 1 (max 0.5 (min 1 value)))))]
+       (str "#" (hex r) (hex g) "00")))

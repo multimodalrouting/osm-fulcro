@@ -17,7 +17,7 @@
     [app.routing.graphs :refer [graphs calculate-graphs]]
     [app.routing.graph.weight :refer [weight]]
     [app.routing.route :refer [calculate-routes]]
-    [app.routing.isochrone :refer [isochrone->geojson]]
+    ;[app.routing.isochrone :refer [isochrone->geojson]]
     [loom.graph :as graph]
     [loom.attr]))
 

@@ -2,13 +2,18 @@
   (:require
     [com.fulcrologic.fulcro.components :refer [defsc get-query]]
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
-    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point proj->bounds filter-nodes-within-bounds filter-ways-within-bounds color-by-accessibility]]
+    [app.ui.leaflet.d3 :refer [d3SvgOverlay lngLat->Point proj->bounds filter-nodes-within-bounds filter-ways-within-bounds color-by-accessibility float->colortransition]]
     [app.model.osm :as osm :refer [OsmData]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset]]))
 
 (defn osmNode->Point [proj d]
   (let [node (js->clj d :keywordize-keys true)]
        (lngLat->Point proj [(:lon node) (:lat node)])))
+
+
+(def fn-map {"cost->color" #(-> % :tags :routing :cost float->colortransition)
+             "confidence->color" #(-> % :tags :routing :confidence float->colortransition)})
+
 
 (defn d3DrawCallback-Nodes [upd proj data &[{:keys [svg]}]]
   (-> (.data upd (->> (filter #(= (:type %) "node") data)
@@ -26,7 +31,7 @@
       (.attr "fill-opacity" (if-not (:fill svg) 0 (:fill-opacity svg 1)))
       (.on "click" (fn [d i ds] (js/console.log (js->clj d :keywordize-keys true))))))
 
-(defn d3DrawCallback-Ways [upd proj data &[{:keys [svg]}]]
+(defn d3DrawCallback-Ways [upd proj data &[{:keys [svg f]}]]
   (-> (.data upd (->> (filter #(= (:type %) "way") data)
                       (filter-ways-within-bounds (proj->bounds proj))
                       clj->js))
@@ -38,10 +43,13 @@
                                    (map #(osmNode->Point proj %))
                                    (map #(str (.-x %) "," (.-y %)))
                                    (clojure.string/join " "))))
-      (.attr "stroke" (:stroke svg))
+      (.attr "stroke" #(if-let [func (get fn-map f)]
+                               (func (js->clj % :keywordize-keys true))
+                               (:stroke svg)))
       (.attr "stroke-width" (:stroke-width svg 1))
       (.attr "fill" "none")
       (.on "click" (fn [d i ds] (js/console.log (js->clj d))))))
+
 
 (def style-topo [{:rule [:tags]
                   :style {:relation-way {:svg {:stroke "blue" :stroke-width 3}}
@@ -65,10 +73,9 @@
 
 (def style-route [{:rule [:tags :routing]
                    :style {:node {:svg {:stroke "blue" :r 8 :fill "blue" :fill-opacity 0.3 :stroke-width 2}}
-                           :way {:svg {:stroke "blue" :stroke-width 1}}
-                           :way-node {:svg {:stroke "blue" :r 2}}
-                           :relation-node {:svg {:stroke "blue" :r 3 :fill "blue"}}
-                           :relation-way {:svg {:stroke "blue" :stroke-width 4}}}}])
+                           :way {:f :confidence->color
+                                 :svg {:stroke "blue" :stroke-width 4}}
+                           :way-node {:svg {:stroke "blue" :r 3}}}}])
 
 (defn filter-elements
  "TODO"
