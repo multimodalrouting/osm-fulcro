@@ -101,9 +101,9 @@
   {:initial-state (fn [_] (merge (comp/get-initial-state State)
                                  (comp/get-initial-state StartDestinationInput)
                                  {::leaflet/id     {:main {:tweak {:redraw true  ;; should be very efficient
-                                                                   :osm {:limit 5000}  ;; is not longer needed (except geocoding) once the graph is calculated
+                                                                   :osm {:limit 10000}  ;; is not longer needed (except geocoding) once the graph is calculated
                                                                    :graph false}  ;; the graph is required to continue routing
-                                                           ::leaflet/center [51.0845 13.728]
+                                                           ::leaflet/center [52.4936051 13.4295506]
                                                            ::leaflet/zoom   16
                                                            ::leaflet/layers {nil {:base {:name "NONE (only overlays)"
                                                                                          :tile {:url ""}}}
@@ -115,9 +115,9 @@
                                                                              ;:streets          {:osm {:styles style-streets}}
                                                                              ;:public-transport {:osm {:styles style-public-transport}}
                                                                              :route:main       {:osm {:styles style-route}}}}}
-                                  ::osm-dataset/id {:linie3 {:required true}
-                                                    :trachenberger {:required true}}
-                                  ::start 4532859072}))
+                                  ::osm-dataset/id {;:linie3 {:required true}
+                                                    :kreuzberg {:required true}}
+                                  ::start 6804616817}))
    :query         (fn [] (reduce into [[::steps/id :layers->dataset->graph->route ::steps/step-list]
                                        (comp/get-query State)
                                        (comp/get-query Leaflet)

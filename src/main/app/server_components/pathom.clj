@@ -29,7 +29,9 @@
                                                :query {:uri "http://localhost:8989/mvt/13/4410/2740.mvt"
                                                        :layer "roads"}}}})
 
-(def osm-datasets {:linie3 {::osm-dataset/source {:comment "DVB Straßenbahnlinie 3"
+(def osm-datasets {:kreuzberg {::osm-dataset/source {:comment "Paul-Lincke-Ufer 21, 10999 Berlin"
+                                                     :remote :pathom :type :geojson}}
+                   :linie3 {::osm-dataset/source {:comment "DVB Straßenbahnlinie 3"
                                                   :remote :pathom :type :osmjson}}
                    :trachenberger {::gf/source {:comment "Trachenberger Platz: Streets+Buildings"
                                                 :remote :pathom :type :geojson}}
@@ -80,6 +82,7 @@
 
 (defn osm-dataset-file [{::osm-dataset/keys [id]}]
   (let [known_files {:linie3 "resources/test/linie3.json"
+                     :kreuzberg "resources/test/kreuzberg.json"
                      :trachenberger "resources/test/trachenberger.json"
                      :bahnhof-neustadt "resources/test/bahnhof-neustadt.json"}]
        (prn "Read dataset" id)
