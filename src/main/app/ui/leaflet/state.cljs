@@ -8,7 +8,7 @@
     [com.fulcrologic.fulcro.algorithms.denormalize :as fdn]
     [com.fulcrologic.fulcro.dom :as dom]
     [app.model.geofeatures :as gf :refer [GeoFeature GeoFeaturesAll]]
-    [app.model.osm :as osm :refer [OsmData]]
+    [app.model.osm :as osm :refer [OsmData OsmDataRelation]]
     [app.model.osm-dataset :as osm-dataset :refer [OsmDataset OsmDatasetMeta]]
     [app.model.routing :as routing :refer [Routing]]
     [app.ui.steps :as steps :refer [Steps update-state-of-step update-state-of-step-if-changed post-mutation]]
@@ -18,7 +18,8 @@
     [app.routing.graph.weight :refer [weight]]
     [app.routing.route :refer [calculate-routes]]
     [app.routing.isochrone :refer [isochrone->geojson]]
-    [loom.graph :as graph]))
+    [loom.graph :as graph]
+    [loom.attr]))
 
 (defmutation mutate-datasets-load
   [{:keys [updated-state]}]
@@ -242,25 +243,38 @@
                                                               :info "Pruned"})
                             (reset! graphs {})))
 
-                  (merge/merge-component! this OsmDataset {::osm-dataset/id (keyword (str "route" id))
-                                                           ::osm-dataset/elements [(assoc (get osm from)
-                                                                                          ::osm/id (keyword (str "route" id :from))
-                                                                                          ::osm/tags {:routing {::routing/id id
-                                                                                                                :rel :from}})
-                                                                                   (assoc (get osm to)
-                                                                                          ::osm/id (keyword (str "route" id :to))
-                                                                                          ::osm/tags {:routing {::routing/id id
-                                                                                                                :rel :stop}})
-                                                                                   {::osm/id (keyword (str "route" id))
-                                                                                    ::osm/type "way"
-                                                                                    ::osm/tags {:routing {::routing/id id}}
-                                                                                    ::osm/nodes (->> path
-                                                                                                     (map (fn [i] (-> (get osm i)
-                                                                                                                      #_(update-in [::osm/tags :routing]
-                                                                                                                                 merge (weight (get osm i))))))
-                                                                                                     (into []))
-                                                                                                #_[{::osm/id (keyword (str "route" id :from))}
-                                                                                                 {::osm/id (keyword (str "route" id :to))}]}]}
+                  (merge/merge-component! this OsmDataRelation 
+                                          {::osm/id (keyword (str "route" id))
+                                           ::osm/type "relation"
+                                           ::osm/tags {:routing {::routing/id id}}
+                                           ::osm/members (into [] (for [[nodeId1 nodeId2] (partition 2 1 path)
+                                                                        :let [wayId (loom.attr/attr (get-in @graphs [:highways :graph])
+                                                                                    [nodeId1 nodeId2] :id)]]
+                                                                       (-> (get osm wayId)
+                                                                           (update-in [::osm/tags :routing]
+                                                                                      merge (weight (get osm wayId)))
+                                                                           (update ::osm/nodes (fn [nodes] (map #(get osm (::osm/id %)))))
+                                                                           )))}
+                                          :append [::osm-dataset/root])
+
+                  (merge/merge-component! this OsmDataset 
+                                          {::osm-dataset/id (keyword (str "route" id))
+                                           ::osm-dataset/elements (into [(assoc (get osm from)
+                                                                          ::osm/id (keyword (str "route" id :from))
+                                                                          ::osm/tags {:routing {::routing/id id
+                                                                                                :rel :from}})
+                                                                          (assoc (get osm to)
+                                                                                 ::osm/id (keyword (str "route" id :to))
+                                                                                 ::osm/tags {:routing {::routing/id id
+                                                                                                       :rel :stop}})]
+                                                                          (for [[nodeId1 nodeId2] (partition 2 1 path)
+                                                                              :let [wayId (loom.attr/attr (get-in @graphs [:highways :graph])
+                                                                                          [nodeId1 nodeId2] :id)]]
+                                                                             (-> (get osm wayId)
+                                                                                 (assoc ::osm/id (keyword (str "route" id :to ":" wayId)))
+                                                                                 (update-in [::osm/tags :routing] merge (weight (get osm wayId)))
+                                                                                 #_(update ::osm/nodes (fn [nodes] (map #(get osm (::osm/id %)))))))
+                                                                        )}
                                           :append [::osm-dataset/root])
 
                   (update-state-of-step-if-changed this props

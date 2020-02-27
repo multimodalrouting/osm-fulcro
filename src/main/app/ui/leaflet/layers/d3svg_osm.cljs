@@ -21,6 +21,7 @@
       (.attr "cy" #(.-y (osmNode->Point proj %)))
       (.attr "r" (:r svg))
       (.attr "stroke" (:stroke svg))
+      (.attr "stroke-width" (:stroke-width svg 1))
       (.attr "fill" (:fill svg "none"))
       (.attr "fill-opacity" (if-not (:fill svg) 0 (:fill-opacity svg 1)))
       (.on "click" (fn [d i ds] (js/console.log (js->clj d :keywordize-keys true))))))
@@ -63,10 +64,11 @@
                               :style {:way {:svg {:stroke "green" :stroke-width 3}}}}])
 
 (def style-route [{:rule [:tags :routing]
-                   :style {:way {:svg {:stroke "white" :stroke-width 4}}
-                           :node {:svg {:stroke "orange" :r 3 #_#_:fill "blue"}}}}
-                  {:rule [:tags :routing #_:rel]
-                   :style {:node {:svg {:stroke "orange" :r 6 #_#_:fill "blue"}}}}])
+                   :style {:node {:svg {:stroke "blue" :r 8 :fill "blue" :fill-opacity 0.3 :stroke-width 2}}
+                           :way {:svg {:stroke "blue" :stroke-width 1}}
+                           :way-node {:svg {:stroke "blue" :r 2}}
+                           :relation-node {:svg {:stroke "blue" :r 3 :fill "blue"}}
+                           :relation-way {:svg {:stroke "blue" :stroke-width 4}}}}])
 
 (defn filter-elements
  "TODO"
