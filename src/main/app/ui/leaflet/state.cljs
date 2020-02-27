@@ -271,10 +271,15 @@
                                                                               :let [wayId (loom.attr/attr (get-in @graphs [:highways :graph])
                                                                                           [nodeId1 nodeId2] :id)]]
                                                                              (-> (get osm wayId)
-                                                                                 (assoc ::osm/id (keyword (str "route" id :to ":" wayId)))
-                                                                                 (update-in [::osm/tags :routing] merge (weight (get osm wayId)))
-                                                                                 #_(update ::osm/nodes (fn [nodes] (map #(get osm (::osm/id %)))))))
-                                                                        )}
+                                                                                 (assoc ::osm/id (keyword (str "route" id ":" wayId)))
+                                                                                 (update ::osm/nodes (fn [nodes] (->> nodes
+                                                                                                                      (map #(apply hash-map %))
+                                                                                                                      (map ::osm/id)
+                                                                                                                      ;; without this filter we see the original nodes involved in the route in full length
+                                                                                                                      (filter (into #{} path))
+                                                                                                                      (map #(get osm %)))))
+                                                                                 ((fn [way] (update-in way [::osm/tags :routing]
+                                                                                                           merge (weight way)))))))}
                                           :append [::osm-dataset/root])
 
                   (update-state-of-step-if-changed this props
