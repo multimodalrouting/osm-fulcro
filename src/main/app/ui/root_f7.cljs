@@ -10,7 +10,7 @@
     [app.model.routing :as routing :refer [Routing]]
     [app.ui.steps :as steps :refer [update-state-of-step]]
     [app.ui.framework7.components :refer
-     [f7-app f7-panel f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
+     [f7-app f7-panel f7-preloader f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.routing.dynamic-routing :as dr]
@@ -22,15 +22,23 @@
     [app.background-geolocation :refer [clear-locations clear-local-gpx-tracks]]
     [app.ui.leaflet.layers.d3svg-osm :refer [style-background style-streets style-public-transport style-route]]))
 
-(defmutation map-clicked [{:keys [id latlng]}]
+
+
+(defmutation point-selected [{:keys [id latlng]}]
   (action [{:keys [app state]}]
           (swap! state assoc-in [::id id ::latlng] latlng)
+          (swap! state assoc-in [::loading] false)
           (if-let [geofeature (closest latlng (:app.model.osm/id @state ))]
             (let [osmid (::osm/id geofeature)]
               (swap! state assoc-in [::id id ::osm-id] osmid)
               (swap! state assoc-in [(::current-edit @state)] osmid)
               (comp/transact! app [(update-state-of-step {:steps :layers->dataset->graph->route :step 3})])))))
 
+(defmutation map-clicked [{:keys [id latlng ] :as props}]
+             (action [{:keys [app state]}]
+                     (swap! state assoc-in [::loading] true)
+                     (comp/transact! app [(point-selected props)])
+                     ))
 (defmutation edit-start-point [_]
   (action [{:keys [app state]}]
           (swap! state assoc-in [::current-edit] ::start)
@@ -43,13 +51,13 @@
 
 (defsc StartDestinationInput [this props]
   {:initial-state {::current-edit ::destination}
-   :query         [::start ::destination ::current-edit]}
+   :query         [::start ::destination ::current-edit ::loading]}
   (f7-block
     {:style {:width "100%" }}
     (f7-row
       {}
       (f7-col
-        {}
+        {:width "45"}
         (f7-link
           {:style {:backgroundColor
                    (if (= (::current-edit props) ::start)
@@ -59,14 +67,16 @@
           (::startLabel props)
           ))
       (f7-col
-        {}
-        (f7-icon
-          {:icon "arrow-right"}
+        {:width "10"}
+        (if (::loading props)
+          (f7-preloader {})
+          "to"
           )
-        "nach"
-        )
+        #_(f7-icon
+          {:icon "arrow-right"}
+          ))
       (f7-col
-        {}
+        {:width "45"}
         (f7-link
           {:style {:backgroundColor
                       (if (= (::current-edit props) ::destination)
