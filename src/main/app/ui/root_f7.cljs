@@ -90,11 +90,12 @@
 (def startDestinationInput (comp/factory StartDestinationInput))
 
 
-(defn geofeature->label [feature]
+(defn geofeature->label [feature alternate]
   (if-not feature
-    "not set"
+    alternate
+    (let [fallback (str (::osm/lat feature) "," (::osm/lon feature))]
     (if-let [tags (::osm/tags feature)]
-      (->> [:name
+        (let [label (->> [:name
             :amenity
             :addr:street
             :addr:housenumber
@@ -102,10 +103,13 @@
             ]
            (map #(% tags))
            (remove nil?)
-           (s/join ", ")
-           )
-      (str (::osm/lat feature) "," (::osm/lon feature))
-      )))
+                         (s/join ", "))]
+          (if (s/blank? label)
+            fallback
+            label
+            ))
+        fallback
+        ))))
 
 (defsc MapView [this props]
   {:initial-state (fn [_] (merge (comp/get-initial-state State)
@@ -166,8 +170,8 @@
         (startDestinationInput
           (merge
             {
-             ::startLabel (geofeature->label (get-in props [::osm/id (::start props)]))
-             ::destinationLabel (geofeature->label (get-in props [::osm/id (::destination props)]))
+             ::startLabel (geofeature->label (get-in props [::osm/id (::start props)]) "choose start")
+             ::destinationLabel (geofeature->label (get-in props [::osm/id (::destination props)]) "choose destination")
              }
             (select-keys props (concat (filter keyword? (get-query StartDestinationInput))
                                        (map #(first (keys %))
