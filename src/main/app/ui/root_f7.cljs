@@ -9,6 +9,7 @@
     [app.model.osm-helper :refer [closest]]
     [app.model.routing :as routing :refer [Routing]]
     [app.ui.steps :as steps :refer [update-state-of-step]]
+    [app.ui.tracking-f7 :refer [ToggleTrackingFab toggleTrackingFab]]
     [app.ui.framework7.components :refer
      [f7-app f7-panel f7-preloader f7-view f7-views f7-page f7-row f7-col f7-page-content f7-navbar f7-nav-left f7-nav-right f7-link f7-toolbar f7-tabs f7-tab f7-block f7-block-title f7-list f7-list-item f7-list-button f7-fab f7-fab-button f7-icon f7-input]]
     [com.fulcrologic.fulcro.dom :as dom :refer [div ul li p h3 button]]
@@ -129,10 +130,11 @@
                                                                              ;:streets          {:osm {:styles style-streets}}
                                                                              ;:public-transport {:osm {:styles style-public-transport}}
                                                                              :route:main       {:osm {:styles style-route}}}}}
-                                  ::osm-dataset/id {:linie3 {:required true}
-                                                    :trachenberger {:required true}}
+                                  ::osm-dataset/id {:linie3 {:required false}
+                                                    :trachenberger {:required false}}
                                   ::start 4532859072}))
    :query         (fn [] (reduce into [[::steps/id :layers->dataset->graph->route ::steps/step-list]
+                                       {:background-location/state (comp/get-query ToggleTrackingFab)}
                                        (comp/get-query State)
                                        (comp/get-query Leaflet)
                                        (comp/get-query StartDestinationInput)]))
@@ -149,6 +151,11 @@
     nil
     (f7-page
       nil
+      (toggleTrackingFab
+        (merge
+          {:position "bottom-right"}
+          (:background-location/state props)
+          ))
       #_(f7-fab
         {:position  "left-top"
          :slot      "fixed"
@@ -188,8 +195,7 @@
                        :style               {:height "100%" :width "100%"}
                        ::leaflet/onMapClick (fn [evt]
                                               (comp/transact! this [(map-clicked evt)]))
-                       }))
-      )))
+                       })))))
 
 (def mapView (comp/factory MapView))
 
