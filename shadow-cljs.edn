@@ -45,6 +45,23 @@
                                             :use-document-host false
                                             :devtools-url  "http://172.22.99.134:9630"
                                             }}
+          :ios-inplace    {
+                               :target :browser
+                               :output-dir "cordova/platforms/ios/www/js/main"
+
+                               :asset-path "/js/main"
+                               :modules    {:main {:init-fn app.client-f7/init
+                                                   :entries [app.client-f7]}}
+                               :dev        {:compiler-options
+                                            {:external-config {:ghostwheel {}}}}
+
+                               :devtools   {
+                                            :http-port         8284
+                                            :http-root        "cordova/platforms/android/app/src/main/assets/www/"
+                                            :preloads          [app.cordova-preload app.development-preload]
+                                            :use-document-host false
+                                            :devtools-url  "http://localhost:9630"
+                                            }}
 
           :test       {:target           :browser-test
                        :test-dir         "resources/public/js/test"
